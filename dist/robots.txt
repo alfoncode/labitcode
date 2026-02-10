@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://labitcode.com/sitemap-index.xml

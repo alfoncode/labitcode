@@ -1,0 +1,44 @@
+---
+title: "labitcode Platform"
+description: "The engineering hub powering labitcode.com — built with Astro 5, Tailwind CSS v4, and a zero-JavaScript-by-default philosophy for extreme performance."
+stack: ["Astro", "Tailwind CSS", "MDX", "TypeScript", "Shiki"]
+url: "https://labitcode.com"
+repo: "https://github.com/labitcode/labitcode.com"
+lastUpdated: 2026-02-10
+creator: "Alfonso Garcia"
+status: "active"
+---
+
+## Overview
+
+The labitcode platform is the foundation of our engineering lab. It's designed to be:
+
+- **Fast** — 100/100 Lighthouse scores across all categories
+- **Accessible** — Semantic HTML, ARIA labels, keyboard navigation
+- **SEO-optimized** — Dynamic meta tags, JSON-LD structured data, sitemap
+- **Maintainable** — Type-safe content collections with Zod schemas
+
+## Architecture
+
+The platform follows a static-first architecture. Content is authored in MDX, validated through strict schemas, and compiled to optimized static HTML at build time.
+
+```
+src/
+├── content/        # MDX content with Zod-validated frontmatter
+├── components/     # Modular Astro components
+├── layouts/        # Base layout with SEO head
+├── pages/          # File-based routing
+├── styles/         # Tailwind v4 CSS-first configuration
+└── utils/          # Helper functions (reading time, date formatting)
+```
+
+## Key Features
+
+- **Dual-theme syntax highlighting** with Shiki (github-dark / github-light)
+- **Client-side fuzzy search** with zero external dependencies
+- **View Transitions** for smooth page navigation
+- **Anti-FOUC theme system** reading system preferences on first load
+
+## Deployment
+
+Deployed to the edge via Vercel with automatic builds on push to `main`.

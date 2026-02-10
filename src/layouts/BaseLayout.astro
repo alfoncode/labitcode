@@ -1,0 +1,46 @@
+---
+import SEOHead from '@/components/SEOHead.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Search from '@/components/Search.astro';
+import { ClientRouter } from 'astro:transitions';
+import '@/styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: 'website' | 'article' | 'profile';
+  publishedDate?: string;
+  modifiedDate?: string;
+  author?: string;
+  tags?: string[];
+  jsonLd?: Record<string, unknown>;
+}
+
+const props = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Anti-FOUC: set theme before paint -->
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem('theme');
+        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', stored || preferred);
+      })();
+    </script>
+    <SEOHead {...props} />
+    <ClientRouter />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <Header />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+    <Search />
+  </body>
+</html>

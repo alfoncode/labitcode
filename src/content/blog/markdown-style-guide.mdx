@@ -1,0 +1,272 @@
+---
+title: "Markdown Style Guide: Every Element Showcased"
+description: "A comprehensive reference showing every Markdown and MDX element styled by labitcode's design system — headings, code blocks, tables, lists, and more."
+pubDate: 2025-02-10
+tags: ["markdown", "documentation", "design-system"]
+author: "Alfonso Garcia"
+draft: false
+---
+
+This post serves as a **living style guide** for all the Markdown and MDX elements supported by labitcode. Use it as a reference to see how your content will look when published.
+
+---
+
+## Headings
+
+Headings create the structural hierarchy of your content. We support levels 2–4 within articles (h1 is reserved for the post title).
+
+### Third-Level Heading
+
+Use h3 for subsections within a major topic.
+
+#### Fourth-Level Heading
+
+Use h4 sparingly, for fine-grained breakdowns.
+
+---
+
+## Inline Text Styles
+
+Regular paragraph text renders at a comfortable reading size with generous line height for readability.
+
+- **Bold text** uses `**double asterisks**`
+- *Italic text* uses `*single asterisks*`
+- ***Bold and italic*** uses `***triple asterisks***`
+- ~~Strikethrough~~ uses `~~double tildes~~`
+- Inline `code` uses backticks and renders in a monospaced font with a subtle background
+
+Here's a paragraph with a [hyperlink to our homepage](https://labitcode.com) to show anchor styling. Links feature an accent color and underline offset for readability.
+
+---
+
+## Code Blocks
+
+Code blocks are one of the most important elements on an engineering blog. Here's how they look across different languages:
+
+### TypeScript
+
+```typescript
+interface BlogPost {
+  title: string;
+  description: string;
+  pubDate: Date;
+  tags: string[];
+  author: 'Alfonso Garcia' | 'AI';
+  draft?: boolean;
+}
+
+async function getPublishedPosts(): Promise<BlogPost[]> {
+  const allPosts = await getCollection('blog');
+  return allPosts
+    .filter((post) => !post.data.draft)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+}
+```
+
+### Python
+
+```python
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Optional
+
+@dataclass
+class Project:
+    """Represents a project in the lab."""
+    name: str
+    stack: list[str]
+    status: str = "active"
+    created_at: datetime = datetime.now()
+    repo_url: Optional[str] = None
+
+    def is_active(self) -> bool:
+        return self.status == "active"
+
+    def __repr__(self) -> str:
+        return f"<Project: {self.name} [{self.status}]>"
+
+# Usage
+scanner = Project(
+    name="SecureFlow",
+    stack=["Python", "Docker", "Redis"],
+    repo_url="https://github.com/labitcode/secureflow"
+)
+print(scanner)  # <Project: SecureFlow [active]>
+```
+
+### Bash / Shell
+
+```bash
+#!/bin/bash
+
+# Deploy script for labitcode
+echo "🚀 Building production bundle..."
+npm run build
+
+# Verify output
+if [ -d "dist" ]; then
+  echo "✅ Build successful — $(find dist -name '*.html' | wc -l) pages generated"
+  npx wrangler pages deploy dist --project-name=labitcode
+else
+  echo "❌ Build failed. Check logs above."
+  exit 1
+fi
+```
+
+### CSS
+
+```css
+@theme {
+  --color-accent: #E0115F;
+  --color-navy: #0F172A;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+.glass {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+```
+
+### JSON
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "labitcode",
+  "url": "https://labitcode.com",
+  "founder": {
+    "@type": "Person",
+    "name": "Alfonso Garcia"
+  },
+  "description": "Engineering lab where human code meets AI innovation"
+}
+```
+
+---
+
+## Blockquotes
+
+Blockquotes are styled with a bold accent-colored left border:
+
+> "Any fool can write code that a computer can understand. Good programmers write code that humans can understand."
+> — Martin Fowler
+
+Nested blockquotes also work:
+
+> The best architectures emerge from simplicity.
+>
+> > When in doubt, ship less code. Your users will thank you.
+
+---
+
+## Lists
+
+### Unordered Lists
+
+- Astro 5.x as the static-first framework
+- Tailwind CSS v4 with CSS-first configuration
+- Shiki for syntax highlighting with dual-theme support
+- Content Collections with strict Zod validation
+  - Blog posts with tags, authors, and reading time
+  - Projects with tech stacks, status, and repo links
+- Zero-React policy: all vanilla JS
+
+### Ordered Lists
+
+1. Plan the architecture and choose the stack
+2. Set up the design system and typography
+3. Build the content layer with type-safe schemas
+4. Implement pages and components
+5. Add client-side interactions (search, theme toggle)
+6. Verify performance with Lighthouse audits
+
+### Task Lists
+
+- [x] Project scaffolding with Astro 5
+- [x] Design system and theming
+- [x] SEO components (JSON-LD, Open Graph, sitemap)
+- [x] Blog and project content collections
+- [x] Client-side search with fuzzy matching
+- [ ] RSS feed endpoint
+- [ ] Analytics integration
+
+---
+
+## Tables
+
+Tables render with clean borders and alternating row styles:
+
+| Technology | Purpose | Version |
+|:-----------|:--------|--------:|
+| Astro | Static site framework | 5.17 |
+| Tailwind CSS | Utility-first CSS | 4.0 |
+| Shiki | Syntax highlighting | Latest |
+| Sharp | Image optimization | Latest |
+| MDX | Rich content authoring | 4.x |
+
+### Comparison Table
+
+| Feature | React SPA | Astro SSG |
+|:--------|:---------:|:---------:|
+| JS Bundle Size | ~150KB+ | ~0KB |
+| Time to Interactive | ~2.5s | ~0.3s |
+| SEO Friendly | ⚠️ | ✅ |
+| Lighthouse Score | 70–85 | 100 |
+| Build Complexity | High | Low |
+
+---
+
+## Horizontal Rules
+
+Use three dashes (`---`) for thematic breaks between sections, as shown throughout this post.
+
+---
+
+## Images
+
+Images render with rounded corners and auto-centered in the content flow. *(Placeholder — add actual images to your posts)*
+
+---
+
+## Mixed Content Flow
+
+Here's how different elements flow together naturally in a real article:
+
+The key insight behind our architecture is that **content sites don't need a JavaScript runtime**. When you analyze what a blog actually does, it's remarkably simple:
+
+1. Render Markdown to HTML
+2. Apply consistent styling
+3. Generate meta tags for SEO
+
+That's it. Everything else — state management, hydration, virtual DOM diffing — is *overhead* for this use case. Here's how we express this in code:
+
+```typescript
+// This is all you need. Really.
+const posts = await getCollection('blog');
+const sorted = posts
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+```
+
+> The fastest code is the code that never ships to the browser.
+
+The result? **100/100 Lighthouse scores** across the board, with a `Time to Interactive` measured in milliseconds — not seconds.
+
+---
+
+## Summary
+
+This style guide covers all the essential Markdown elements you'll use when writing for labitcode:
+
+- **Inline styles**: bold, italic, strikethrough, code, links
+- **Block elements**: headings, paragraphs, blockquotes, horizontal rules
+- **Code blocks**: multi-language syntax highlighting with copy support
+- **Lists**: ordered, unordered, nested, and task lists
+- **Tables**: aligned columns with clean styling
+- **Images**: rounded corners, centered layout
+
+Every element is designed for optimal readability in both **light** and **dark** modes, ensuring a premium reading experience regardless of preference.

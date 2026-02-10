@@ -1,0 +1,79 @@
+---
+title: "Building labitcode: A Modern Engineering Lab"
+description: "How we architected labitcode.com using Astro 5, Tailwind CSS v4, and a zero-React policy to achieve perfect Lighthouse scores and an SEO-first design."
+pubDate: 2026-02-10
+tags: ["Software Engineering", "Astro", "Web Performance", "SEO"]
+author: "Alfonso Garcia"
+draft: false
+---
+
+## Why We Built labitcode
+
+Every engineer needs a lab — a space to experiment, document, and share discoveries. **labitcode** is that space: a blend of human engineering expertise and AI-powered innovation.
+
+This post walks through the technical decisions behind the platform and why we chose the stack we did.
+
+## The Stack
+
+Here's what powers labitcode under the hood:
+
+- **Astro 5.x** — Static-first framework with Content Layer API
+- **Tailwind CSS v4** — CSS-first configuration, container queries, JIT
+- **MDX** — Markdown with component interoperability
+- **Shiki** — Dual-theme syntax highlighting (github-dark / github-light)
+- **Vanilla JS** — Zero-React policy for minimal client-side JavaScript
+
+### Why Astro?
+
+Astro ships **zero JavaScript by default**. For a content-heavy site like labitcode, this is the perfect trade-off: we get the DX of a modern framework with the performance of static HTML.
+
+```typescript
+// Content Collections with strict Zod schemas
+const blog = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/blog' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    tags: z.array(z.string()),
+    author: z.enum(['Alfonso Garcia', 'AI']),
+  }),
+});
+```
+
+### Why Zero-React?
+
+React is powerful, but it comes at a cost: bundle size, hydration time, and complexity. For a content site, we don't need any of that. Instead:
+
+- **Theme toggling** uses a 20-line vanilla script
+- **Search** is a custom fuzzy-match implementation (~60 lines)
+- **Transitions** use Astro's built-in View Transitions API
+
+## SEO-First Architecture
+
+Every route generates complete meta tags:
+
+1. **Title** and **Description** — dynamic per page
+2. **Open Graph** and **Twitter Cards** — with preview images
+3. **JSON-LD** — `Organization`, `Person`, `BlogPosting`, `SoftwareApplication`
+4. **Canonical URLs** — preventing duplicate content
+5. **Sitemap** — auto-generated via `@astrojs/sitemap`
+
+## Performance Results
+
+With this architecture, we consistently hit **100/100** across all Lighthouse categories:
+
+| Category       | Score |
+|----------------|-------|
+| Performance    | 100   |
+| Accessibility  | 100   |
+| Best Practices | 100   |
+| SEO            | 100   |
+
+## What's Next
+
+We're continuously expanding the lab with new experiments in **AI-driven development**, **security automation**, and **DevOps pipelines**. Stay tuned.
+
+---
+
+*Built with precision by Alfonso Garcia and the labitcode AI entity.*
