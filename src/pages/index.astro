@@ -1,20 +1,21 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import BlogCard from '@/components/BlogCard.astro';
-import ProjectCard from '@/components/ProjectCard.astro';
-import Badge from '@/components/Badge.astro';
-import { getCollection } from 'astro:content';
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import BlogCard from "@/components/BlogCard.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import Badge from "@/components/Badge.astro";
+import { getCollection } from "astro:content";
 
-const allPosts = (await getCollection('blog'))
+const allPosts = (await getCollection("blog"))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const allProjects = (await getCollection('projects'))
-  .sort((a, b) => b.data.lastUpdated.valueOf() - a.data.lastUpdated.valueOf());
+const allProjects = (await getCollection("projects")).sort(
+  (a, b) => b.data.lastUpdated.valueOf() - a.data.lastUpdated.valueOf(),
+);
 
 const recentPosts = allPosts.slice(0, 3);
 const featuredProjects = allProjects.slice(0, 3);
-const topics = ['Software Engineering', 'AI', 'Security', 'DevOps'];
+const topics = ["Software Engineering", "AI", "Security", "DevOps"];
 ---
 
 <BaseLayout
@@ -23,22 +24,42 @@ const topics = ['Software Engineering', 'AI', 'Security', 'DevOps'];
 >
   <!-- Hero Section -->
   <section class="relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-br from-navy via-navy-light to-navy opacity-95 dark:opacity-100"></div>
+    <img
+      src="/images/building-labitcode.png"
+      alt=""
+      class="absolute inset-0 w-full h-full object-cover"
+      aria-hidden="true"
+    />
+    <div class="absolute inset-0 bg-navy/70 dark:bg-[#020617]/70"></div>
     <div class="absolute inset-0">
-      <div class="absolute top-20 left-10 w-72 h-72 bg-accent/10 rounded-full blur-3xl"></div>
-      <div class="absolute bottom-10 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
+      <div
+        class="absolute -top-24 -right-24 w-96 h-96 bg-accent/8 rounded-full blur-3xl"
+      >
+      </div>
     </div>
-    <div class="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
+    <div
+      class="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40"
+    >
       <div class="max-w-3xl">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium mb-6 animate-fade-in">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium mb-6 animate-fade-in"
+        >
           <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
           Engineering Lab
         </div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 animate-fade-in">
-          Where <span class="text-accent">Human Code</span> Meets <span class="text-accent">AI Innovation</span>
+        <h1
+          class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 animate-fade-in"
+        >
+          Where <span class="text-accent">Human Code</span> Meets <span
+            class="text-accent">AI Innovation</span
+          >
         </h1>
-        <p class="text-lg sm:text-xl text-slate-300 max-w-2xl leading-relaxed mb-8 animate-fade-in-delay">
-          An engineering hub exploring Software Engineering, AI, Security, and DevOps. Built by Alfonso Garcia and a virtual AI entity — pushing the boundaries of modern development.
+        <p
+          class="text-lg sm:text-xl text-slate-300 max-w-2xl leading-relaxed mb-8 animate-fade-in-delay"
+        >
+          An engineering hub exploring Software Engineering, AI, Security, and
+          DevOps. Built by Alfonso Garcia and a virtual AI entity — pushing the
+          boundaries of modern development.
         </p>
         <div class="flex flex-wrap gap-3 animate-fade-in-delay">
           <a
@@ -46,7 +67,14 @@ const topics = ['Software Engineering', 'AI', 'Security', 'DevOps'];
             class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent hover:bg-accent-light text-white font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-accent/25"
           >
             Read the Blog
-            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+            <svg
+              class="w-4 h-4"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg
+            >
           </a>
           <a
             href="/projects"
@@ -62,11 +90,13 @@ const topics = ['Software Engineering', 'AI', 'Security', 'DevOps'];
   <!-- Topics -->
   <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
     <div class="flex flex-wrap items-center justify-center gap-3">
-      {topics.map((topic) => (
-        <span class="px-4 py-2 rounded-full border border-border dark:border-navy-light text-sm font-medium text-gray-700 dark:text-gray-500 hover:border-accent hover:text-accent transition-all duration-200 cursor-default">
-          {topic}
-        </span>
-      ))}
+      {
+        topics.map((topic) => (
+          <span class="px-4 py-2 rounded-full border border-border dark:border-navy-light text-sm font-medium text-gray-700 dark:text-gray-500 hover:border-accent hover:text-accent transition-all duration-200 cursor-default">
+            {topic}
+          </span>
+        ))
+      }
     </div>
   </section>
 
@@ -74,26 +104,43 @@ const topics = ['Software Engineering', 'AI', 'Security', 'DevOps'];
   <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-16">
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h2 class="text-2xl font-bold text-navy dark:text-gray-100">Latest from the Blog</h2>
-        <p class="text-sm text-gray-500 mt-1">Engineering insights, tutorials, and explorations.</p>
+        <h2 class="text-2xl font-bold text-navy dark:text-gray-100">
+          Latest from the Blog
+        </h2>
+        <p class="text-sm text-gray-500 mt-1">
+          Engineering insights, tutorials, and explorations.
+        </p>
       </div>
-      <a href="/blog" class="text-sm font-medium text-accent hover:text-accent-light transition-colors flex items-center gap-1">
+      <a
+        href="/blog"
+        class="text-sm font-medium text-accent hover:text-accent-light transition-colors flex items-center gap-1"
+      >
         View all
-        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+        <svg
+          class="w-4 h-4"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg
+        >
       </a>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {recentPosts.map((post) => (
-        <BlogCard
-          title={post.data.title}
-          description={post.data.description}
-          pubDate={post.data.pubDate}
-          tags={post.data.tags}
-          author={post.data.author}
-          slug={post.id}
-          body={post.body}
-        />
-      ))}
+      {
+        recentPosts.map((post) => (
+          <BlogCard
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            tags={post.data.tags}
+            author={post.data.author}
+            slug={post.id}
+            body={post.body}
+            heroImage={post.data.heroImage}
+          />
+        ))
+      }
     </div>
   </section>
 
@@ -102,28 +149,45 @@ const topics = ['Software Engineering', 'AI', 'Security', 'DevOps'];
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between mb-8">
         <div>
-          <h2 class="text-2xl font-bold text-navy dark:text-gray-100">The Lab</h2>
-          <p class="text-sm text-gray-500 mt-1">Side projects and experiments.</p>
+          <h2 class="text-2xl font-bold text-navy dark:text-gray-100">
+            The Lab
+          </h2>
+          <p class="text-sm text-gray-500 mt-1">
+            Side projects and experiments.
+          </p>
         </div>
-        <a href="/projects" class="text-sm font-medium text-accent hover:text-accent-light transition-colors flex items-center gap-1">
+        <a
+          href="/projects"
+          class="text-sm font-medium text-accent hover:text-accent-light transition-colors flex items-center gap-1"
+        >
           View all
-          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          <svg
+            class="w-4 h-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg
+          >
         </a>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {featuredProjects.map((project) => (
-          <ProjectCard
-            title={project.data.title}
-            description={project.data.description}
-            stack={project.data.stack}
-            status={project.data.status}
-            lastUpdated={project.data.lastUpdated}
-            creator={project.data.creator}
-            slug={project.id}
-            url={project.data.url}
-            repo={project.data.repo}
-          />
-        ))}
+        {
+          featuredProjects.map((project) => (
+            <ProjectCard
+              title={project.data.title}
+              description={project.data.description}
+              stack={project.data.stack}
+              status={project.data.status}
+              lastUpdated={project.data.lastUpdated}
+              creator={project.data.creator}
+              slug={project.id}
+              url={project.data.url}
+              repo={project.data.repo}
+              heroImage={project.data.heroImage}
+            />
+          ))
+        }
       </div>
     </div>
   </section>

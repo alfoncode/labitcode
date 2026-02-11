@@ -188,7 +188,7 @@ body {
   box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.06),
     0 8px 24px rgba(0, 0, 0, 0.05);
-  border-color: rgba(224, 17, 95, 0.15);
+  border-color: rgba(220, 38, 38, 0.15);
 }
 
 [data-theme="dark"] .prose .code-block-wrapper {
@@ -203,7 +203,7 @@ body {
   box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.25),
     0 8px 24px rgba(0, 0, 0, 0.2);
-  border-color: rgba(224, 17, 95, 0.25);
+  border-color: rgba(220, 38, 38, 0.25);
 }
 
 /* ── Code Block Header ────────────────────────────── */
@@ -264,8 +264,8 @@ body {
 
 .prose .code-block-header .code-copy-btn:hover {
   color: var(--color-accent);
-  background: rgba(224, 17, 95, 0.06);
-  border-color: rgba(224, 17, 95, 0.15);
+  background: rgba(220, 38, 38, 0.06);
+  border-color: rgba(220, 38, 38, 0.15);
 }
 
 .prose .code-block-header .code-copy-btn.copied {

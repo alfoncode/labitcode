@@ -1,10 +1,11 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import ProjectCard from '@/components/ProjectCard.astro';
-import { getCollection } from 'astro:content';
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import { getCollection } from "astro:content";
 
-const allProjects = (await getCollection('projects'))
-  .sort((a, b) => b.data.lastUpdated.valueOf() - a.data.lastUpdated.valueOf());
+const allProjects = (await getCollection("projects")).sort(
+  (a, b) => b.data.lastUpdated.valueOf() - a.data.lastUpdated.valueOf(),
+);
 ---
 
 <BaseLayout
@@ -14,29 +15,35 @@ const allProjects = (await getCollection('projects'))
   <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
     <!-- Header -->
     <div class="mb-10">
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-navy dark:text-gray-100 tracking-tight">
+      <h1
+        class="text-3xl sm:text-4xl font-extrabold text-navy dark:text-gray-100 tracking-tight"
+      >
         The Lab
       </h1>
       <p class="mt-2 text-gray-500 max-w-2xl">
-        Side projects, experiments, and tools built to explore new ideas and push the boundaries of modern engineering.
+        Side projects, experiments, and tools built to explore new ideas and
+        push the boundaries of modern engineering.
       </p>
     </div>
 
     <!-- Projects Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {allProjects.map((project) => (
-        <ProjectCard
-          title={project.data.title}
-          description={project.data.description}
-          stack={project.data.stack}
-          status={project.data.status}
-          lastUpdated={project.data.lastUpdated}
-          creator={project.data.creator}
-          slug={project.id}
-          url={project.data.url}
-          repo={project.data.repo}
-        />
-      ))}
+      {
+        allProjects.map((project) => (
+          <ProjectCard
+            title={project.data.title}
+            description={project.data.description}
+            stack={project.data.stack}
+            status={project.data.status}
+            lastUpdated={project.data.lastUpdated}
+            creator={project.data.creator}
+            slug={project.id}
+            url={project.data.url}
+            repo={project.data.repo}
+            heroImage={project.data.heroImage}
+          />
+        ))
+      }
     </div>
   </section>
 </BaseLayout>

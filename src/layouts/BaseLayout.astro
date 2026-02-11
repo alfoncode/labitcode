@@ -1,16 +1,16 @@
 ---
-import SEOHead from '@/components/SEOHead.astro';
-import Header from '@/components/Header.astro';
-import Footer from '@/components/Footer.astro';
-import Search from '@/components/Search.astro';
-import { ClientRouter } from 'astro:transitions';
-import '@/styles/global.css';
+import SEOHead from "@/components/SEOHead.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Search from "@/components/Search.astro";
+import { ClientRouter } from "astro:transitions";
+import "@/styles/global.css";
 
 interface Props {
   title: string;
   description: string;
   image?: string;
-  type?: 'website' | 'article' | 'profile';
+  type?: "website" | "article" | "profile";
   publishedDate?: string;
   modifiedDate?: string;
   author?: string;
@@ -27,10 +27,27 @@ const props = Astro.props;
     <!-- Anti-FOUC: set theme before paint -->
     <script is:inline>
       (function () {
-        const stored = localStorage.getItem('theme');
-        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', stored || preferred);
+        const stored = localStorage.getItem("theme");
+        const preferred = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches
+          ? "dark"
+          : "light";
+        document.documentElement.setAttribute(
+          "data-theme",
+          stored || preferred,
+        );
       })();
+      document.addEventListener("astro:after-swap", function () {
+        const stored = localStorage.getItem("theme");
+        const preferred = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches
+          ? "dark"
+          : "light";
+        document.documentElement.setAttribute(
+          "data-theme",
+          stored || preferred,
+        );
+      });
     </script>
     <SEOHead {...props} />
     <ClientRouter />
