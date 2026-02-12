@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /
-
-# Sitemap: https://labitcode.com/sitemap-index.xml
