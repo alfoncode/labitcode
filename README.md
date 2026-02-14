@@ -1,6 +1,6 @@
-# Labitcode
+# labitcode
 
-Welcome to the official repository for **Labitcode** (labitcode.com), a modern personal portfolio and blog built with performance and developer experience in mind.
+Welcome to the official repository for **labitcode** (labitcode.com), a modern personal portfolio and blog built with performance and developer experience in mind.
 
 ## 🚀 Tech Stack
 
