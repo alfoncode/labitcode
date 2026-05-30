@@ -114,29 +114,11 @@ const softwareAppLd = {
       <div
         class="flex flex-wrap items-center gap-4 text-sm text-gray-500 border-t border-border dark:border-navy-light pt-4"
       >
-        <!-- Creator avatar -->
-        <div class="flex items-center gap-2">
-          {
-            project.data.creator === "Alfonso Garcia" ? (
-              <img
-                src="/images/team/avatar-afonso.png"
-                alt="Alfonso Garcia"
-                class="w-6 h-6 rounded-full object-cover border border-border dark:border-navy-light"
-              />
-            ) : (
-              <div
-                class="w-6 h-6 rounded-full bg-accent/10 flex items-center justify-center text-accent text-[10px] font-bold"
-              >
-                {project.data.creator.split(' ').map((n: string) => n[0]).join('')}
-              </div>
-            )
-          }
-          <span
-            >By <strong class="text-navy dark:text-gray-100"
-              >{project.data.creator}</strong
-            ></span
-          >
-        </div>
+        <span
+          >By <strong class="text-navy dark:text-gray-100"
+            >{project.data.creator}</strong
+          ></span
+        >
         <span class="text-border dark:text-navy-light">·</span>
         <span>Updated {formatDate(project.data.lastUpdated)}</span>
         {
