@@ -15,13 +15,16 @@ Welcome to the official repository for **labitcode** (labitcode.com), a modern p
 - **Content Collections:** Type-safe markdown content for:
   - 📝 **Blog:** Technical articles with code highlighting (Shiki).
   - 💼 **Projects:** Portfolio showcase with tech stack tags.
-  - 👥 **Team:** Team member profiles.
+  - 👥 **Team:** Team member profiles with social links.
 - **Local Search:** Built-in search functionality using a generated `search-index.json` (no external services required).
 - **SEO Optimized:** 
   - Automatic `sitemap.xml` generation.
   - Dynamic `robots.txt` handling for different environments.
   - Semantic HTML and metadata management.
+  - RSS feed for blog posts.
 - **Responsive Design:** Mobile-first approach with custom Tailwind configuration.
+- **Dark Mode:** Full theme toggle with system preference detection.
+- **Code Quality:** ESLint, Prettier, and Vitest for testing.
 
 ## 🛠️ Getting Started
 
@@ -58,6 +61,16 @@ npm run build
 ```
 The output will be in the `dist/` directory. You can preview it with `npm run preview`.
 
+### Code Quality Commands
+
+```bash
+npm run lint        # Run ESLint
+npm run lint:fix    # Fix linting errors
+npm run format     # Format code with Prettier
+npm run test       # Run tests with Vitest
+npm run screenshots # Generate screenshots with Playwright
+```
+
 ## 📂 Project Structure
 
 ```
@@ -65,14 +78,22 @@ The output will be in the `dist/` directory. You can preview it with `npm run pr
 ├── public/             # Static assets (favicons, images)
 ├── src/
 │   ├── components/     # Reusable UI components (Header, Footer, SEOHead...)
-│   ├── content/        # Markdown content (Blog posts, Projects)
+│   ├── content/        # Markdown content (Blog posts, Projects, Team)
+│   │   ├── blog/
+│   │   ├── projects/
+│   │   └── team/
 │   ├── layouts/        # Page layouts
 │   ├── pages/          # Astro pages and API endpoints
-│   │   ├── api/        # Server-side API routes
 │   │   ├── blog/       # Blog listing and detail pages
 │   │   ├── projects/   # Project portfolio pages
+│   │   ├── rss.xml.ts # RSS feed for blog
 │   │   └── robots.txt.ts # Dynamic robots.txt generation
-│   └── styles/         # Global styles
+│   ├── styles/         # Global styles
+│   └── consts.ts      # Site constants
+├── tests/              # Test files
+├── .eslintrc.cjs       # ESLint configuration
+├── .prettierrc         # Prettier configuration
+├── vitest.config.ts    # Vitest configuration
 └── astro.config.mjs    # Astro configuration
 ```
 
@@ -103,6 +124,12 @@ The project uses a dynamic `src/pages/robots.txt.ts` endpoint to manage search e
 3. Commit your changes (`git commit -m 'feat: Add some amazing feature'`).
 4. Push to the branch (`git push origin feature/amazing-feature`).
 5. Open a Pull Request.
+
+### Pull Request Guidelines
+
+- Ensure all tests pass (`npm run test`).
+- Run linting and formatting (`npm run lint` and `npm run format`).
+- Update documentation if needed.
 
 ## 📄 License
 

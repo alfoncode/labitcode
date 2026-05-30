@@ -1,22 +1,42 @@
 {
   "name": "labitcode",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
+  "description": "Modern personal portfolio and blog built with Astro",
+  "license": "MIT",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "eslint . --ext .js,.mjs,.ts,.astro,.md,.mdx --ignore-pattern node_modules --ignore-pattern dist",
+    "lint:fix": "eslint . --ext .js,.mjs,.ts,.astro,.md,.mdx --ignore-pattern node_modules --ignore-pattern dist --fix",
+    "format": "prettier --write \"src/**/*.{js,ts,astro,md,mdx,css}\"",
+    "format:check": "prettier --check \"src/**/*.{js,ts,astro,md,mdx,css}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "screenshots": "playwright test screenshots/capture-all.mjs",
+    "prepare": "git config core.hooksPath .git/hooks"
   },
   "dependencies": {
-    "astro": "^5.2.0",
     "@astrojs/mdx": "^4.0.0",
-    "@astrojs/sitemap": "^3.2.0"
+    "@astrojs/rss": "^4.0.0",
+    "@astrojs/sitemap": "^3.2.0",
+    "astro": "^5.2.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-astro": "^1.0.0",
+    "eslint-plugin-react": "^7.34.0",
+    "prettier": "^3.2.0",
+    "prettier-plugin-astro": "^0.13.0",
+    "vitest": "^1.6.0",
     "@tailwindcss/vite": "^4.0.0",
-    "tailwindcss": "^4.0.0",
-    "sharp": "^0.33.0"
+    "playwright": "^1.60.0",
+    "sharp": "^0.33.0",
+    "tailwindcss": "^4.0.0"
   }
 }
