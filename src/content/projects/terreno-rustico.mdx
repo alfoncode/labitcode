@@ -1,0 +1,111 @@
+---
+title: "Terreno Rústico"
+description: "SaaS platform for buying, selling, leasing, and agronomic management of rural land in Spain. Integrates with Catastro and SIGPAC government GIS services to provide automated technical sheets with cadastral geometry, crop data, and irrigation coefficients."
+stack: ["Next.js", "NestJS", "TypeScript", "PostgreSQL", "PostGIS", "Drizzle ORM", "Tailwind CSS", "Docker", "Turborepo"]
+repo: "https://github.com/labitcode/terreno-rustico"
+lastUpdated: 2026-05-30
+creator: "Alfonso Garcia"
+status: "in-progress"
+---
+
+## Overview
+
+Terreno Rústico is a SaaS platform designed to digitize the rural land market in Spain. It enables property owners, real estate agents, agricultural brokerages, and buyers to list, search, and manage rural estates ("fincas rústicas") with full agronomic and cadastral transparency.
+
+The platform's core differentiator is its **GIS engine**, which automatically generates technical data sheets by querying Spain's official government services — Catastro and SIGPAC — providing cadastral geometry, agricultural enclosures, crop types, irrigation coefficients, slope data, and admissibility scores in seconds.
+
+## Architecture
+
+The project is structured as a **Turborepo monorepo** with a simplified hexagonal architecture on the backend:
+
+```
+terrenorustico/
+├── apps/
+│   ├── web/            # Next.js 16 (App Router), React 19, Tailwind CSS v4, Shadcn UI
+│   └── api/            # NestJS 11 + Fastify, Drizzle ORM, PostgreSQL + PostGIS
+├── packages/
+│   └── shared-types/   # Shared TypeScript types, DTOs, and enums
+├── design/             # Source of truth for visual identity (HTML mockups)
+└── docs/               # Architecture documentation
+```
+
+### Backend Layers
+
+```
+apps/api/src/
+├── domain/              # Pure domain logic (zero framework dependencies)
+│   ├── entities/        # Land, Harvest, Service, Conversation, Message
+│   ├── ports/           # Repository and external service interfaces
+│   └── value-objects/   # CadastralReference validation
+├── application/
+│   ├── use-cases/       # Business logic orchestrators
+│   └── mappers/         # Domain-to-DTO response transformers
+├── infrastructure/
+│   ├── adapters/        # Catastro and SIGPAC API adapters
+│   ├── database/        # Drizzle schema, migrations, seed
+│   ├── repositories/    # Drizzle implementations of domain ports
+│   └── guards/          # JWT and role-based access control
+└── modules/             # NestJS controllers and DI wiring
+```
+
+## GIS Engine
+
+The heart of the platform. The flow for generating a "Ficha Técnica":
+
+1. User provides a **Referencia Catastral** (validated by a custom value object)
+2. **Parallel fetch** from Catastro REST API (alphanumeric data) and Catastro WFS (parcel geometry in UTM)
+3. **EPSG Reprojection** — UTM coordinates transformed to WGS84 via PostGIS `ST_Transform`
+4. **SIGPAC Intersection** — Query SIGPAC WFS using the reprojected polygon with `ST_Intersects` to extract agricultural enclosures
+5. **Metrics Computation** — Centroid, perimeter, and compactness index calculated from geometry
+6. **Persistent Cache** — Enriched GeoJSON and metrics stored in `gis_cache` for zero-latency future queries
+
+## User Roles
+
+A flexible additive role system where a single user can hold multiple roles simultaneously:
+
+| Role | Purpose |
+|------|---------|
+| `ADMIN` | Platform management and moderation |
+| `OWNER` | Direct land and harvest listing |
+| `REAL_ESTATE_AGENT` | Multi-owner portfolio management |
+| `AGRICULTURAL_BROKERAGE` | Crop intermediation |
+| `BUYER` | Search and investment tools (VAN/TIR calculator) |
+| `SERVICE_PROFESSIONAL` | Geolocated professional directory |
+
+## Features
+
+- **Land Listings** — Full CRUD with cadastral geometry and GIS-enriched data
+- **Harvest Marketplace** — Buy and sell crop listings linked to specific parcels
+- **Professional Services Directory** — Geolocated service profiles for agricultural professionals
+- **Messaging System** — In-platform chat between buyers, sellers, and agents
+- **Admin Moderation Panel** — Content moderation and user management
+- **Auth System** — JWT authentication with bcrypt password hashing and role-based guards
+- **Internationalization** — Spanish base language with `next-intl` localization support
+
+## Design System
+
+Built on **Material Design 3** with a custom palette inspired by the Spanish countryside:
+
+- **Primary (Green)**: `#004c22` — representing olive groves and vineyards
+- **Secondary (Terracotta)**: `#944a23` — evoking the earth and clay soils
+- **Typography**: Playfair Display (serif headlines) + Geist (sans-serif body)
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 16, React 19, Tailwind CSS v4, Shadcn UI, next-intl |
+| Backend | NestJS 11, Fastify, Drizzle ORM |
+| Database | PostgreSQL 16 + PostGIS 3.4 |
+| Auth | JWT + bcryptjs |
+| DevOps | Docker, Turborepo, GitHub Actions CI |
+| Testing | Jest, Supertest, Playwright |
+
+## Roadmap
+
+- [ ] VAN/TIR investment calculator for buyers
+- [ ] Advanced search with geospatial filters
+- [ ] Notification system for new listings
+- [ ] Mobile-responsive bottom navigation
+- [ ] Multi-language support (English, Catalan)
+- [ ] Stripe integration for premium listings
