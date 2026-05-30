@@ -97,6 +97,10 @@ body {
   color: var(--color-text-primary);
 }
 
+.prose.max-w-none {
+  max-width: none;
+}
+
 [data-theme="dark"] .prose {
   color: #CBD5E1;
 }
