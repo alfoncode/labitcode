@@ -15,7 +15,6 @@ const pages = [
   { route: '/blog/markdown-style-guide', file: 'blog-markdown.png' },
   { route: '/projects/', file: 'projects-index.png' },
   { route: '/projects/labitcode-platform', file: 'projects-labitcode.png' },
-  { route: '/projects/secureflow-scanner', file: 'projects-secureflow.png' },
   { route: '/team', file: 'team.png' },
 ];
 

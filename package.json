@@ -16,7 +16,7 @@
     "format:check": "prettier --check \"src/**/*.{js,ts,astro,md,mdx,css}\"",
     "test": "vitest run",
     "test:watch": "vitest",
-    "screenshots": "playwright test screenshots/capture-all.mjs",
+    "screenshots": "node screenshots/capture-all.mjs",
     "prepare": "git config core.hooksPath .git/hooks"
   },
   "dependencies": {

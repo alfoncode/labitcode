@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 const BASE_URL = 'http://localhost:4321';
-const SCREENSHOTS_DIR = path.join(process.cwd());
+const SCREENSHOTS_DIR = path.join(process.cwd(), 'screenshots');
 const VIEWPORT = { width: 375, height: 812 };
 
 const pages = [
@@ -14,7 +14,6 @@ const pages = [
   { route: '/blog/markdown-style-guide', file: 'blog-markdown.png' },
   { route: '/projects/', file: 'projects-index.png' },
   { route: '/projects/labitcode-platform', file: 'projects-labitcode.png' },
-  { route: '/projects/secureflow-scanner', file: 'projects-secureflow.png' },
   { route: '/team', file: 'team.png' },
 ];
 
