@@ -1,11 +1,11 @@
-import { defineConfig } from 'vitest/config';
+import { getViteConfig } from 'astro/config';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
+export default getViteConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environment: 'jsdom',
+    environment: 'node',
     include: ['tests/**/*.test.{js,ts,jsx,tsx}'],
     coverage: {
       provider: 'v8',
