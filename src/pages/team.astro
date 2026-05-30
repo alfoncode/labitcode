@@ -31,11 +31,21 @@ const team = await getCollection("team");
           class="rounded-2xl border border-border dark:border-navy-light bg-surface dark:bg-navy-light/50 p-8 transition-all duration-300 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5"
         >
           <div class="flex items-start gap-4 mb-6">
-            <div
-              class="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center text-white text-xl font-bold shrink-0"
-            >
-              {member.data.name.split(' ').map(n => n[0]).join('')}
-            </div>
+            {
+              member.data.avatar ? (
+                <img
+                  src={member.data.avatar}
+                  alt={member.data.name}
+                  class="w-16 h-16 rounded-2xl object-cover border border-border dark:border-navy-light shrink-0"
+                />
+              ) : (
+                <div
+                  class="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center text-white text-xl font-bold shrink-0"
+                >
+                  {member.data.name.split(' ').map(n => n[0]).join('')}
+                </div>
+              )
+            }
             <div>
               <h2 class="text-xl font-bold text-navy dark:text-gray-100">
                 {member.data.name}
