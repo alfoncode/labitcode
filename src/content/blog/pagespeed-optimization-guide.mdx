@@ -1,0 +1,366 @@
+---
+title: "PageSpeed Insights: A Practical Guide to Achieving 100/100"
+description: "Step-by-step guide to optimizing your website's performance, accessibility, and SEO using PageSpeed Insights. Learn how we reduced image sizes by 95%, eliminated render-blocking resources, and improved Core Web Vitals with real code examples."
+pubDate: 2026-06-03
+heroImage: "/images/pagespeed-optimization-guide.webp"
+tags: ["Web Performance", "SEO", "Core Web Vitals", "Astro", "Accessibility"]
+author: "Alfonso Garcia"
+draft: false
+---
+
+If you've ever run your site through [PageSpeed Insights](https://pagespeed.web.dev/) and stared at an underwhelming score, you're not alone. The good news: most performance issues follow predictable patterns, and the fixes are straightforward once you know what to look for.
+
+This guide walks through the **exact optimizations** we applied to labitcode.com — reducing our largest image by 95%, eliminating render-blocking fonts, and improving accessibility — with code you can copy into your own projects.
+
+---
+
+## Understanding Core Web Vitals
+
+Before diving into fixes, let's understand what PageSpeed actually measures. Google evaluates your site using three **Core Web Vitals**:
+
+| Metric | What It Measures | Good | Needs Work | Poor |
+|--------|-----------------|------|------------|------|
+| **LCP** (Largest Contentful Paint) | How fast the main content loads | ≤ 2.5s | ≤ 4.0s | > 4.0s |
+| **INP** (Interaction to Next Paint) | How responsive the page feels | ≤ 200ms | ≤ 500ms | > 500ms |
+| **CLS** (Cumulative Layout Shift) | How much content shifts during loading | ≤ 0.10 | ≤ 0.25 | > 0.25 |
+
+These metrics directly affect your **search rankings**. Google uses Core Web Vitals as a ranking signal, so performance improvements translate directly into SEO gains.
+
+---
+
+## 1. Image Optimization — The Biggest Win
+
+Images are almost always the **single largest opportunity** for performance improvement. Here's why: they're typically the heaviest assets on a page, and they directly impact LCP.
+
+### Convert PNG/JPEG to WebP
+
+WebP offers **25-35% smaller file sizes** than PNG at equivalent quality, and it's supported by [every modern browser](https://caniuse.com/webp). For our site, the results were dramatic:
+
+| Image | PNG Size | WebP Size | Reduction |
+|-------|----------|-----------|-----------|
+| terreno-rustico | **2,057 KB** | **109 KB** | **-95%** |
+| markdown-style-guide | 62 KB | 46 KB | -26% |
+| ai-driven-development | 48 KB | 35 KB | -27% |
+| building-labitcode | 31 KB | 17 KB | -44% |
+| labitcode-platform | 22 KB | 8 KB | -64% |
+
+That's **2.2 MB reduced to 215 KB** — a 90% total reduction.
+
+### How to Convert Images with Sharp
+
+If you're using Node.js (any framework — Astro, Next.js, Remix, etc.), [Sharp](https://sharp.pixelplumbing.com/) is the industry-standard tool:
+
+```bash
+npm install sharp --save-dev
+```
+
+```javascript
+// convert-images.mjs
+import sharp from 'sharp';
+import { readdirSync } from 'fs';
+import { join } from 'path';
+
+const dir = './public/images';
+const files = readdirSync(dir).filter(f => f.endsWith('.png'));
+
+for (const file of files) {
+  const input = join(dir, file);
+  const output = join(dir, file.replace('.png', '.webp'));
+
+  const info = await sharp(input)
+    .webp({ quality: 80 })
+    .toFile(output);
+
+  console.log(`${file} → ${info.size} bytes`);
+}
+```
+
+Run it with `node convert-images.mjs` and update your image references from `.png` to `.webp`.
+
+> **Pro tip:** For maximum compression, consider AVIF format. It offers ~50% smaller files than WebP, but encoding is slower and browser support is slightly narrower. Use `<picture>` with AVIF as the preferred source and WebP as fallback.
+
+### Add `fetchpriority="high"` to Your LCP Image
+
+The **Largest Contentful Paint** element is usually a hero image. By default, browsers discover images late in the parsing process. The `fetchpriority` attribute tells the browser to prioritize downloading this image immediately:
+
+```html
+<!-- ❌ Before: browser discovers this late -->
+<img src="/images/hero.webp" alt="Hero image" />
+
+<!-- ✅ After: browser prioritizes this download -->
+<img
+  src="/images/hero.webp"
+  alt="Hero image"
+  width="1280"
+  height="720"
+  fetchpriority="high"
+  loading="eager"
+  decoding="async"
+/>
+```
+
+Key attributes explained:
+
+- **`fetchpriority="high"`** — Tells the browser this is a high-priority download. Only use on the LCP element, usually 1 per page.
+- **`loading="eager"`** — Prevents lazy loading (which would delay the LCP image). All images below the fold should use `loading="lazy"` instead.
+- **`decoding="async"`** — Allows the browser to decode the image off the main thread.
+- **`width` and `height`** — Lets the browser reserve space before the image loads, preventing layout shifts (CLS).
+
+### Prevent Layout Shifts with Explicit Dimensions
+
+One of the most common causes of **CLS (Cumulative Layout Shift)** is images loading without reserved space. The browser doesn't know how tall the image will be, so content jumps when it arrives.
+
+The fix is simple — always include `width` and `height`:
+
+```html
+<!-- ❌ Causes CLS: browser doesn't know the size -->
+<img src="/photo.webp" alt="Photo" loading="lazy" />
+
+<!-- ✅ No CLS: browser reserves 16:9 space immediately -->
+<img
+  src="/photo.webp"
+  alt="Photo"
+  loading="lazy"
+  decoding="async"
+  width="640"
+  height="360"
+/>
+```
+
+If you're using CSS to control the actual display size (e.g., `width: 100%`), the `width` and `height` attributes still matter — the browser uses them to calculate the **aspect ratio** and reserve the correct space.
+
+---
+
+## 2. Font Loading Strategy — Eliminating Render-Blocking CSS
+
+Google Fonts loads via a `<link rel="stylesheet">` tag, which is **render-blocking** by default. This means the browser won't paint anything until the font CSS has fully downloaded and parsed.
+
+### The Problem
+
+```html
+<!-- ❌ Render-blocking: browser waits for this before painting -->
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet"
+/>
+```
+
+### The Solution: Preload + Swap
+
+```html
+<!-- ✅ Non-blocking: preload downloads early, swap makes it a stylesheet once loaded -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+  onload="this.onload=null;this.rel='stylesheet'"
+/>
+<noscript>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+</noscript>
+```
+
+How this works:
+
+1. **`rel="preload"`** tells the browser to start downloading immediately, but without blocking rendering.
+2. **`as="style"`** ensures correct prioritization and caching.
+3. **`onload="this.onload=null;this.rel='stylesheet'"`** swaps it to a proper stylesheet once loaded. The `this.onload=null` prevents an infinite loop.
+4. **`<noscript>`** provides a fallback for users without JavaScript (rare, but proper progressive enhancement).
+
+### Advanced: Self-Hosting Fonts
+
+For maximum performance, consider **self-hosting** your fonts instead of loading them from Google:
+
+```bash
+# Download the font files
+npx @nicolo-ribaudo/google-webfonts-helper \
+  --font Inter --weights 400,500,600,700,800 --formats woff2 \
+  --output public/fonts
+```
+
+Then reference them locally in your CSS:
+
+```css
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/inter-v18-latin-regular.woff2') format('woff2');
+}
+```
+
+This eliminates two DNS lookups (`fonts.googleapis.com` and `fonts.gstatic.com`) and removes a third-party dependency entirely.
+
+---
+
+## 3. Accessibility Improvements
+
+PageSpeed Insights also evaluates accessibility. Here are three quick wins that improve both your score and the real experience for users with disabilities.
+
+### Connect Controls with `aria-controls`
+
+When a button controls the visibility of another element (like a mobile menu), link them with `aria-controls`:
+
+```html
+<!-- ❌ Screen readers don't know what this button controls -->
+<button aria-label="Toggle menu" aria-expanded="false">
+  ☰
+</button>
+<div id="mobile-menu">...</div>
+
+<!-- ✅ Screen readers can jump directly to the controlled element -->
+<button
+  aria-label="Toggle menu"
+  aria-expanded="false"
+  aria-controls="mobile-menu"
+>
+  ☰
+</button>
+<div id="mobile-menu">...</div>
+```
+
+### Hide Decorative SVGs from Screen Readers
+
+Decorative icons (hearts, dividers, background shapes) should be invisible to assistive technology:
+
+```html
+<!-- ❌ Screen reader announces "image" with no useful content -->
+<svg viewBox="0 0 24 24" fill="currentColor">
+  <path d="M12 21.35l-1.45-1.32..." />
+</svg>
+
+<!-- ✅ Screen reader skips this entirely -->
+<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+  <path d="M12 21.35l-1.45-1.32..." />
+</svg>
+```
+
+### Respect Motion Preferences
+
+Some users experience motion sickness or have vestibular disorders. The `prefers-reduced-motion` media query lets you disable animations for those users:
+
+```css
+/* Define the animation */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Only animate for users who haven't requested reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out both;
+  }
+}
+
+/* Explicitly disable for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in {
+    animation: none;
+  }
+}
+```
+
+This is both an accessibility requirement and a best practice — users who prefer reduced motion get instant rendering, which also improves perceived performance.
+
+---
+
+## 4. SEO Meta Tags You Might Be Missing
+
+Beyond the basics (`<title>`, `<meta name="description">`), there are several meta tags that improve your site's presentation across platforms.
+
+### Theme Color
+
+Controls the browser chrome color on mobile devices:
+
+```html
+<!-- Different colors for light and dark mode -->
+<meta name="theme-color" content="#0A1628"
+      media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#FFFFFF"
+      media="(prefers-color-scheme: light)" />
+```
+
+### Apple Touch Icon
+
+Provides a proper icon when users add your site to their iOS home screen:
+
+```html
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+```
+
+The recommended size is **180×180px**. If you already have an SVG favicon, you can reference it directly — iOS will handle the conversion.
+
+### Open Graph Default Image
+
+Always provide a fallback OG image for pages that don't have their own. Social media platforms use this when sharing links:
+
+```html
+<!-- In your SEO component, set a default -->
+const image = Astro.props.image || "/og-default.png";
+```
+
+Create a **1200×630px** image with your brand name and tagline. This ensures every page on your site has a proper preview image when shared on Twitter, LinkedIn, or Slack.
+
+---
+
+## 5. Checklist: Apply This to Your Project
+
+Here's a prioritized checklist you can work through on any project:
+
+### High Impact (Do First)
+- [ ] Convert all images to WebP (or AVIF)
+- [ ] Add `fetchpriority="high"` to your LCP image (usually the hero)
+- [ ] Add `width` and `height` to every `<img>` tag
+- [ ] Make Google Fonts non-blocking with `preload` + `onload`
+
+### Medium Impact
+- [ ] Create a proper OG default image (1200×630px)
+- [ ] Add `<meta name="theme-color">` for mobile browsers
+- [ ] Add `<link rel="apple-touch-icon">`
+- [ ] Lazy-load all images below the fold with `loading="lazy"`
+
+### Accessibility
+- [ ] Add `aria-hidden="true"` to decorative SVGs/images
+- [ ] Add `aria-controls` to buttons that toggle panels
+- [ ] Wrap animations in `prefers-reduced-motion`
+- [ ] Verify color contrast ratios (minimum 4.5:1 for body text)
+
+### Verification
+- [ ] Run PageSpeed Insights on mobile AND desktop
+- [ ] Test with Chrome DevTools Lighthouse tab
+- [ ] Verify no CLS in Chrome DevTools Performance panel
+- [ ] Test with a screen reader (VoiceOver on Mac, NVDA on Windows)
+
+---
+
+## Results
+
+After applying these optimizations to labitcode.com, we achieved:
+
+- **90% total reduction** in image payload (2.2 MB → 215 KB)
+- **Non-blocking font loading** — no more render-blocking CSS
+- **Zero CLS** — all images have explicit dimensions
+- **Improved accessibility** — motion preferences respected, ARIA attributes correct
+- **Complete SEO meta tags** — OG images, theme-color, apple-touch-icon
+
+The best part? Most of these changes took **minutes to implement**, not hours. The image conversion was the biggest win — and it's a one-time process you can automate in your build pipeline.
+
+---
+
+## Further Reading
+
+- [web.dev — Core Web Vitals](https://web.dev/vitals/) — Google's official guide to the metrics
+- [web.dev — Optimize LCP](https://web.dev/optimize-lcp/) — Deep dive into Largest Contentful Paint
+- [Sharp documentation](https://sharp.pixelplumbing.com/) — The image processing library we used
+- [PageSpeed Insights](https://pagespeed.web.dev/) — Test your own site
+
+---
+
+*Performance is a feature. Every millisecond you save is a user who stays.*
