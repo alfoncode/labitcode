@@ -396,14 +396,23 @@ Here's a prioritized checklist you can work through on any project:
 
 After applying these optimizations to labitcode.com, we achieved:
 
-- **100/100 Mobile Lighthouse scores** in both Performance and Accessibility.
+- **100/100 in Local Lighthouse audits** for both Performance and Accessibility.
+- **93/100 Mobile Performance** and **100/100 Mobile Accessibility / SEO / Best Practices** in production PageSpeed Insights.
 - **92% total reduction** in image payload (2.2 MB → 170 KB).
-- **Non-blocking font loading** — no more render-blocking CSS.
+- **Non-blocking font loading** and **inlined stylesheets** — eliminating render-blocking resources.
 - **Zero CLS** — all images have explicit dimensions.
 - **Perfect accessibility** — high-contrast text, proper touch target sizes (≥38px with spacing), motion preferences respected, and ARIA attributes correct.
 - **Complete SEO meta tags** — OG images, theme-color, apple-touch-icon.
 
-The best part? Most of these changes took **minutes to implement**, not hours. The image conversion and resizing was the biggest win — and it's a one-time process you can automate in your build pipeline.
+### Why the difference between Local (100) and Production (93)?
+
+It's common to see a drop in performance scores when moving from a local environment to production. Here is why:
+
+1. **Network Latency & Server Roundtrips**: When running Lighthouse locally, files are served instantly from your machine (`localhost` has 0ms latency). In production, files are requested over real networks, which adds latency even with a fast CDN.
+2. **Third-Party Scripts & Trackers**: Real production sites load analytical scripts (like `@vercel/speed-insights` or Google Analytics) to track performance and traffic. These scripts execute JavaScript on the main thread during load, slightly impacting mobile performance metrics like Total Blocking Time (TBT).
+3. **Throttled Hardware Emulation**: PageSpeed Insights emulates a mid-range mobile device with a slow 4G network connection. This makes any network delay or JavaScript execution (like trackers) show up as a larger performance hit than on your local computer.
+
+The best part? These optimizations made the site blazingly fast in the real world — where performance directly impacts user retention and search rankings.
 
 ---
 
