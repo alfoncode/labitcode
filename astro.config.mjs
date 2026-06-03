@@ -5,6 +5,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
     site: 'https://labitcode.com',
+    build: {
+        inlineStylesheets: 'always',
+    },
     integrations: [
         mdx(),
         sitemap(),

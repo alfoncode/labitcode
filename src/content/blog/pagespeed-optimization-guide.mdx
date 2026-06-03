@@ -203,6 +203,25 @@ Then reference them locally in your CSS:
 
 This eliminates two DNS lookups (`fonts.googleapis.com` and `fonts.gstatic.com`) and removes a third-party dependency entirely.
 
+### Inline Critical Stylesheets to Avoid Render-Blocking CSS
+
+Lighthouse will flag any stylesheet linked in the `<head>` of your page as **render-blocking**, since the browser must download and parse it before drawing anything. While preloading is great for third-party scripts, your primary stylesheets *should* block rendering to prevent FOUC (Flash of Unstyled Content).
+
+However, if your stylesheet is small (e.g., less than 15-20 KB), you can completely eliminate the HTTP request and render-blocking penalty by **inlining the CSS** directly into the HTML within a `<style>` block.
+
+In Astro, this is incredibly easy. Simply configure `inlineStylesheets` in `astro.config.mjs`:
+
+```javascript
+// astro.config.mjs
+export default defineConfig({
+    build: {
+        inlineStylesheets: 'always', // Inlines all stylesheets directly into the HTML
+    }
+});
+```
+
+By inlining our 8.7 KB stylesheet, we eliminated a round-trip request, cut our render-blocking resources audit failure completely, and saved ~160ms of paint delay.
+
 ---
 
 ## 3. Accessibility Improvements
