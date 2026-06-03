@@ -9,19 +9,16 @@ creator: "Alfonso Garcia"
 status: "in-progress"
 ---
 
-> [!IMPORTANT]
-> **🚀 PRÓXIMAMENTE DISPONIBLE / COMING SOON**  
-> **Terreno Rústico** se encuentra actualmente en las fases finales de despliegue y pruebas. El portal estará operativo muy pronto en su dominio oficial [terrenorustico.com](https://terrenorustico.com). Rogamos a los usuarios que esperen al lanzamiento oficial para acceder a la plataforma pública.
+> **🚀 Launch Status: Private Beta**  
+> *Terreno Rústico is currently in the final stages of private beta testing and optimization. The public platform will launch shortly at [terrenorustico.com](https://terrenorustico.com). Stay tuned for the official release to get early access to Spain's most advanced agricultural marketplace.*
 
 ---
 
-## The Vision: Digitizing the Rural Land Market in Spain
+## The Vision: Digitizing the Spanish Rural Real Estate Market
 
-The market for rustic land, agricultural plots, and rural estates in Spain has traditionally been opaque and fragmented. Buyers, farmers, real estate agents, and agronomic technicians have had to navigate multiple government databases, scattered local records, and slow manual processes just to verify basic information about a piece of land.
+The market for rustic land, agricultural plots, and rural estates in Spain (*compraventa de terrenos rústicos, parcelas agrícolas y fincas rústicas en España*) has traditionally been opaque and fragmented. Buyers, farmers, real estate agents, and agricultural brokers have had to navigate multiple slow government databases, scattered local records, and manual paperwork just to verify basic information about a piece of land.
 
-**Terreno Rústico** was born to solve this. It is a geospatial SaaS and marketplace built to simplify the buying, selling, leasing, and management of rustic properties (*compraventa de terrenos rústicos, parcelas agrícolas y fincas rústicas en España*). 
-
-By entering a single cadastral reference (*referencia catastral*), the platform handles the complexity under the hood, compiling a complete, enriched technical and agronomic sheet in seconds.
+**Terreno Rústico** is the digital response to this complexity. It is a geospatial SaaS and marketplace built to simplify the buying, selling, leasing, and agronomic management of rustic properties in Spain. By entering a single cadastral reference (*referencia catastral*), the platform automatically consolidates public cadastral boundaries, soil usage, and crop data, compiling a complete, enriched technical sheet in seconds.
 
 ---
 
@@ -29,18 +26,18 @@ By entering a single cadastral reference (*referencia catastral*), the platform 
 
 Terreno Rústico is engineered to create value across the entire agricultural and rural transaction chain:
 
-*   **For Landowners**: Instantly list properties with verified, government-backed technical data. No more guessing about soil admissibility, crop history, or slope. Accurate data attracts serious buyers and accelerates negotiations.
-*   **For Real Estate Agents & Brokers**: Manage large portfolios of rural estates with dynamic cartographic files. Show clients exact property boundaries, crop codes, and irrigation coefficients directly from a browser.
+*   **For Landowners**: Instantly list your property with verified, government-backed technical data. No more guessing about soil admissibility, crop history, or slope. Accurate data attracts serious buyers and accelerates negotiations.
+*   **For Real Estate Agents & Brokers**: Manage large portfolios of rural estates with dynamic cartographic files. Show clients exact property boundaries, crop codes, and irrigation coefficients directly from your browser.
 *   **For Farmers & Agronomists**: Connect directly with landowners to rent agricultural plots (*alquiler de tierras de cultivo*) or buy/sell harvest yields directly at the source.
 *   **For Investors**: Evaluate land productivity and development feasibility using structural metrics like altitude, average slope, and PostGIS compactness indexes.
 
 ---
 
-## Technical Architecture & Core Features
+## Core Features: Seamless Spatial Analytics
 
 Terreno Rústico is not just a listing directory — it is a full-featured geographic information system (GIS) and transactional marketplace.
 
-### 1. Automated GIS and Cadastral sheets
+### 1. Automated GIS and Cadastral Sheets
 By integrating with the official Spanish Catastro REST API and INSPIRE WFS, the platform automatically retrieves parcel boundary geometries. 
 
 Since Catastro serves coordinates in local UTM projections (such as EPSG:25830), our NestJS backend uses the **PostGIS engine** to reproject coordinates to WGS84 (EPSG:4326) on the fly, rendering clean polygons on the map viewer.
@@ -54,7 +51,7 @@ Every registered land is automatically checked against the agricultural **SIGPAC
 ### 3. Integrated Harvest Marketplace
 A unique marketplace that connects harvest yields (crops, grains, olives, grapes) directly to the physical parcels they were grown on. This provides unprecedented traceability for agricultural buyers and food supply chains.
 
-### 4. Geolocated Directory of Professionals
+### 5. Geolocated Directory of Professionals
 An interactive directory connecting landowners with local tractor drivers, drone operators, agronomic engineers, and land surveyors, sorted by proximity using PostGIS geographic distance queries.
 
 ---
@@ -68,14 +65,8 @@ An interactive directory connecting landowners with local tractor drivers, drone
 
 ---
 
-## Marketing & SEO Focus
-
-To maximize search visibility and organic reach, the platform is structured around high-value search terms:
-- *Comprar terreno rústico en España*
-- *Alquiler de fincas rústicas y parcelas agrícolas*
-- *Ficha técnica catastral automática*
-- *Buscar parcelas por referencia catastral*
+## The Future of Agritech in Spain
 
 By consolidating public geospatial data and providing a direct marketplace, **Terreno Rústico** is poised to become the leading digital hub for the Spanish rural real estate and agronomic sector. 
 
-*Stay tuned — the platform will be publicly available very soon at [terrenorustico.com](https://terrenorustico.com).*
+*The future of agricultural real estate in Spain is digital. Join us at [terrenorustico.com](https://terrenorustico.com) when we open doors to the public very soon.*
