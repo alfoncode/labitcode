@@ -38,13 +38,13 @@ WebP offers **25-35% smaller file sizes** than PNG at equivalent quality, and it
 
 | Image | PNG Size | WebP Size | Reduction |
 |-------|----------|-----------|-----------|
-| terreno-rustico | **2,057 KB** | **21 KB** | **-99%** |
+| terreno-rustico | **2,057 KB** | **64 KB** | **-97%** |
 | markdown-style-guide | 62 KB | 46 KB | -26% |
 | ai-driven-development | 48 KB | 35 KB | -27% |
 | building-labitcode | 31 KB | 17 KB | -44% |
 | labitcode-platform | 22 KB | 8 KB | -64% |
 
-That's **2.2 MB reduced to 127 KB** — a 94% total reduction.
+That's **2.2 MB reduced to 170 KB** — a 92% total reduction.
 
 ### How to Convert Images with Sharp
 
@@ -133,7 +133,7 @@ If you're using CSS to control the actual display size (e.g., `width: 100%`), th
 
 Converting to WebP is great, but if your source image is `2560x1440` and you only display it at `640x360` (like inside card feeds or mobile screens), you are still wasting bandwidth on pixels the user cannot see. Lighthouse will flag this with the "Properly size images" audit.
 
-For example, resizing our `terreno-rustico.webp` from its original `2560x1440` resolution to a responsive-friendly `800x450` resolution dropped its file size from **109 KB** to just **21 KB** with zero visible loss in quality. Always size your assets appropriately for the container they live in!
+For example, resizing our `terreno-rustico.webp` from its original `2560x1440` resolution to a retina-optimized `1280x720` resolution (which provides a perfect 2x pixel density for its `640x360` container) dropped its file size from **109 KB** to just **64 KB** with zero visible loss in quality and perfect sharpness on high-DPI screens. Always size your assets appropriately for the container they live in!
 
 ---
 
@@ -397,7 +397,7 @@ Here's a prioritized checklist you can work through on any project:
 After applying these optimizations to labitcode.com, we achieved:
 
 - **100/100 Mobile Lighthouse scores** in both Performance and Accessibility.
-- **94% total reduction** in image payload (2.2 MB → 127 KB).
+- **92% total reduction** in image payload (2.2 MB → 170 KB).
 - **Non-blocking font loading** — no more render-blocking CSS.
 - **Zero CLS** — all images have explicit dimensions.
 - **Perfect accessibility** — high-contrast text, proper touch target sizes (≥38px with spacing), motion preferences respected, and ARIA attributes correct.
