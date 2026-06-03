@@ -38,13 +38,13 @@ WebP offers **25-35% smaller file sizes** than PNG at equivalent quality, and it
 
 | Image | PNG Size | WebP Size | Reduction |
 |-------|----------|-----------|-----------|
-| terreno-rustico | **2,057 KB** | **109 KB** | **-95%** |
+| terreno-rustico | **2,057 KB** | **21 KB** | **-99%** |
 | markdown-style-guide | 62 KB | 46 KB | -26% |
 | ai-driven-development | 48 KB | 35 KB | -27% |
 | building-labitcode | 31 KB | 17 KB | -44% |
 | labitcode-platform | 22 KB | 8 KB | -64% |
 
-That's **2.2 MB reduced to 215 KB** — a 90% total reduction.
+That's **2.2 MB reduced to 127 KB** — a 94% total reduction.
 
 ### How to Convert Images with Sharp
 
@@ -128,6 +128,12 @@ The fix is simple — always include `width` and `height`:
 ```
 
 If you're using CSS to control the actual display size (e.g., `width: 100%`), the `width` and `height` attributes still matter — the browser uses them to calculate the **aspect ratio** and reserve the correct space.
+
+### Resize Images to Match Rendered Size
+
+Converting to WebP is great, but if your source image is `2560x1440` and you only display it at `640x360` (like inside card feeds or mobile screens), you are still wasting bandwidth on pixels the user cannot see. Lighthouse will flag this with the "Properly size images" audit.
+
+For example, resizing our `terreno-rustico.webp` from its original `2560x1440` resolution to a responsive-friendly `800x450` resolution dropped its file size from **109 KB** to just **21 KB** with zero visible loss in quality. Always size your assets appropriately for the container they live in!
 
 ---
 
@@ -271,6 +277,33 @@ This is both an accessibility requirement and a best practice — users who pref
 
 ---
 
+### Ensure Proper Color Contrast Ratios
+
+Text and interactive elements must have a contrast ratio of at least **4.5:1** against their background (or **3:1** for large text) to be readable by users with low vision. 
+
+In our first run, our "Live" project link had `#DC2626` (red) on a `#FDF4F4` (very light red) background. This resulted in a contrast ratio of **4.46:1**—only 0.04 below the requirement! Lighthouse flagged this as a critical failure. 
+
+By switching to a slightly darker shade in light mode, `#B91C1C` (our `accent-dark` variable), we bumped the contrast ratio to **5.64:1**, resolving the audit:
+
+```html
+<!-- ❌ Before: 4.46:1 contrast (failing) -->
+<a class="text-accent bg-accent/5 ...">Live</a>
+
+<!-- ✅ After: 5.64:1 contrast (passing!) -->
+<a class="text-accent-dark dark:text-accent bg-accent/5 ...">Live</a>
+```
+
+### Provide Sufficient Touch Target Sizes
+
+Tap targets (links, buttons, inputs) must be large enough and have enough space around them to prevent accidental taps on mobile devices. Lighthouse flags any interactive element smaller than **48×48px** or too close to other targets.
+
+To solve this for inline card links:
+1. Wrap them in a helper layout with sufficient gap (e.g., `gap-4`).
+2. Add padding to increase their clickable dimensions (e.g., `px-3 py-1.5 min-h-[38px]`).
+3. Turn text links into small, visually distinct buttons. This not only passes accessibility but improves overall visual cues!
+
+---
+
 ## 4. SEO Meta Tags You Might Be Missing
 
 Beyond the basics (`<title>`, `<meta name="description">`), there are several meta tags that improve your site's presentation across platforms.
@@ -344,13 +377,14 @@ Here's a prioritized checklist you can work through on any project:
 
 After applying these optimizations to labitcode.com, we achieved:
 
-- **90% total reduction** in image payload (2.2 MB → 215 KB)
-- **Non-blocking font loading** — no more render-blocking CSS
-- **Zero CLS** — all images have explicit dimensions
-- **Improved accessibility** — motion preferences respected, ARIA attributes correct
-- **Complete SEO meta tags** — OG images, theme-color, apple-touch-icon
+- **100/100 Mobile Lighthouse scores** in both Performance and Accessibility.
+- **94% total reduction** in image payload (2.2 MB → 127 KB).
+- **Non-blocking font loading** — no more render-blocking CSS.
+- **Zero CLS** — all images have explicit dimensions.
+- **Perfect accessibility** — high-contrast text, proper touch target sizes (≥38px with spacing), motion preferences respected, and ARIA attributes correct.
+- **Complete SEO meta tags** — OG images, theme-color, apple-touch-icon.
 
-The best part? Most of these changes took **minutes to implement**, not hours. The image conversion was the biggest win — and it's a one-time process you can automate in your build pipeline.
+The best part? Most of these changes took **minutes to implement**, not hours. The image conversion and resizing was the biggest win — and it's a one-time process you can automate in your build pipeline.
 
 ---
 
