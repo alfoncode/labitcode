@@ -1,219 +1,139 @@
 ---
-title: "Ingeniería de Prompts con Claude: La Guía Definitiva del Taller Oficial de Anthropic"
-description: "Un análisis exhaustivo y didáctico del taller oficial de Anthropic. Aprende a dominar las etiquetas XML, la asignación de roles, el few-shot prompting y las cadenas de pensamiento (Chain-of-Thought) para escribir prompts profesionales."
+title: "Designing with Claude: From Prompt to Production"
+description: "How AI shifts the product development bottleneck from 'writing code' to 'deciding what to build'. A deep dive into Dan Carey's Anthropic Labs talk on rapid prototyping, eliminating PRDs, and the new AI-native workflows."
 pubDate: 2026-06-05
 heroImage: "/images/anthropic-prompt-engineering-guide.webp"
-tags: ["AI", "Prompt Engineering", "Software Engineering", "Claude", "LLMs"]
+tags: ["AI", "Software Engineering", "Product Management", "Claude", "Prototyping"]
 author: "Alfonso Garcia"
 draft: false
 ---
 
-Si has intentado interactuar con modelos de lenguaje y has sentido que las respuestas son inconsistentes, no estás solo. Escribir buenos prompts no es una cuestión de "magia" o intuición; es una disciplina de ingeniería con patrones claros y deterministas.
+For decades, the primary constraint of software development was engineering execution. Building a prototype required weeks of coding, setting up databases, designing interfaces, and writing boilerplate. If a feature was poorly conceived, the cost of that mistake was measured in months of wasted developer hours.
 
-Recientemente, el canal de **Manu Acevedo** analizó en profundidad el taller oficial de **Anthropic** sobre ingeniería de prompts ([ver video en YouTube](https://www.youtube.com/watch?v=kcKMyObtrxY)), destacándolo como un recurso gratuito que supera con creces a cursos de cientos de dólares. El taller original está basado en un [repositorio interactivo de Jupyter Notebooks de Anthropic](https://github.com/anthropics/prompt-eng-interactive-tutorial) y detalla exactamente cómo "piensa" y procesa la información su modelo estrella, **Claude**.
+Today, AI-agent coding tools like Claude Code have fundamentally flipped this equation.
 
-En esta guía, destilamos las lecciones clave del taller oficial con ejemplos reales de código, patrones de diseño de prompts y explicaciones técnicas de por qué funcionan estas técnicas.
+At the _Code with Claude_ conference, **Dan Carey**, a Product Manager at **Anthropic Labs**, shared a profound talk: _"Designing with Claude: From prompt to production"_ ([watch on YouTube](https://www.youtube.com/watch?v=Uvl-tRga98g)). His core thesis is simple yet disruptive: **the engineering bottleneck is gone. The new bottleneck is deciding what to build.**
 
----
-
-## El Enfoque Mental: Claude como una Herramienta de Poder
-
-Antes de escribir tu primer prompt, es vital cambiar la perspectiva. En el video de Anthropic se enfatiza que Claude no es un buscador web glorificado, sino una **herramienta de poder** (_power tool_). No está diseñado para forzarte a trabajar a su manera, sino para adaptarse a tus propios flujos de trabajo como desarrollador.
-
-Para los ingenieros de software, esto significa tratar los prompts como **código de configuración**. Un buen prompt debe ser estructurado, predecible y fácil de depurar.
+In this guide, we break down the AI-native product development playbooks shared in the presentation, examining how small teams can build production-grade features in weeks by replacing legacy processes with rapid prototyping.
 
 ---
 
-## 1. Asignación de Roles (Persona): Definir el Contexto
+## 1. The Shifting Bottleneck
 
-Uno de los errores más comunes es hacer preguntas directas sin establecer un contexto previo. Claude utiliza la **asignación de roles** (o _personas_) para acotar su espacio de probabilidad semántica, adoptando el tono, las restricciones y el conocimiento específico del rol solicitado.
+In traditional product development, teams spend weeks writing detailed **Product Requirement Documents (PRDs)**, aligning stakeholder interests in meetings, and drawing high-fidelity designs. The goal of this extensive preparation was to avoid making mistakes during the most expensive phase of the project: engineering execution.
 
-### ¿Por qué funciona?
+```mermaid
+graph TD
+    subgraph Traditional Workflow
+        A[Vague Idea] --> B[Write Heavy PRD]
+        B --> C[Design Mockups]
+        C --> D[Long Alignment Meetings]
+        D --> E[Months of Coding]
+        E --> F[Deploy to Users]
+    end
 
-Al decirle a Claude que adopte un rol específico, filtras las respuestas irrelevantes y priorizas la terminología y los patrones de pensamiento correctos para esa disciplina.
-
-```markdown
-<!-- ❌ Malo: Pregunta directa y genérica -->
-
-Revisa este código y dime si tiene fallos.
-
-<!-- ✅ Bueno: Asignación de rol detallada en la sección System -->
-
-Eres un Ingeniero Principal de Seguridad especializado en Node.js y ciberseguridad web.
-Tu tarea es auditar fragmentos de código en busca de vulnerabilidades (como inyección SQL, XSS o fugas de memoria).
-Proporciona explicaciones técnicas claras acompañadas de parches correctivos.
+    subgraph AI-Native Workflow
+        G[Vague Idea] --> H[Transcribe Discussion]
+        H --> I[Prompt Prototype]
+        I --> J[User Feedback]
+        J --> K[Code Generation & Ship]
+        K --> L[Continuous Iteration]
+    end
 ```
 
----
+By leveraging Claude, the cost of writing code drops to near zero. A developer can spin up a fully functional UI or write a complex backend route in minutes. Because code is cheap:
 
-## 2. La Magia de las Etiquetas XML: El Superpoder de Claude
-
-Si te llevas una sola lección de esta guía, que sea esta: **Claude está preentrenado para reconocer y procesar de forma prioritaria las etiquetas XML** (como `<instrucciones>`, `<contexto>`, `<codigo>`, etc.).
-
-### ¿Por qué son cruciales las etiquetas XML?
-
-1. **Separación Clara de Datos e Instrucciones**: Evita que Claude confunda el contenido que debe _analizar_ con las instrucciones que debe _ejecutar_. Esto previene los ataques de **inyección de prompts** (cuando los datos de entrada contienen instrucciones maliciosas).
-2. **Estructura jerárquica**: Permite al modelo navegar por el texto como si fuera un árbol DOM estructurado.
-3. **Referencias precisas**: Puedes pedirle a Claude que interactúe directamente con una etiqueta específica (ej. _"Resume únicamente lo que esté dentro de las etiquetas `<documento>`"_).
-
-### Anatomía de un Prompt Estructurado con XML
-
-```xml
-Eres un revisor de código automatizado. Tu objetivo es analizar la calidad de una función y sugerir optimizaciones.
-
-<instrucciones>
-1. Lee el código fuente proporcionado en la sección <codigo_entrada>.
-2. Compara el código con las reglas definidas en <reglas_estilo>.
-3. Devuelve los resultados estructurados en un bloque de Markdown.
-</instrucciones>
-
-<reglas_estilo>
-- Usar TypeScript estricto.
-- Evitar bucles anidados si es posible (complejidad O(n^2)).
-- Mantener las funciones por debajo de 25 líneas.
-</reglas_estilo>
-
-<codigo_entrada>
-function processUsers(users: any[]) {
-    let result = [];
-    for (let i = 0; i < users.length; i++) {
-        for (let j = 0; j < users[i].roles.length; j++) {
-            if (users[i].roles[j] === 'admin') {
-                result.push(users[i]);
-            }
-        }
-    }
-    return result;
-}
-</codigo_entrada>
-```
+- **Mockups are obsolete:** Why design static wireframes when you can build a live, interactive prototype in the same amount of time?
+- **PRDs are useless:** Detailed specification sheets are often misinterpreted by developers. A live prototype is the ultimate spec—it removes ambiguity because stakeholders can actually click it.
+- **The constraint is now discovery:** The challenge is no longer _how_ to build, but _what_ is actually worth building to solve real user problems.
 
 ---
 
-## 3. Few-Shot Prompting: Enseñar con Ejemplos
+## 2. Case Study: Shipping "Claude Design" in 10 Weeks
 
-A menudo, describir un formato de salida complejo con palabras es difícil e impreciso. La mejor forma de guiar a Claude es mediante **Few-Shot Prompting**, es decir, proporcionándole uno o más ejemplos resueltos dentro del propio prompt.
+To illustrate this new reality, Dan Carey shared how a tiny **three-person team** at Anthropic Labs designed, built, and shipped **Claude Design** (a feature that lets users generate visual prototypes and designs via natural language) in just **ten weeks**.
 
-### ¿Por qué funciona?
+Instead of following a rigid, linear timeline, the team operated on a hyper-fast loop:
 
-Los modelos de lenguaje son excelentes imitadores de patrones. Si le muestras exactamente la estructura de entrada y salida que esperas, Claude replicará esa estructura con una precisión del 99%.
-
-```xml
-Eres un conversor de lenguaje natural a consultas SQL simplificadas.
-
-<ejemplos>
-  <ejemplo>
-    <entrada>Dame todos los usuarios registrados en los últimos 30 días</entrada>
-    <salida>SELECT * FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY);</salida>
-  </ejemplo>
-  <ejemplo>
-    <entrada>Busca el email del usuario con ID 450</entrada>
-    <salida>SELECT email FROM users WHERE id = 450 LIMIT 1;</salida>
-  </ejemplo>
-</ejemplos>
-
-<entrada>
-Obtén el total de ventas del producto con ID 10 el mes pasado.
-</entrada>
 ```
+Talk to Users ➡️ Prompt Prototype ➡️ Ship to Production ➡️ Gather Data
+```
+
+By running **50 to 100 of these iteration loops** over the course of ten weeks, they built a highly polished, user-validated product. They didn't start with a massive master plan; they let user feedback and data drive the evolution of the software on a daily basis.
 
 ---
 
-## 4. Chain of Thought (Cadena de Pensamiento): Pensar Paso a Paso
+## 3. The "Bet Factory" Mindset
 
-Cuando nos enfrentamos a problemas matemáticos o lógicos difíciles, los humanos no respondemos inmediatamente; escribimos pasos intermedios en un papel. Los LLM funcionan igual. Si obligas al modelo a dar una respuesta directa, tiene que adivinar el siguiente token basándose en estadísticas inmediatas, lo que suele llevar a errores.
+Anthropic Labs acts as a small "Bet Factory" within the larger organization. They treat every product and feature as an experimental bet. Key tenets of this mindset include:
 
-Si le indicas a Claude que **piense paso a paso antes de responder**, el modelo usará tokens intermedios para calcular la lógica del problema antes de llegar a la conclusión.
+### Rapid Loop Cycles
 
-### Cómo Implementarlo con XML (`<thinking>`)
+If a loop cycle takes two weeks, a team can only run 26 iterations a year. If a loop cycle takes 24 hours, the team runs 365 iterations. The team that iterates faster wins, regardless of initial direction.
 
-Un truco avanzado de desarrollo consiste en pedirle a Claude que escriba su proceso de razonamiento dentro de etiquetas `<thinking>` y su respuesta final en otra sección. De este modo, en tu aplicación puedes extraer únicamente el resultado final mediante expresiones regulares o selectores de etiquetas, ocultando el pensamiento al usuario final.
+### Detachment from Features
 
-```xml
-Determina si el siguiente número es primo y explica detalladamente tu razonamiento en la etiqueta de pensamiento.
+When code is fast to generate, it is also cheap to throw away. The team at Anthropic Labs regularly scraps features—even ones power users like—if metrics indicate they don't solve the core problem for the broader audience. There is no emotional attachment to code.
 
-<instrucciones>
-1. Escribe todo tu proceso de análisis matemático dentro de la etiqueta <thinking>.
-2. Escribe únicamente el veredicto final ("SÍ" o "NO") dentro de la etiqueta <resultado>.
-</instrucciones>
+### Focusing on "Hint of Magic"
 
-<entrada>
-El número a evaluar es: 7919
-</entrada>
-```
-
-Claude procesará el prompt generando una respuesta estructurada como esta:
-
-```xml
-<thinking>
-1. El número es 7919.
-2. ¿Es par? No, termina en 9.
-3. Suma de dígitos: 7 + 9 + 1 + 9 = 26 (no es divisible por 3).
-4. Raíz cuadrada de 7919: aprox. 88.98. Debo probar divisores primos hasta 89.
-5. Probando divisores:
-   - 7919 / 7 = 1131.28
-   - 7919 / 11 = 719.90
-   - 7919 / 13 = 609.15
-   - ... (pruebas intermedias) ...
-   - 7919 / 89 = 88.97 (no divisible).
-6. Ningún primo hasta 89 divide a 7919. Por lo tanto, es primo.
-</thinking>
-<resultado>SÍ</resultado>
-```
+When building prototypes, do not wait for the model to be perfect. The Labs team targets the **"hint of magic"**—building user flows that _almost_ work flawlessly today, betting that the next generation of Claude models will naturally close the remaining logic and reliability gaps.
 
 ---
 
-## 5. Mitigación de Alucinaciones y Control de Formato
+## 4. Playbooks to Kill Legacy Processes
 
-En entornos de producción, las alucinaciones (cuando el modelo inventa información) y las variaciones en el formato de salida son inaceptables. Afortunadamente, el taller de Anthropic ofrece técnicas claras para mitigar estos problemas.
+If your team is still operating with spreadsheets, JIRA queues, and heavy alignment processes, Carey recommends three immediate changes:
 
-### A. Dar una Vía de Escape (Evasión de Alucinaciones)
+### A. "Design by Talking" (No more PRDs)
 
-Si le pides a Claude que extraiga información de un documento y esta no existe, el modelo por defecto intentará complacerte extrapolando o inventando. La solución es darle permiso explícito para admitir que no sabe la respuesta.
+Instead of writing a 10-page specification document:
 
-```xml
-<!-- ✅ Prompt defensivo con vía de escape -->
-Analiza el contrato proporcionado y responde a la pregunta.
-Si la respuesta no se menciona explícitamente en el texto, responde exactamente con "INFORMACIÓN NO DISPONIBLE".
-No intentes asumir ni adivinar.
-```
+1.  Sit down with a colleague and discuss the problem and potential solutions out loud.
+2.  Record the conversation and transcribe it.
+3.  Feed the raw transcript to Claude with a prompt like:
 
-### B. Control Estricto de Formato (JSON / Raw)
+    ```xml
+    <context>
+    You are a principal engineer. We just discussed a product idea. Here is the raw transcript:
+    <transcript>
+    [Insert transcript here]
+    </transcript>
+    </context>
 
-Para integrar las respuestas de Claude en una API, necesitas un JSON válido sin texto introductorio (como _"Aquí tienes el JSON solicitado:"_). Puedes lograr esto combinando instrucciones específicas con un prefijo de salida.
+    <instructions>
+    Based on our discussion, generate a functional React/Astro prototype representing the main interactive flow. Prioritize clean structure and basic layouts.
+    </instructions>
+    ```
 
-```xml
-Identifica las entidades (personas, organizaciones) mencionadas en el texto.
+### B. Build "Afternoon Tools"
 
-<instrucciones>
-Devuelve los datos exclusivamente como un objeto JSON con la estructura: {"personas": [], "organizaciones": []}.
-No incluyas explicaciones, saludos ni bloques de código markdown. Devuelve únicamente el JSON crudo.
-</instrucciones>
+If your team is complaining about a manual task or a missing utility, don't put it on the roadmap for next quarter. Task a single developer to build a functional internal tool with Claude in a single afternoon. If it works, keep it. If it doesn't, throw it away. The cost of trying is negligible.
 
-<texto>
-Alfonso Garcia fundó labitcode para explorar el desarrollo de software y la inteligencia artificial.
-</texto>
-```
+### C. The 24-Hour Turnaround Challenge
 
----
+To identify where your organizational processes are slow:
 
-## Resumen de Buenas Prácticas (Tu Checklist de Prompts)
-
-Cuando construyas integraciones con Claude o cualquier LLM, usa este checklist para validar tus prompts:
-
-- [ ] **Asigna un Rol**: ¿El prompt comienza definiendo el papel que debe adoptar el modelo?
-- [ ] **Estructura con XML**: ¿Están los datos separados de las instrucciones mediante etiquetas legibles?
-- [ ] **Proporciona Ejemplos**: ¿Has incluido al menos un ejemplo de entrada y salida esperada (Few-shot)?
-- [ ] **Activa Chain of Thought**: ¿Le has pedido al modelo que razone paso a paso (`<thinking>`) antes de dar la respuesta?
-- [ ] **Define Salidas de Escape**: ¿El modelo sabe qué responder si no encuentra la información solicitada?
-- [ ] **Especifica el Formato**: ¿Has dejado claro si esperas JSON, Markdown o texto plano?
-
-## Recursos Adicionales
-
-- **Video de Manu Acevedo**: [Cómo hacer un buen prompt (YouTube)](https://www.youtube.com/watch?v=kcKMyObtrxY)
-- **Repositorio Oficial de Anthropic**: [Interactive Prompt Engineering Course](https://github.com/anthropics/prompt-eng-interactive-tutorial)
-- **Documentación de Anthropic**: [Guía de Prompt Engineering de Claude](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)
+1.  Take a real user request or bug report.
+2.  Commit to delivering a functional, viewable version to that user within **24 hours**.
+3.  Document where the delay happens. Is it code review? CI/CD pipelines? Security sign-offs?
+    This challenge highlights the real friction points in your deployment pipeline rather than your coding speed.
 
 ---
 
-_Desarrollado con rigor técnico e inteligencia artificial en labitcode._
+## Summary of the AI-Native Era
+
+The lesson from Anthropic Labs is clear: **in the AI era, speed is the ultimate product strategy**.
+
+By shifting focus from writing code to rapid prototyping, product managers, designers, and engineers can collaborate as "full-stack builders," transforming ambiguous ideas into concrete, testable code in hours rather than months.
+
+### Actionable Next Steps
+
+- [ ] Record your next product discussion, transcribe it, and prompt a prototype.
+- [ ] Scrap one underperforming feature this week to practice code detachment.
+- [ ] Build a small internal tool in one afternoon to automate a repetitive task.
+- [ ] Run a 24-hour turnaround challenge to locate deployment pipeline friction.
+
+---
+
+_Built with technical precision and artificial intelligence at labitcode._
