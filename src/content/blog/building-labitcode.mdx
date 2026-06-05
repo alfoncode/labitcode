@@ -26,36 +26,36 @@ Here is our content schema configuration:
 
 ```typescript
 // src/content.config.ts
-import { defineCollection, z } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { defineCollection, z } from "astro:content";
+import { glob } from "astro/loaders";
 
 const blog = defineCollection({
-    loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
-    schema: z.object({
-        title: z.string(),
-        description: z.string(),
-        pubDate: z.coerce.date(),
-        updatedDate: z.coerce.date().optional(),
-        heroImage: z.string().optional(),
-        tags: z.array(z.string()),
-        author: z.enum(['Alfonso Garcia', 'AI']),
-        draft: z.boolean().default(false),
-    }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
+    heroImage: z.string().optional(),
+    tags: z.array(z.string()),
+    author: z.enum(["Alfonso Garcia", "AI"]),
+    draft: z.boolean().default(false),
+  }),
 });
 
 const projects = defineCollection({
-    loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
-    schema: z.object({
-        title: z.string(),
-        description: z.string(),
-        stack: z.array(z.string()),
-        url: z.string().optional(),
-        repo: z.string().optional(),
-        heroImage: z.string().optional(),
-        lastUpdated: z.coerce.date(),
-        creator: z.string(),
-        status: z.enum(['active', 'archived', 'in-progress']),
-    }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    stack: z.array(z.string()),
+    url: z.string().optional(),
+    repo: z.string().optional(),
+    heroImage: z.string().optional(),
+    lastUpdated: z.coerce.date(),
+    creator: z.string(),
+    status: z.enum(["active", "archived", "in-progress"]),
+  }),
 });
 
 export const collections = { blog, projects };
@@ -66,15 +66,16 @@ Using this loader schema, we can safely write pages like this:
 ```astro
 ---
 // src/pages/blog/index.astro
-import { getCollection } from 'astro:content';
-import BlogCard from '@/components/BlogCard.astro';
+import { getCollection } from "astro:content";
+import BlogCard from "@/components/BlogCard.astro";
 
-const posts = (await getCollection('blog'))
-  .filter(post => !post.data.draft)
+const posts = (await getCollection("blog"))
+  .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
+
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-  {posts.map(post => <BlogCard {...post.data} slug={post.id} />)}
+  {posts.map((post) => <BlogCard {...post.data} slug={post.id} />)}
 </div>
 ```
 
@@ -85,6 +86,7 @@ const posts = (await getCollection('blog'))
 One of our primary design goals was to load **zero framework JavaScript** at runtime. We wanted to see what was possible with pure Vanilla JS and Web APIs.
 
 By avoiding React, Vue, or Svelte, we avoid:
+
 - **Hydration blocking**: The main thread remains free to paint the page instantly.
 - **Bundle overhead**: We don't download a framework library just to handle basic interactivity.
 
@@ -95,6 +97,7 @@ Here are the details of how we built two interactive features using this philoso
 To support instant searching without external databases or heavyweight client-side libraries (like Fuse.js), we implemented a custom fuzzy search.
 
 The search operates in three steps:
+
 1. **Build-Time Indexing**: An Astro route compiles all blog and project meta-information into a single static JSON index `/search-index.json`.
 2. **Lazy Loading**: The search script does not download the JSON index on initial page load. Instead, it waits until the user clicks the search button or presses `Cmd+K`.
 3. **Fuzzy Search Algorithm**: A custom algorithm checks if characters of the query appear in order within titles or descriptions.
@@ -106,7 +109,7 @@ Here is the fuzzy search logic:
 function fuzzyMatch(text: string, query: string): boolean {
   const lowerText = text.toLowerCase();
   const lowerQuery = query.toLowerCase();
-  
+
   let textIdx = 0;
   for (let qIdx = 0; qIdx < lowerQuery.length; qIdx++) {
     const char = lowerQuery[qIdx];
@@ -134,7 +137,7 @@ To prevent this, we placed a tiny script in the `<head>` of our layout. Because 
     const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", stored || preferred);
   })();
-  
+
   // Re-run theme check when Astro View Transitions swaps pages
   document.addEventListener("astro:after-swap", function () {
     const stored = localStorage.getItem("theme");
@@ -155,11 +158,11 @@ We chose **Tailwind CSS v4** due to its CSS-first configuration model. Instead o
 @import "tailwindcss";
 
 @theme {
-  --color-accent: #DC2626;
-  --color-accent-light: #EF4444;
-  --color-accent-dark: #B91C1C;
-  --color-navy: #0A1628;
-  --color-navy-light: #1E293B;
+  --color-accent: #dc2626;
+  --color-accent-light: #ef4444;
+  --color-accent-dark: #b91c1c;
+  --color-navy: #0a1628;
+  --color-navy-light: #1e293b;
   --font-sans: "Inter", ui-sans-serif, system-ui;
 }
 ```
@@ -173,18 +176,20 @@ This compiles color variables into standard CSS properties, meaning the styles a
 To ensure extreme performance, we designed a checklist of best practices which we applied systematically across the site:
 
 ### A. Critical Stylesheet Inlining
+
 Normally, stylesheet links block rendering. In Astro, we inline all page-specific CSS directly into the HTML to eliminate the network request round-trip and satisfy the "Eliminate render-blocking resources" audit:
 
 ```javascript
 // astro.config.mjs
 export default defineConfig({
-    build: {
-        inlineStylesheets: 'always', // Inlines all CSS in the output HTML
-    }
+  build: {
+    inlineStylesheets: "always", // Inlines all CSS in the output HTML
+  },
 });
 ```
 
 ### B. Responsive Retina Image Assets
+
 Instead of serving raw large images, we convert all images to **WebP**, size them to exactly double the CSS display width (providing 2x Retina sharpness), and declare explicit `width` and `height` dimensions to reserve layout space and prevent Cumulative Layout Shift (CLS):
 
 ```html
@@ -199,6 +204,7 @@ Instead of serving raw large images, we convert all images to **WebP**, size the
 ```
 
 ### C. Contrast Ratio Adjustments
+
 To guarantee accessibility (A11y), all text must have a minimum contrast ratio of **4.5:1** against its background. We systematically tested our links and footers, modifying our light mode links from `#DC2626` (which had a borderline 4.46:1 contrast ratio on `#FDF4F4`) to `#B91C1C`, achieving an accessible contrast ratio of **5.64:1**.
 
 ---
@@ -207,17 +213,17 @@ To guarantee accessibility (A11y), all text must have a minimum contrast ratio o
 
 Our real-world production test results reflect the value of these decisions:
 
-| Audit Category | Local Score | Production Score (Mobile) |
-|----------------|-------------|----------------------------|
-| **Performance** | 100/100 | 93/100 |
-| **Accessibility** | 100/100 | 100/100 |
-| **Best Practices** | 100/100 | 100/100 |
-| **SEO** | 100/100 | 100/100 |
+| Audit Category     | Local Score | Production Score (Mobile) |
+| ------------------ | ----------- | ------------------------- |
+| **Performance**    | 100/100     | 93/100                    |
+| **Accessibility**  | 100/100     | 100/100                   |
+| **Best Practices** | 100/100     | 100/100                   |
+| **SEO**            | 100/100     | 100/100                   |
 
-*Note: The slight difference between local performance (100) and production performance (93) is due to network latency, the location of CDN nodes, and loading the Vercel Speed Insights telemetry script.*
+_Note: The slight difference between local performance (100) and production performance (93) is due to network latency, the location of CDN nodes, and loading the Vercel Speed Insights telemetry script._
 
 Building labitcode has proven that static-first rendering, native CSS compilation, and minimal JavaScript are the keys to a fast, clean, and developer-friendly site.
 
 ---
 
-*Built with precision by Alfonso Garcia and the labitcode AI entity.*
+_Built with precision by Alfonso Garcia and the labitcode AI entity._

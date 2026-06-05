@@ -31,8 +31,8 @@ Use h4 sparingly, for fine-grained breakdowns.
 Regular paragraph text renders at a comfortable reading size with generous line height for readability.
 
 - **Bold text** uses `**double asterisks**`
-- *Italic text* uses `*single asterisks*`
-- ***Bold and italic*** uses `***triple asterisks***`
+- _Italic text_ uses `*single asterisks*`
+- **_Bold and italic_** uses `***triple asterisks***`
 - ~~Strikethrough~~ uses `~~double tildes~~`
 - Inline `code` uses backticks and renders in a monospaced font with a subtle background
 
@@ -52,12 +52,12 @@ interface BlogPost {
   description: string;
   pubDate: Date;
   tags: string[];
-  author: 'Alfonso Garcia' | 'AI';
+  author: "Alfonso Garcia" | "AI";
   draft?: boolean;
 }
 
 async function getPublishedPosts(): Promise<BlogPost[]> {
-  const allPosts = await getCollection('blog');
+  const allPosts = await getCollection("blog");
   return allPosts
     .filter((post) => !post.data.draft)
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -118,8 +118,8 @@ fi
 
 ```css
 @theme {
-  --color-accent: #E0115F;
-  --color-navy: #0F172A;
+  --color-accent: #e0115f;
+  --color-navy: #0f172a;
   --font-sans: "Inter", system-ui, sans-serif;
 }
 
@@ -201,23 +201,23 @@ Nested blockquotes also work:
 
 Tables render with clean borders and alternating row styles:
 
-| Technology | Purpose | Version |
-|:-----------|:--------|--------:|
-| Astro | Static site framework | 5.17 |
-| Tailwind CSS | Utility-first CSS | 4.0 |
-| Shiki | Syntax highlighting | Latest |
-| Sharp | Image optimization | Latest |
-| MDX | Rich content authoring | 4.x |
+| Technology   | Purpose                | Version |
+| :----------- | :--------------------- | ------: |
+| Astro        | Static site framework  |    5.17 |
+| Tailwind CSS | Utility-first CSS      |     4.0 |
+| Shiki        | Syntax highlighting    |  Latest |
+| Sharp        | Image optimization     |  Latest |
+| MDX          | Rich content authoring |     4.x |
 
 ### Comparison Table
 
-| Feature | React SPA | Astro SSG |
-|:--------|:---------:|:---------:|
-| JS Bundle Size | ~150KB+ | ~0KB |
-| Time to Interactive | ~2.5s | ~0.3s |
-| SEO Friendly | ⚠️ | ✅ |
-| Lighthouse Score | 70–85 | 100 |
-| Build Complexity | High | Low |
+| Feature             | React SPA | Astro SSG |
+| :------------------ | :-------: | :-------: |
+| JS Bundle Size      |  ~150KB+  |   ~0KB    |
+| Time to Interactive |   ~2.5s   |   ~0.3s   |
+| SEO Friendly        |    ⚠️     |    ✅     |
+| Lighthouse Score    |   70–85   |    100    |
+| Build Complexity    |   High    |    Low    |
 
 ---
 
@@ -229,7 +229,7 @@ Use three dashes (`---`) for thematic breaks between sections, as shown througho
 
 ## Images
 
-Images render with rounded corners and auto-centered in the content flow. *(Placeholder — add actual images to your posts)*
+Images render with rounded corners and auto-centered in the content flow. _(Placeholder — add actual images to your posts)_
 
 ---
 
@@ -243,11 +243,11 @@ The key insight behind our architecture is that **content sites don't need a Jav
 2. Apply consistent styling
 3. Generate meta tags for SEO
 
-That's it. Everything else — state management, hydration, virtual DOM diffing — is *overhead* for this use case. Here's how we express this in code:
+That's it. Everything else — state management, hydration, virtual DOM diffing — is _overhead_ for this use case. Here's how we express this in code:
 
 ```typescript
 // This is all you need. Really.
-const posts = await getCollection('blog');
+const posts = await getCollection("blog");
 const sorted = posts
   .filter((p) => !p.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());

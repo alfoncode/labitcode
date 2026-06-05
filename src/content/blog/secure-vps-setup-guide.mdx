@@ -10,7 +10,7 @@ draft: false
 
 When you provision a new Virtual Private Server (VPS) from a cloud provider (such as DigitalOcean, Hetzner, AWS, or OVH), it is typically delivered with a default configuration. Often, this means a default user account (like `ubuntu`, `debian`, or `admin`), password-based authentication enabled, and port `22` completely exposed to the public internet.
 
-Within minutes of a server going online, automated botnets and malicious scanners will begin targeting port 22 with brute-force attacks. If you leave your VPS in its default state, it is not a matter of *if* it will be compromised, but *when*.
+Within minutes of a server going online, automated botnets and malicious scanners will begin targeting port 22 with brute-force attacks. If you leave your VPS in its default state, it is not a matter of _if_ it will be compromised, but _when_.
 
 In this guide, we will break down a production-grade **VPS Hardening and Setup Script**. This script automates server configuration from scratch, transforming a fresh Ubuntu 22.04 or 24.04 LTS instance into a secure, production-ready environment. We will explain the rationale behind every safety check, firewall rule, and kernel parameter, and show you how to execute a safe **dual-port transition** to ensure you never lock yourself out.
 
@@ -45,7 +45,7 @@ Let's go through the 11 core steps executed by the hardening script to see exact
 
 ### Step 0: Pre-checks and Safety Assurances
 
-Before making any changes, the script validates that the running user has `root` privileges and checks that SSH keys are correctly in place. 
+Before making any changes, the script validates that the running user has `root` privileges and checks that SSH keys are correctly in place.
 
 If it needs to create a new administrator user, it first verifies that the source user (e.g. `ubuntu`) has an active `authorized_keys` file. It will clone these public keys to the new user to ensure you can log in immediately. If no keys are detected, the script aborts immediately to prevent passwordless accounts from being locked out.
 
@@ -53,7 +53,7 @@ If it needs to create a new administrator user, it first verifies that the sourc
 
 ### Step 1: System Packages Update
 
-Keeping system packages up to date is the first line of defense against vulnerabilities (such as kernel exploits or OpenSSH bugs). 
+Keeping system packages up to date is the first line of defense against vulnerabilities (such as kernel exploits or OpenSSH bugs).
 
 ```bash
 export DEBIAN_FRONTEND=noninteractive
@@ -85,6 +85,7 @@ chmod 600 "/home/${SSH_USER}/.ssh/authorized_keys"
 ```
 
 #### Why configure resource limits (Ulimits)?
+
 To protect the server from Denial of Service (DoS) attacks or runaway processes that exhaust system resources, we set limits on the maximum number of open files (`nofile`) and active processes (`nproc`) in `/etc/security/limits.d/`:
 
 ```ini
@@ -161,11 +162,12 @@ Banner /etc/ssh/banner.txt
 ```
 
 #### Key settings explained:
-* **`Port 54321`**: Moves SSH away from the standard port 22, stopping 99% of automated scan bots.
-* **`PasswordAuthentication no`**: Completely disables passwords. Only users possessing a registered private key matching `authorized_keys` can connect.
-* **`PermitRootLogin no`**: Prevents root login. Attackers must guess your custom username first, doubling the difficulty of an attack.
-* **`MaxAuthTries 3`**: Terminates connections after 3 failed key attempts, blocking aggressive brute-force clients.
-* **`ClientAliveInterval 300`**: Disconnects inactive SSH clients after 5 minutes of inactivity to prevent abandoned sessions from remaining open.
+
+- **`Port 54321`**: Moves SSH away from the standard port 22, stopping 99% of automated scan bots.
+- **`PasswordAuthentication no`**: Completely disables passwords. Only users possessing a registered private key matching `authorized_keys` can connect.
+- **`PermitRootLogin no`**: Prevents root login. Attackers must guess your custom username first, doubling the difficulty of an attack.
+- **`MaxAuthTries 3`**: Terminates connections after 3 failed key attempts, blocking aggressive brute-force clients.
+- **`ClientAliveInterval 300`**: Disconnects inactive SSH clients after 5 minutes of inactivity to prevent abandoned sessions from remaining open.
 
 > **Ubuntu 24.04 Socket Activation Warning:** Ubuntu 24.04 introduces systemd SSH socket activation. By default, `ssh.service` is disabled, and `ssh.socket` listens for connections. This ignores standard port settings in `sshd_config`. The script explicitly disables `ssh.socket` and enables `ssh.service` to ensure port configurations are respected.
 
@@ -186,9 +188,10 @@ ufw --force enable
 ```
 
 #### ⚠️ The Docker Firewall Bypass Vulnerability
-Many developers are unaware that **Docker completely bypasses UFW by default**. 
 
-When Docker starts a container with a mapped port (e.g., `docker run -p 8080:80`), it inserts forwarding rules directly into the system's raw `iptables` rules *before* UFW's rules are evaluated. This means that even if UFW is configured to block port 8080, **it will remain open to the public web**.
+Many developers are unaware that **Docker completely bypasses UFW by default**.
+
+When Docker starts a container with a mapped port (e.g., `docker run -p 8080:80`), it inserts forwarding rules directly into the system's raw `iptables` rules _before_ UFW's rules are evaluated. This means that even if UFW is configured to block port 8080, **it will remain open to the public web**.
 
 To fix this, the script integrates `ufw-docker`, an open-source utility that inserts custom routing rules into the iptables chain. This forces all Docker network traffic to filter through UFW before reaching containers:
 
@@ -258,9 +261,10 @@ kernel.randomize_va_space = 2
 ```
 
 #### Key protections:
-* **`rp_filter` (Reverse Path Filter)**: Verifies that the source IP address of an incoming packet is reachable via the interface it arrived on. This blocks spoofed source IP packets.
-* **`tcp_syncookies`**: When the server experiences a SYN flood attack (fake connections designed to fill up the connection queue), it stops allocating resources to new connections. Instead, it embeds connection details in the response packet's sequence number (a "cookie"), verifying the connection only when the client responds.
-* **`kptr_restrict` & `dmesg_restrict`**: Restricts regular users from viewing kernel memory pointers or kernel logs, preventing local users from finding vulnerabilities to perform privilege escalation.
+
+- **`rp_filter` (Reverse Path Filter)**: Verifies that the source IP address of an incoming packet is reachable via the interface it arrived on. This blocks spoofed source IP packets.
+- **`tcp_syncookies`**: When the server experiences a SYN flood attack (fake connections designed to fill up the connection queue), it stops allocating resources to new connections. Instead, it embeds connection details in the response packet's sequence number (a "cookie"), verifying the connection only when the client responds.
+- **`kptr_restrict` & `dmesg_restrict`**: Restricts regular users from viewing kernel memory pointers or kernel logs, preventing local users from finding vulnerabilities to perform privilege escalation.
 
 ---
 
@@ -400,7 +404,7 @@ if [ "${1:-}" = "--lockdown" ]; then
     err "SSH configuration validation failed. Reverting."
     exit 1
   fi
-  
+
   systemctl restart ssh
   sleep 2
 
@@ -425,7 +429,7 @@ if [ "${1:-}" = "--lockdown" ]; then
   if [ -f /etc/fail2ban/jail.local ]; then
     sed -i "s/port     = 22,${NEW_SSH_PORT}/port     = ${NEW_SSH_PORT}/" /etc/fail2ban/jail.local
     systemctl restart fail2ban
-    ok "Fail2ban updated to monitor port ${NEW_SSH_PORT} only."  
+    ok "Fail2ban updated to monitor port ${NEW_SSH_PORT} only."
   fi
 
   ok "Lockdown complete. Only secure port ${NEW_SSH_PORT} is open."

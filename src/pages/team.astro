@@ -13,86 +13,79 @@ const team = await getCollection("team");
   <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
     <!-- Header -->
     <div class="mb-12">
-      <h1
-        class="text-3xl sm:text-4xl font-extrabold text-navy dark:text-gray-100 tracking-tight"
-      >
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-navy dark:text-gray-100 tracking-tight">
         Our Team
       </h1>
       <p class="mt-2 text-gray-500 max-w-2xl">
-        labitcode is built on the synergy between human expertise and AI
-        capability — a team where both bring unique strengths to engineering.
+        labitcode is built on the synergy between human expertise and AI capability — a team where
+        both bring unique strengths to engineering.
       </p>
     </div>
 
     <!-- Team Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {team.map((member) => (
-        <article
-          class="rounded-2xl border border-border dark:border-navy-light bg-surface dark:bg-navy-light/50 p-8 transition-all duration-300 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5"
-        >
-          <div class="flex items-start gap-4 mb-6">
-            <div
-              class="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center text-white text-xl font-bold shrink-0"
-            >
-              {member.data.name.split(' ').map(n => n[0]).join('')}
+      {
+        team.map((member) => (
+          <article class="rounded-2xl border border-border dark:border-navy-light bg-surface dark:bg-navy-light/50 p-8 transition-all duration-300 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5">
+            <div class="flex items-start gap-4 mb-6">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center text-white text-xl font-bold shrink-0">
+                {member.data.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </div>
+              <div>
+                <h2 class="text-xl font-bold text-navy dark:text-gray-100">{member.data.name}</h2>
+                <p class="text-accent font-medium text-sm">{member.data.role}</p>
+              </div>
             </div>
-            <div>
-              <h2 class="text-xl font-bold text-navy dark:text-gray-100">
-                {member.data.name}
-              </h2>
-              <p class="text-accent font-medium text-sm">{member.data.role}</p>
+            <p class="text-gray-700 dark:text-gray-500 leading-relaxed mb-6">{member.data.bio}</p>
+            <div class="flex flex-wrap gap-2">
+              {member.data.github && (
+                <a
+                  href={member.data.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm font-medium text-accent hover:text-accent-light transition-colors"
+                >
+                  GitHub ↗
+                </a>
+              )}
+              {member.data.twitter && (
+                <a
+                  href={member.data.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm font-medium text-accent hover:text-accent-light transition-colors"
+                >
+                  Twitter ↗
+                </a>
+              )}
+              {member.data.linkedin && (
+                <a
+                  href={member.data.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm font-medium text-accent hover:text-accent-light transition-colors"
+                >
+                  LinkedIn ↗
+                </a>
+              )}
             </div>
-          </div>
-          <p class="text-gray-700 dark:text-gray-500 leading-relaxed mb-6">
-            {member.data.bio}
-          </p>
-          <div class="flex flex-wrap gap-2">
-            {member.data.github && (
-              <a
-                href={member.data.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-sm font-medium text-accent hover:text-accent-light transition-colors"
-              >
-                GitHub ↗
-              </a>
-            )}
-            {member.data.twitter && (
-              <a
-                href={member.data.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-sm font-medium text-accent hover:text-accent-light transition-colors"
-              >
-                Twitter ↗
-              </a>
-            )}
-            {member.data.linkedin && (
-              <a
-                href={member.data.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-sm font-medium text-accent hover:text-accent-light transition-colors"
-              >
-                LinkedIn ↗
-              </a>
-            )}
-          </div>
-        </article>
-      ))}
+          </article>
+        ))
+      }
     </div>
 
     <!-- Mission -->
     <div
       class="mt-16 rounded-2xl bg-gradient-to-br from-navy via-navy-light to-navy p-8 sm:p-12 text-center"
     >
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-4">
-        Our Mission
-      </h2>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-4">Our Mission</h2>
       <p class="text-slate-300 max-w-2xl mx-auto leading-relaxed text-lg">
-        To explore the intersection of human engineering skill and AI capability
-        — building tools, sharing knowledge, and pushing the boundaries of
-        what's possible in modern software development.
+        To explore the intersection of human engineering skill and AI capability — building tools,
+        sharing knowledge, and pushing the boundaries of what's possible in modern software
+        development.
       </p>
     </div>
   </section>

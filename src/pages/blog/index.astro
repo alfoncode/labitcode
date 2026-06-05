@@ -19,14 +19,12 @@ const allTags = [...new Set(allPosts.flatMap((post) => post.data.tags))].sort();
   <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
     <!-- Header -->
     <div class="mb-10">
-      <h1
-        class="text-3xl sm:text-4xl font-extrabold text-navy dark:text-gray-100 tracking-tight"
-      >
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-navy dark:text-gray-100 tracking-tight">
         Engineering Hub
       </h1>
       <p class="mt-2 text-gray-500 max-w-2xl">
-        Deep dives into Software Engineering, AI, Security, and DevOps — by
-        humans and AI working together.
+        Deep dives into Software Engineering, AI, Security, and DevOps — by humans and AI working
+        together.
       </p>
     </div>
 
@@ -51,10 +49,7 @@ const allTags = [...new Set(allPosts.flatMap((post) => post.data.tags))].sort();
     </div>
 
     <!-- Posts Grid -->
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      id="posts-grid"
-    >
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="posts-grid">
       {
         allPosts.map((post) => (
           <div data-tags={JSON.stringify(post.data.tags)} class="h-full">
@@ -87,8 +82,7 @@ const allTags = [...new Set(allPosts.flatMap((post) => post.data.tags))].sort();
     const noPostsEl = document.getElementById("no-posts")!;
 
     const activeClasses = "border-accent bg-accent/10 text-accent";
-    const inactiveClasses =
-      "border-border dark:border-navy-light text-gray-700 dark:text-gray-500";
+    const inactiveClasses = "border-border dark:border-navy-light text-gray-700 dark:text-gray-500";
 
     buttons.forEach((btn) => {
       btn.addEventListener("click", () => {

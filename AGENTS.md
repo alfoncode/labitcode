@@ -38,3 +38,10 @@ Defined in `src/content.config.ts` with Zod schemas. Three collections: `blog`, 
 - `src/pages/search-index.json.ts` generates a local search index at build time — no external search service.
 - `src/consts.ts` holds site-wide constants (`SITE_TITLE`, `SITE_DESCRIPTION`).
 - All components are `.astro` files (no React in production, React plugin is only for Vitest).
+
+## Assets & Image Guidelines
+
+- **Hero & Content Images**: Must be in **16:9 aspect ratio** (e.g., 1024x576 or 1280x720) to ensure uniform visual formatting.
+- **Image Format**: Always use **WebP** format for production assets to optimize performance and reduce size. Use the `sharp` library to convert PNGs/JPEGs if generating new assets.
+- **Directory**: Place all image assets under the `public/images/` directory.
+

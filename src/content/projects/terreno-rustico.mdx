@@ -10,15 +10,15 @@ status: "in-progress"
 ---
 
 > **🌱 The Future of Rural Real Estate is Landing Soon**  
-> **Terreno Rústico** is entering its final stage of deployment and optimization. We are tuning our real-time geospatial processing systems and validating mapping datasets to deliver the most robust agricultural marketplace in Spain. The portal will be live shortly on its official domain: **[terrenorustico.com](https://terrenorustico.com)**. 
-> 
-> *For early access inquiries or partnership opportunities, stay tuned as we prepare to open the gates to the public.*
+> **Terreno Rústico** is entering its final stage of deployment and optimization. We are tuning our real-time geospatial processing systems and validating mapping datasets to deliver the most robust agricultural marketplace in Spain. The portal will be live shortly on its official domain: **[terrenorustico.com](https://terrenorustico.com)**.
+>
+> _For early access inquiries or partnership opportunities, stay tuned as we prepare to open the gates to the public._
 
 ---
 
 ## The Vision: Digitizing Spain’s Rural Real Estate Market
 
-The market for rustic land, agricultural plots, and rural estates in Spain (*compraventa de terrenos rústicos, parcelas agrícolas y fincas rústicas*) has historically been opaque, fragmented, and slow. Historically, buyers, farmers, brokers, and developers had to navigate outdated public interfaces, cross-reference disconnected databases, and wait days for basic property insights.
+The market for rustic land, agricultural plots, and rural estates in Spain (_compraventa de terrenos rústicos, parcelas agrícolas y fincas rústicas_) has historically been opaque, fragmented, and slow. Historically, buyers, farmers, brokers, and developers had to navigate outdated public interfaces, cross-reference disconnected databases, and wait days for basic property insights.
 
 **Terreno Rústico** is the ultimate digital gateway to the Spanish countryside. Engineered as a high-performance geospatial SaaS and marketplace, it consolidates public cadastral data, soil properties, and agricultural crop history into a clean, comprehensive technical report in just one click. By simplifying complex spatial analytics, we enable fast, secure, and data-driven transactions.
 
@@ -28,10 +28,10 @@ The market for rustic land, agricultural plots, and rural estates in Spain (*com
 
 Terreno Rústico is built to deliver measurable ROI across the entire land acquisition and agricultural value chain:
 
-*   **For Landowners**: Maximize your listing value. Instantly display verified, government-backed spatial data such as soil admissibility, crop compatibility, and slopes, attracting high-intent buyers and accelerating negotiations.
-*   **For Real Estate Professionals**: Scale your rural brokerage. Ditch manual dossiers and leverage dynamic vector maps displaying precise property boundaries, irrigation indexes, and land classification parameters directly in front of clients.
-*   **For Farmers & Agronomists**: Secure land and yields. Search for farmland leases (*alquiler de tierras de cultivo*) or source harvest contracts directly linked to verified parcel boundaries.
-*   **For Institutional Investors**: Conduct instant due diligence. Assess land productivity, topography, and machine feasibility using structural geospatial metrics such as slope gradients, altitude profiles, and PostGIS compactness ratios.
+- **For Landowners**: Maximize your listing value. Instantly display verified, government-backed spatial data such as soil admissibility, crop compatibility, and slopes, attracting high-intent buyers and accelerating negotiations.
+- **For Real Estate Professionals**: Scale your rural brokerage. Ditch manual dossiers and leverage dynamic vector maps displaying precise property boundaries, irrigation indexes, and land classification parameters directly in front of clients.
+- **For Farmers & Agronomists**: Secure land and yields. Search for farmland leases (_alquiler de tierras de cultivo_) or source harvest contracts directly linked to verified parcel boundaries.
+- **For Institutional Investors**: Conduct instant due diligence. Assess land productivity, topography, and machine feasibility using structural geospatial metrics such as slope gradients, altitude profiles, and PostGIS compactness ratios.
 
 ---
 
@@ -40,18 +40,23 @@ Terreno Rústico is built to deliver measurable ROI across the entire land acqui
 Terreno Rústico is more than a listings directory; it is a full-featured Geographic Information System (GIS) integrated with a modern trading floor.
 
 ### 1. Instant Cadastral Mapping & Reprojection
+
 Using the official Spanish Catastro REST and WFS APIs, the platform fetches parcel geometries on the fly. Because Catastro outputs spatial data in localized UTM coordinates (e.g., EPSG:25830), our NestJS backend utilizes a high-speed **PostGIS engine** to reproject data to standard WGS84 (EPSG:4326), mapping property lines with pinpoint accuracy.
 
 ### 2. Comprehensive SIGPAC Enclosure Data
+
 Every parcel undergoes immediate spatial intersection checks against the **SIGPAC WFS service** to overlay vital agricultural parameters:
+
 - **Soil usage classifications** (vineyards, olive groves, pasturelands).
 - **Altitude and average slope profiles** for machinizability and drainage planning.
-- **Irrigation eligibility** and CAP admissibility coefficients (*Coeficiente de Admisibilidad de Pastos*).
+- **Irrigation eligibility** and CAP admissibility coefficients (_Coeficiente de Admisibilidad de Pastos_).
 
 ### 3. Parcel-Linked Crop Marketplace
+
 A pioneer feature allowing agricultural buyers to purchase upcoming harvest yields (grapes, olives, grains) directly tied to the specific physical plot on which they are cultivated. This introduces complete farm-to-table traceability.
 
 ### 4. Hyperlocal Agricultural Directory
+
 A PostGIS-powered geolocated services index that connects land owners and operators with nearby tractor drivers, drone operators, soil analysts, and surveyors, ranked dynamically by real-time geographical proximity.
 
 ---
@@ -71,4 +76,4 @@ To deliver lightning-fast spatial rendering and sub-second query speeds, Terreno
 
 By unifying complex geospatial datasets and creating an open, transactional marketplace, **Terreno Rústico** is setting the gold standard for agricultural and rural real estate in Europe.
 
-*The future of rural investments is digital. Join us at [terrenorustico.com](https://terrenorustico.com) when we launch public access shortly.*
+_The future of rural investments is digital. Join us at [terrenorustico.com](https://terrenorustico.com) when we launch public access shortly._

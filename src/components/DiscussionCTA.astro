@@ -5,7 +5,11 @@ interface Props {
   message?: string;
 }
 
-const { title, url, message = "Have thoughts on this post? Share them on social media or reach out directly." } = Astro.props;
+const {
+  title,
+  url,
+  message = "Have thoughts on this post? Share them on social media or reach out directly.",
+} = Astro.props;
 
 const encodedTitle = encodeURIComponent(title);
 const encodedUrl = encodeURIComponent(url);
@@ -33,9 +37,7 @@ const socials = [
   class="mt-16 rounded-2xl border border-border dark:border-navy-light bg-gray-50 dark:bg-navy-light/50 p-8 sm:p-10"
 >
   <div class="flex flex-col items-center text-center gap-6">
-    <div
-      class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center"
-    >
+    <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
       <svg
         class="w-6 h-6 text-accent"
         fill="none"
@@ -48,16 +50,12 @@ const socials = [
           stroke-linecap="round"
           stroke-linejoin="round"
           d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
-        />
+        ></path>
       </svg>
     </div>
 
     <div class="max-w-md">
-      <h2
-        class="text-xl font-bold text-navy dark:text-gray-100 mb-2"
-      >
-        Join the conversation
-      </h2>
+      <h2 class="text-xl font-bold text-navy dark:text-gray-100 mb-2">Join the conversation</h2>
       <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
         {message}
       </p>

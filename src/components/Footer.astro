@@ -7,9 +7,7 @@ const navLinks = [
 ];
 ---
 
-<footer
-  class="relative mt-auto border-t border-border dark:border-navy-light overflow-hidden"
->
+<footer class="relative mt-auto border-t border-border dark:border-navy-light overflow-hidden">
   <!-- Subtle gradient accent line at top -->
   <div
     class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent"
@@ -18,16 +16,10 @@ const navLinks = [
 
   <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
     <!-- Main footer content -->
-    <div
-      class="py-12 flex flex-col md:flex-row items-center md:items-start justify-between gap-10"
-    >
+    <div class="py-12 flex flex-col md:flex-row items-center md:items-start justify-between gap-10">
       <!-- Brand block -->
       <div class="flex flex-col items-center md:items-start gap-4 max-w-sm">
-        <a
-          href="/"
-          class="flex items-center gap-2.5 group"
-          aria-label="labitcode home"
-        >
+        <a href="/" class="flex items-center gap-2.5 group" aria-label="labitcode home">
           <!-- Flask icon (mini) -->
           <svg
             class="w-7 h-7 shrink-0"
@@ -50,8 +42,7 @@ const navLinks = [
                 ></path>
               </clipPath>
             </defs>
-            <rect width="512" height="512" rx="108" fill="url(#footer-bg)"
-            ></rect>
+            <rect width="512" height="512" rx="108" fill="url(#footer-bg)"></rect>
             <path
               d="M216 88 L216 190 L108 400 Q100 416 116 432 L396 432 Q412 416 404 400 L296 190 L296 88"
               stroke="#F1F5F9"
@@ -68,13 +59,8 @@ const navLinks = [
               stroke-width="22"
               stroke-linecap="round"></line>
             <g clip-path="url(#footer-flask-clip)">
-              <rect
-                x="100"
-                y="320"
-                width="312"
-                height="120"
-                fill="url(#footer-red)"
-                opacity="0.25"></rect>
+              <rect x="100" y="320" width="312" height="120" fill="url(#footer-red)" opacity="0.25"
+              ></rect>
             </g>
             <path
               d="M220 310 L185 350 L220 390"
@@ -98,18 +84,13 @@ const navLinks = [
               stroke="#EF4444"
               stroke-width="18"
               stroke-linecap="round"></line>
-            <circle cx="235" cy="265" r="9" fill="#EF4444" opacity="0.5"
-            ></circle>
-            <circle cx="275" cy="238" r="6" fill="#EF4444" opacity="0.4"
-            ></circle>
+            <circle cx="235" cy="265" r="9" fill="#EF4444" opacity="0.5"></circle>
+            <circle cx="275" cy="238" r="6" fill="#EF4444" opacity="0.4"></circle>
           </svg>
-          <span
-            class="text-base font-extrabold tracking-tight text-navy dark:text-gray-100"
-          >
-            <span class="text-gray-400 dark:text-gray-500 font-bold">&lt;</span
-            >labitcode<span class="text-accent font-bold">/</span><span
-              class="text-gray-400 dark:text-gray-500 font-bold">&gt;</span
-            >
+          <span class="text-base font-extrabold tracking-tight text-navy dark:text-gray-100">
+            <span class="text-gray-400 dark:text-gray-500 font-bold">&lt;</span>labitcode<span
+              class="text-accent font-bold">/</span
+            ><span class="text-gray-400 dark:text-gray-500 font-bold">&gt;</span>
           </span>
         </a>
         <p
@@ -122,10 +103,7 @@ const navLinks = [
       <!-- Navigation + Social -->
       <div class="flex flex-col items-center md:items-end gap-6">
         <!-- Nav links as pills -->
-        <nav
-          class="flex flex-wrap justify-center gap-2"
-          aria-label="Footer navigation"
-        >
+        <nav class="flex flex-wrap justify-center gap-2" aria-label="Footer navigation">
           {
             navLinks.map(({ href, label }) => (
               <a
@@ -137,8 +115,6 @@ const navLinks = [
             ))
           }
         </nav>
-
-
       </div>
     </div>
 

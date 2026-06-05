@@ -29,25 +29,17 @@ const props = Astro.props;
     <script is:inline>
       (function () {
         const stored = localStorage.getItem("theme");
-        const preferred = window.matchMedia("(prefers-color-scheme: dark)")
-          .matches
+        const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches
           ? "dark"
           : "light";
-        document.documentElement.setAttribute(
-          "data-theme",
-          stored || preferred,
-        );
+        document.documentElement.setAttribute("data-theme", stored || preferred);
       })();
       document.addEventListener("astro:after-swap", function () {
         const stored = localStorage.getItem("theme");
-        const preferred = window.matchMedia("(prefers-color-scheme: dark)")
-          .matches
+        const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches
           ? "dark"
           : "light";
-        document.documentElement.setAttribute(
-          "data-theme",
-          stored || preferred,
-        );
+        document.documentElement.setAttribute("data-theme", stored || preferred);
       });
     </script>
     <SEOHead {...props} />

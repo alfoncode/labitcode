@@ -13,18 +13,14 @@ interface Props {
   heroImage?: string;
 }
 
-const { title, description, pubDate, tags, author, slug, body, heroImage } =
-  Astro.props;
+const { title, description, pubDate, tags, author, slug, body, heroImage } = Astro.props;
 const readingTime = body ? getReadingTime(body) : "3 min read";
 ---
 
 <article
   class="group relative rounded-2xl border border-border dark:border-navy-light bg-surface dark:bg-navy-light/50 transition-all duration-300 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5 overflow-hidden flex flex-col h-full"
 >
-  <a
-    href={`/blog/${slug}`}
-    class="absolute inset-0 z-10"
-    aria-label={`Read "${title}"`}></a>
+  <a href={`/blog/${slug}`} class="absolute inset-0 z-10" aria-label={`Read "${title}"`}></a>
 
   {/* Hero Image */}
   {
@@ -57,9 +53,7 @@ const readingTime = body ? getReadingTime(body) : "3 min read";
     </h3>
 
     {/* Description */}
-    <p
-      class="text-sm text-gray-700 dark:text-gray-500 line-clamp-3 mb-4 leading-relaxed flex-1"
-    >
+    <p class="text-sm text-gray-700 dark:text-gray-500 line-clamp-3 mb-4 leading-relaxed flex-1">
       {description}
     </p>
 
@@ -96,8 +90,7 @@ const readingTime = body ? getReadingTime(body) : "3 min read";
             stroke="currentColor"
             stroke-width="2"
           >
-            <circle cx="12" cy="12" r="10"></circle><polyline
-              points="12 6 12 12 16 14"></polyline>
+            <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
           </svg>
           {readingTime}
         </span>

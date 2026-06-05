@@ -18,11 +18,11 @@ This guide walks through the **exact optimizations** we applied to labitcode.com
 
 Before diving into fixes, let's understand what PageSpeed actually measures. Google evaluates your site using three **Core Web Vitals**:
 
-| Metric | What It Measures | Good | Needs Work | Poor |
-|--------|-----------------|------|------------|------|
-| **LCP** (Largest Contentful Paint) | How fast the main content loads | ≤ 2.5s | ≤ 4.0s | > 4.0s |
-| **INP** (Interaction to Next Paint) | How responsive the page feels | ≤ 200ms | ≤ 500ms | > 500ms |
-| **CLS** (Cumulative Layout Shift) | How much content shifts during loading | ≤ 0.10 | ≤ 0.25 | > 0.25 |
+| Metric                              | What It Measures                       | Good    | Needs Work | Poor    |
+| ----------------------------------- | -------------------------------------- | ------- | ---------- | ------- |
+| **LCP** (Largest Contentful Paint)  | How fast the main content loads        | ≤ 2.5s  | ≤ 4.0s     | > 4.0s  |
+| **INP** (Interaction to Next Paint) | How responsive the page feels          | ≤ 200ms | ≤ 500ms    | > 500ms |
+| **CLS** (Cumulative Layout Shift)   | How much content shifts during loading | ≤ 0.10  | ≤ 0.25     | > 0.25  |
 
 These metrics directly affect your **search rankings**. Google uses Core Web Vitals as a ranking signal, so performance improvements translate directly into SEO gains.
 
@@ -36,13 +36,13 @@ Images are almost always the **single largest opportunity** for performance impr
 
 WebP offers **25-35% smaller file sizes** than PNG at equivalent quality, and it's supported by [every modern browser](https://caniuse.com/webp). For our site, the results were dramatic:
 
-| Image | PNG Size | WebP Size | Reduction |
-|-------|----------|-----------|-----------|
-| terreno-rustico | **2,057 KB** | **64 KB** | **-97%** |
-| markdown-style-guide | 62 KB | 46 KB | -26% |
-| ai-driven-development | 48 KB | 35 KB | -27% |
-| building-labitcode | 31 KB | 17 KB | -44% |
-| labitcode-platform | 22 KB | 8 KB | -64% |
+| Image                 | PNG Size     | WebP Size | Reduction |
+| --------------------- | ------------ | --------- | --------- |
+| terreno-rustico       | **2,057 KB** | **64 KB** | **-97%**  |
+| markdown-style-guide  | 62 KB        | 46 KB     | -26%      |
+| ai-driven-development | 48 KB        | 35 KB     | -27%      |
+| building-labitcode    | 31 KB        | 17 KB     | -44%      |
+| labitcode-platform    | 22 KB        | 8 KB      | -64%      |
 
 That's **2.2 MB reduced to 170 KB** — a 92% total reduction.
 
@@ -56,20 +56,18 @@ npm install sharp --save-dev
 
 ```javascript
 // convert-images.mjs
-import sharp from 'sharp';
-import { readdirSync } from 'fs';
-import { join } from 'path';
+import sharp from "sharp";
+import { readdirSync } from "fs";
+import { join } from "path";
 
-const dir = './public/images';
-const files = readdirSync(dir).filter(f => f.endsWith('.png'));
+const dir = "./public/images";
+const files = readdirSync(dir).filter((f) => f.endsWith(".png"));
 
 for (const file of files) {
   const input = join(dir, file);
-  const output = join(dir, file.replace('.png', '.webp'));
+  const output = join(dir, file.replace(".png", ".webp"));
 
-  const info = await sharp(input)
-    .webp({ quality: 80 })
-    .toFile(output);
+  const info = await sharp(input).webp({ quality: 80 }).toFile(output);
 
   console.log(`${file} → ${info.size} bytes`);
 }
@@ -117,14 +115,7 @@ The fix is simple — always include `width` and `height`:
 <img src="/photo.webp" alt="Photo" loading="lazy" />
 
 <!-- ✅ No CLS: browser reserves 16:9 space immediately -->
-<img
-  src="/photo.webp"
-  alt="Photo"
-  loading="lazy"
-  decoding="async"
-  width="640"
-  height="360"
-/>
+<img src="/photo.webp" alt="Photo" loading="lazy" decoding="async" width="640" height="360" />
 ```
 
 If you're using CSS to control the actual display size (e.g., `width: 100%`), the `width` and `height` attributes still matter — the browser uses them to calculate the **aspect ratio** and reserve the correct space.
@@ -193,11 +184,11 @@ Then reference them locally in your CSS:
 
 ```css
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/inter-v18-latin-regular.woff2') format('woff2');
+  src: url("/fonts/inter-v18-latin-regular.woff2") format("woff2");
 }
 ```
 
@@ -205,7 +196,7 @@ This eliminates two DNS lookups (`fonts.googleapis.com` and `fonts.gstatic.com`)
 
 ### Inline Critical Stylesheets to Avoid Render-Blocking CSS
 
-Lighthouse will flag any stylesheet linked in the `<head>` of your page as **render-blocking**, since the browser must download and parse it before drawing anything. While preloading is great for third-party scripts, your primary stylesheets *should* block rendering to prevent FOUC (Flash of Unstyled Content).
+Lighthouse will flag any stylesheet linked in the `<head>` of your page as **render-blocking**, since the browser must download and parse it before drawing anything. While preloading is great for third-party scripts, your primary stylesheets _should_ block rendering to prevent FOUC (Flash of Unstyled Content).
 
 However, if your stylesheet is small (e.g., less than 15-20 KB), you can completely eliminate the HTTP request and render-blocking penalty by **inlining the CSS** directly into the HTML within a `<style>` block.
 
@@ -214,9 +205,9 @@ In Astro, this is incredibly easy. Simply configure `inlineStylesheets` in `astr
 ```javascript
 // astro.config.mjs
 export default defineConfig({
-    build: {
-        inlineStylesheets: 'always', // Inlines all stylesheets directly into the HTML
-    }
+  build: {
+    inlineStylesheets: "always", // Inlines all stylesheets directly into the HTML
+  },
 });
 ```
 
@@ -234,19 +225,11 @@ When a button controls the visibility of another element (like a mobile menu), l
 
 ```html
 <!-- ❌ Screen readers don't know what this button controls -->
-<button aria-label="Toggle menu" aria-expanded="false">
-  ☰
-</button>
+<button aria-label="Toggle menu" aria-expanded="false">☰</button>
 <div id="mobile-menu">...</div>
 
 <!-- ✅ Screen readers can jump directly to the controlled element -->
-<button
-  aria-label="Toggle menu"
-  aria-expanded="false"
-  aria-controls="mobile-menu"
->
-  ☰
-</button>
+<button aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">☰</button>
 <div id="mobile-menu">...</div>
 ```
 
@@ -273,8 +256,14 @@ Some users experience motion sickness or have vestibular disorders. The `prefers
 ```css
 /* Define the animation */
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Only animate for users who haven't requested reduced motion */
@@ -298,9 +287,9 @@ This is both an accessibility requirement and a best practice — users who pref
 
 ### Ensure Proper Color Contrast Ratios
 
-Text and interactive elements must have a contrast ratio of at least **4.5:1** against their background (or **3:1** for large text) to be readable by users with low vision. 
+Text and interactive elements must have a contrast ratio of at least **4.5:1** against their background (or **3:1** for large text) to be readable by users with low vision.
 
-In our first run, our "Live" project link had `#DC2626` (red) on a `#FDF4F4` (very light red) background. This resulted in a contrast ratio of **4.46:1**—only 0.04 below the requirement! Lighthouse flagged this as a critical failure. 
+In our first run, our "Live" project link had `#DC2626` (red) on a `#FDF4F4` (very light red) background. This resulted in a contrast ratio of **4.46:1**—only 0.04 below the requirement! Lighthouse flagged this as a critical failure.
 
 By switching to a slightly darker shade in light mode, `#B91C1C` (our `accent-dark` variable), we bumped the contrast ratio to **5.64:1**, resolving the audit:
 
@@ -317,6 +306,7 @@ By switching to a slightly darker shade in light mode, `#B91C1C` (our `accent-da
 Tap targets (links, buttons, inputs) must be large enough and have enough space around them to prevent accidental taps on mobile devices. Lighthouse flags any interactive element smaller than **48×48px** or too close to other targets.
 
 To solve this for inline card links:
+
 1. Wrap them in a helper layout with sufficient gap (e.g., `gap-4`).
 2. Add padding to increase their clickable dimensions (e.g., `px-3 py-1.5 min-h-[38px]`).
 3. Turn text links into small, visually distinct buttons. This not only passes accessibility but improves overall visual cues!
@@ -333,10 +323,8 @@ Controls the browser chrome color on mobile devices:
 
 ```html
 <!-- Different colors for light and dark mode -->
-<meta name="theme-color" content="#0A1628"
-      media="(prefers-color-scheme: dark)" />
-<meta name="theme-color" content="#FFFFFF"
-      media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0A1628" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
 ```
 
 ### Apple Touch Icon
@@ -367,24 +355,28 @@ Create a **1200×630px** image with your brand name and tagline. This ensures ev
 Here's a prioritized checklist you can work through on any project:
 
 ### High Impact (Do First)
+
 - [ ] Convert all images to WebP (or AVIF)
 - [ ] Add `fetchpriority="high"` to your LCP image (usually the hero)
 - [ ] Add `width` and `height` to every `<img>` tag
 - [ ] Make Google Fonts non-blocking with `preload` + `onload`
 
 ### Medium Impact
+
 - [ ] Create a proper OG default image (1200×630px)
 - [ ] Add `<meta name="theme-color">` for mobile browsers
 - [ ] Add `<link rel="apple-touch-icon">`
 - [ ] Lazy-load all images below the fold with `loading="lazy"`
 
 ### Accessibility
+
 - [ ] Add `aria-hidden="true"` to decorative SVGs/images
 - [ ] Add `aria-controls` to buttons that toggle panels
 - [ ] Wrap animations in `prefers-reduced-motion`
 - [ ] Verify color contrast ratios (minimum 4.5:1 for body text)
 
 ### Verification
+
 - [ ] Run PageSpeed Insights on mobile AND desktop
 - [ ] Test with Chrome DevTools Lighthouse tab
 - [ ] Verify no CLS in Chrome DevTools Performance panel
@@ -425,4 +417,4 @@ The best part? These optimizations made the site blazingly fast in the real worl
 
 ---
 
-*Performance is a feature. Every millisecond you save is a user who stays.*
+_Performance is a feature. Every millisecond you save is a user who stays._

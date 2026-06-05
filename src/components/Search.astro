@@ -10,15 +10,25 @@
   aria-label="Search"
 >
   <!-- Backdrop -->
-  <div id="search-backdrop" class="absolute inset-0 bg-navy/60 dark:bg-black/70 backdrop-blur-sm"></div>
+  <div id="search-backdrop" class="absolute inset-0 bg-navy/60 dark:bg-black/70 backdrop-blur-sm">
+  </div>
 
   <!-- Modal -->
   <div class="relative flex items-start justify-center pt-[15vh] px-4">
-    <div class="w-full max-w-lg bg-surface dark:bg-navy-light rounded-2xl shadow-2xl border border-border dark:border-navy-light overflow-hidden animate-fade-in">
+    <div
+      class="w-full max-w-lg bg-surface dark:bg-navy-light rounded-2xl shadow-2xl border border-border dark:border-navy-light overflow-hidden animate-fade-in"
+    >
       <!-- Input -->
       <div class="flex items-center gap-3 px-4 py-3 border-b border-border dark:border-navy-light">
-        <svg class="w-5 h-5 text-gray-500 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+        <svg
+          class="w-5 h-5 text-gray-500 shrink-0"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path>
         </svg>
         <input
           id="search-input"
@@ -27,7 +37,9 @@
           placeholder="Search posts, projects, tags…"
           autocomplete="off"
         />
-        <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-xs text-gray-500 border border-border dark:border-navy-light rounded font-mono">
+        <kbd
+          class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-xs text-gray-500 border border-border dark:border-navy-light rounded font-mono"
+        >
           ESC
         </kbd>
       </div>
@@ -52,7 +64,7 @@
     description: string;
     tags: string[];
     slug: string;
-    type: 'blog' | 'project';
+    type: "blog" | "project";
   };
 
   let searchIndex: SearchEntry[] = [];
@@ -61,7 +73,7 @@
   async function loadIndex(): Promise<void> {
     if (loaded) return;
     try {
-      const res = await fetch('/search-index.json');
+      const res = await fetch("/search-index.json");
       searchIndex = await res.json();
       loaded = true;
     } catch {
@@ -97,33 +109,33 @@
   }
 
   function renderResults(results: SearchEntry[], query: string): void {
-    const listEl = document.getElementById('search-list')!;
-    const emptyEl = document.getElementById('search-empty')!;
-    const noResultsEl = document.getElementById('search-no-results')!;
+    const listEl = document.getElementById("search-list")!;
+    const emptyEl = document.getElementById("search-empty")!;
+    const noResultsEl = document.getElementById("search-no-results")!;
 
     if (!query.trim()) {
-      listEl.classList.add('hidden');
-      noResultsEl.classList.add('hidden');
-      emptyEl.classList.remove('hidden');
+      listEl.classList.add("hidden");
+      noResultsEl.classList.add("hidden");
+      emptyEl.classList.remove("hidden");
       return;
     }
 
     if (results.length === 0) {
-      listEl.classList.add('hidden');
-      emptyEl.classList.add('hidden');
-      noResultsEl.classList.remove('hidden');
+      listEl.classList.add("hidden");
+      emptyEl.classList.add("hidden");
+      noResultsEl.classList.remove("hidden");
       return;
     }
 
-    emptyEl.classList.add('hidden');
-    noResultsEl.classList.add('hidden');
-    listEl.classList.remove('hidden');
+    emptyEl.classList.add("hidden");
+    noResultsEl.classList.add("hidden");
+    listEl.classList.remove("hidden");
 
     listEl.innerHTML = results
       .map((entry) => {
-        const href = entry.type === 'blog' ? `/blog/${entry.slug}` : `/projects/${entry.slug}`;
-        const typeLabel = entry.type === 'blog' ? 'Blog' : 'Project';
-        const typeColor = entry.type === 'blog' ? 'text-accent' : 'text-emerald-500';
+        const href = entry.type === "blog" ? `/blog/${entry.slug}` : `/projects/${entry.slug}`;
+        const typeLabel = entry.type === "blog" ? "Blog" : "Project";
+        const typeColor = entry.type === "blog" ? "text-accent" : "text-emerald-500";
         return `
           <li>
             <a href="${href}" class="flex items-start gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-navy transition-colors duration-150 group">
@@ -136,45 +148,45 @@
           </li>
         `;
       })
-      .join('');
+      .join("");
   }
 
   function openSearch(): void {
-    const modal = document.getElementById('search-modal')!;
-    const input = document.getElementById('search-input') as HTMLInputElement;
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
+    const modal = document.getElementById("search-modal")!;
+    const input = document.getElementById("search-input") as HTMLInputElement;
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
     loadIndex();
     setTimeout(() => input.focus(), 50);
   }
 
   function closeSearch(): void {
-    const modal = document.getElementById('search-modal')!;
-    const input = document.getElementById('search-input') as HTMLInputElement;
-    modal.classList.add('hidden');
-    document.body.style.overflow = '';
-    input.value = '';
-    renderResults([], '');
+    const modal = document.getElementById("search-modal")!;
+    const input = document.getElementById("search-input") as HTMLInputElement;
+    modal.classList.add("hidden");
+    document.body.style.overflow = "";
+    input.value = "";
+    renderResults([], "");
   }
 
   function initSearch(): void {
-    const trigger = document.getElementById('search-trigger');
-    const backdrop = document.getElementById('search-backdrop');
-    const input = document.getElementById('search-input') as HTMLInputElement;
+    const trigger = document.getElementById("search-trigger");
+    const backdrop = document.getElementById("search-backdrop");
+    const input = document.getElementById("search-input") as HTMLInputElement;
 
-    trigger?.addEventListener('click', openSearch);
-    backdrop?.addEventListener('click', closeSearch);
+    trigger?.addEventListener("click", openSearch);
+    backdrop?.addEventListener("click", closeSearch);
 
-    document.addEventListener('keydown', (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    document.addEventListener("keydown", (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        const modal = document.getElementById('search-modal')!;
-        modal.classList.contains('hidden') ? openSearch() : closeSearch();
+        const modal = document.getElementById("search-modal")!;
+        modal.classList.contains("hidden") ? openSearch() : closeSearch();
       }
-      if (e.key === 'Escape') closeSearch();
+      if (e.key === "Escape") closeSearch();
     });
 
-    input?.addEventListener('input', () => {
+    input?.addEventListener("input", () => {
       const q = input.value;
       const results = search(q);
       renderResults(results, q);
@@ -182,5 +194,5 @@
   }
 
   initSearch();
-  document.addEventListener('astro:after-swap', initSearch);
+  document.addEventListener("astro:after-swap", initSearch);
 </script>

@@ -15,18 +15,8 @@ interface Props {
   heroImage?: string;
 }
 
-const {
-  title,
-  description,
-  stack,
-  status,
-  lastUpdated,
-  creator,
-  slug,
-  url,
-  repo,
-  heroImage,
-} = Astro.props;
+const { title, description, stack, status, lastUpdated, creator, slug, url, repo, heroImage } =
+  Astro.props;
 
 const statusColors: Record<string, string> = {
   active: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
@@ -38,10 +28,8 @@ const statusColors: Record<string, string> = {
 <article
   class="group relative rounded-2xl border border-border dark:border-navy-light bg-surface dark:bg-navy-light/50 transition-all duration-300 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5 flex flex-col overflow-hidden h-full"
 >
-  <a
-    href={`/projects/${slug}`}
-    class="absolute inset-0 z-10"
-    aria-label={`View "${title}" project`}></a>
+  <a href={`/projects/${slug}`} class="absolute inset-0 z-10" aria-label={`View "${title}" project`}
+  ></a>
 
   {/* Hero Image */}
   {
@@ -99,9 +87,7 @@ const statusColors: Record<string, string> = {
     </h3>
 
     {/* Description */}
-    <p
-      class="text-sm text-gray-700 dark:text-gray-500 line-clamp-3 mb-4 leading-relaxed flex-1"
-    >
+    <p class="text-sm text-gray-700 dark:text-gray-500 line-clamp-3 mb-4 leading-relaxed flex-1">
       {description}
     </p>
 

@@ -11,7 +11,7 @@ const allPosts = (await getCollection("blog"))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const allProjects = (await getCollection("projects")).sort(
-  (a, b) => b.data.lastUpdated.valueOf() - a.data.lastUpdated.valueOf(),
+  (a, b) => b.data.lastUpdated.valueOf() - a.data.lastUpdated.valueOf()
 );
 
 const recentPosts = allPosts.slice(0, 3);
@@ -38,14 +38,9 @@ const topics = ["Software Engineering", "AI", "Security", "DevOps"];
     />
     <div class="absolute inset-0 bg-navy/70 dark:bg-[#020617]/70"></div>
     <div class="absolute inset-0">
-      <div
-        class="absolute -top-24 -right-24 w-96 h-96 bg-accent/8 rounded-full blur-3xl"
-      >
-      </div>
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-accent/8 rounded-full blur-3xl"></div>
     </div>
-    <div
-      class="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40"
-    >
+    <div class="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
       <div class="max-w-3xl">
         <div
           class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium mb-6 animate-fade-in"
@@ -56,8 +51,8 @@ const topics = ["Software Engineering", "AI", "Security", "DevOps"];
         <h1
           class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 animate-fade-in"
         >
-          <span class="text-accent">Engineering</span> and <span
-            class="text-accent">Innovation</span
+          <span class="text-accent">Engineering</span> and <span class="text-accent"
+            >Innovation</span
           > Laboratory
         </h1>
         <p
@@ -108,12 +103,8 @@ const topics = ["Software Engineering", "AI", "Security", "DevOps"];
   <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-16">
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h2 class="text-2xl font-bold text-navy dark:text-gray-100">
-          Latest from the Blog
-        </h2>
-        <p class="text-sm text-gray-500 mt-1">
-          Engineering insights, tutorials, and explorations.
-        </p>
+        <h2 class="text-2xl font-bold text-navy dark:text-gray-100">Latest from the Blog</h2>
+        <p class="text-sm text-gray-500 mt-1">Engineering insights, tutorials, and explorations.</p>
       </div>
       <a
         href="/blog"
@@ -153,9 +144,7 @@ const topics = ["Software Engineering", "AI", "Security", "DevOps"];
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between mb-8">
         <div>
-          <h2 class="text-2xl font-bold text-navy dark:text-gray-100">
-            The Lab
-          </h2>
+          <h2 class="text-2xl font-bold text-navy dark:text-gray-100">The Lab</h2>
           <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
             Side projects and experiments.
           </p>
