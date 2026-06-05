@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import BlogCard from "@/components/BlogCard.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
 import Badge from "@/components/Badge.astro";
+import DiscussionCTA from "@/components/DiscussionCTA.astro";
 import { getCollection } from "astro:content";
 
 const allPosts = (await getCollection("blog"))
@@ -193,5 +194,14 @@ const topics = ["Software Engineering", "AI", "Security", "DevOps"];
         }
       </div>
     </div>
+  </section>
+
+  <!-- Connect -->
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
+    <DiscussionCTA
+      title="labitcode"
+      url="https://labitcode.com"
+      message="Want to connect? Reach out on social media or share your thoughts."
+    />
   </section>
 </BaseLayout>

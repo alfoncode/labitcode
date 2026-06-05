@@ -2,9 +2,10 @@
 interface Props {
   title: string;
   url: string;
+  message?: string;
 }
 
-const { title, url } = Astro.props;
+const { title, url, message = "Have thoughts on this post? Share them on social media or reach out directly." } = Astro.props;
 
 const encodedTitle = encodeURIComponent(title);
 const encodedUrl = encodeURIComponent(url);
@@ -58,8 +59,7 @@ const socials = [
         Join the conversation
       </h2>
       <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-        Have thoughts on this post? Share them on social media or reach out
-        directly.
+        {message}
       </p>
     </div>
 
