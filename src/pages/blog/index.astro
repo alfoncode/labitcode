@@ -1,8 +1,10 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import SearchBar from "@/components/SearchBar.astro";
 import BlogCard from "@/components/BlogCard.astro";
-import Badge from "@/components/Badge.astro";
 import { getCollection } from "astro:content";
+
+const ITEMS_PER_PAGE = 6;
 
 const allPosts = (await getCollection("blog"))
   .filter((post) => !post.data.draft)
@@ -28,6 +30,12 @@ const allTags = [...new Set(allPosts.flatMap((post) => post.data.tags))].sort();
       </p>
     </div>
 
+    <!-- Search Bar -->
+    <SearchBar
+      placeholder="Search posts by title, description, or tag…"
+      inputId="blog-search"
+    />
+
     <!-- Tag Filters -->
     <div class="flex flex-wrap gap-2 mb-10" id="tag-filters">
       <button
@@ -48,66 +56,226 @@ const allTags = [...new Set(allPosts.flatMap((post) => post.data.tags))].sort();
       }
     </div>
 
+    <!-- Results count -->
+    <p id="results-count" class="text-sm text-gray-500 mb-4">
+      Showing {Math.min(ITEMS_PER_PAGE, allPosts.length)} of {allPosts.length} posts
+    </p>
+
     <!-- Posts Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="posts-grid">
       {
-        allPosts.map((post) => (
-          <div data-tags={JSON.stringify(post.data.tags)} class="h-full">
-            <BlogCard
-              title={post.data.title}
-              description={post.data.description}
-              pubDate={post.data.pubDate}
-              tags={post.data.tags}
-              author={post.data.author}
-              slug={post.id}
-              body={post.body}
-              heroImage={post.data.heroImage}
-            />
-          </div>
-        ))
+        allPosts.map((post, i) => {
+          const searchText = `${post.data.title} ${post.data.description} ${post.data.tags.join(" ")}`.toLowerCase();
+          return (
+            <div
+              data-tags={JSON.stringify(post.data.tags)}
+              data-search-text={searchText}
+              class:list={[
+                "post-card h-full transition-all duration-300",
+                { hidden: i >= ITEMS_PER_PAGE },
+              ]}
+            >
+              <BlogCard
+                title={post.data.title}
+                description={post.data.description}
+                pubDate={post.data.pubDate}
+                tags={post.data.tags}
+                author={post.data.author}
+                slug={post.id}
+                body={post.body}
+                heroImage={post.data.heroImage}
+              />
+            </div>
+          );
+        })
       }
     </div>
 
     <!-- Empty state -->
     <div id="no-posts" class="hidden py-16 text-center text-gray-500">
-      No posts found for this tag.
+      <svg
+        class="w-12 h-12 mx-auto mb-4 text-gray-500"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </svg>
+      <p class="text-lg font-medium">No posts found</p>
+      <p class="mt-1 text-gray-500">Try adjusting your search or tag filter.</p>
+    </div>
+
+    <!-- Infinite scroll sentinel -->
+    <div
+      id="scroll-sentinel"
+      class="flex items-center justify-center py-8"
+    >
+      <div id="scroll-spinner" class="hidden">
+        <div class="scroll-spinner"></div>
+      </div>
+      <p id="scroll-end" class="hidden text-sm text-gray-500">You've reached the end.</p>
     </div>
   </section>
 </BaseLayout>
 
 <script>
-  function initTagFilter(): void {
-    const buttons = document.querySelectorAll<HTMLButtonElement>(".tag-btn");
-    const cards = document.querySelectorAll<HTMLElement>("#posts-grid > div");
-    const noPostsEl = document.getElementById("no-posts")!;
+  const ITEMS_PER_PAGE = 6;
 
-    const activeClasses = "border-accent bg-accent/10 text-accent";
-    const inactiveClasses = "border-border dark:border-navy-light text-gray-700 dark:text-gray-500";
+  let activeTag = "all";
+  let searchQuery = "";
+  let visibleCount = ITEMS_PER_PAGE;
 
-    buttons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const tag = btn.dataset.tag!;
+  const grid = document.getElementById("posts-grid")!;
+  const cards = Array.from(grid.querySelectorAll<HTMLElement>(".post-card"));
+  const searchInput = document.getElementById("blog-search") as HTMLInputElement;
+  const clearBtn = document.getElementById("blog-search-clear")!;
+  const noPostsEl = document.getElementById("no-posts")!;
+  const sentinel = document.getElementById("scroll-sentinel")!;
+  const spinner = document.getElementById("scroll-spinner")!;
+  const endMsg = document.getElementById("scroll-end")!;
+  const resultsCount = document.getElementById("results-count")!;
+  const tagButtons = document.querySelectorAll<HTMLButtonElement>(".tag-btn");
 
-        // Update button styles
-        buttons.forEach((b) => {
-          b.className = `tag-btn px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${inactiveClasses} hover:border-accent hover:text-accent`;
-        });
-        btn.className = `tag-btn px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${activeClasses}`;
+  // ── Filtering helpers ──────────────────────────────────────────
 
-        // Filter cards
-        let visible = 0;
-        cards.forEach((card) => {
-          const tags: string[] = JSON.parse(card.dataset.tags || "[]");
-          const show = tag === "all" || tags.includes(tag);
-          card.style.display = show ? "" : "none";
-          if (show) visible++;
-        });
-
-        noPostsEl.classList.toggle("hidden", visible > 0);
-      });
-    });
+  function cardMatchesTag(card: HTMLElement): boolean {
+    if (activeTag === "all") return true;
+    const tags: string[] = JSON.parse(card.dataset.tags || "[]");
+    return tags.includes(activeTag);
   }
 
-  initTagFilter();
-  document.addEventListener("astro:after-swap", initTagFilter);
+  function cardMatchesSearch(card: HTMLElement): boolean {
+    if (!searchQuery.trim()) return true;
+    const text = card.dataset.searchText || "";
+    return text.includes(searchQuery.toLowerCase().trim());
+  }
+
+  // ── Visibility update ──────────────────────────────────────────
+
+  function updateVisibility(): void {
+    let matchCount = 0;
+    let shownCount = 0;
+
+    cards.forEach((card) => {
+      const tagOk = cardMatchesTag(card);
+      const searchOk = cardMatchesSearch(card);
+      const matches = tagOk && searchOk;
+
+      if (matches) {
+        matchCount++;
+        if (shownCount < visibleCount) {
+          card.classList.remove("hidden");
+          shownCount++;
+        } else {
+          card.classList.add("hidden");
+        }
+      } else {
+        card.classList.add("hidden");
+      }
+    });
+
+    // Update results count
+    resultsCount.textContent = `Showing ${shownCount} of ${matchCount} posts`;
+
+    // Show/hide empty state
+    noPostsEl.classList.toggle("hidden", matchCount > 0);
+
+    // Show/hide sentinel states
+    const hasMore = shownCount < matchCount;
+    spinner.classList.toggle("hidden", !hasMore);
+    endMsg.classList.toggle("hidden", hasMore || matchCount === 0);
+
+    // Hide sentinel entirely when there are 0 matches
+    sentinel.classList.toggle("hidden", matchCount === 0);
+  }
+
+  // ── Load more ──────────────────────────────────────────────────
+
+  function loadMore(): void {
+    visibleCount += ITEMS_PER_PAGE;
+    updateVisibility();
+  }
+
+  // ── Intersection Observer ──────────────────────────────────────
+
+  let observer: IntersectionObserver | null = null;
+
+  function setupObserver(): void {
+    if (observer) observer.disconnect();
+    observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+    observer.observe(sentinel);
+  }
+
+  // ── Tag filter handlers ────────────────────────────────────────
+
+  const activeClasses = "border-accent bg-accent/10 text-accent";
+  const inactiveClasses =
+    "border-border dark:border-navy-light text-gray-700 dark:text-gray-500";
+
+  tagButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      activeTag = btn.dataset.tag!;
+
+      // Update button styles
+      tagButtons.forEach((b) => {
+        b.className = `tag-btn px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${inactiveClasses} hover:border-accent hover:text-accent`;
+      });
+      btn.className = `tag-btn px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${activeClasses}`;
+
+      // Reset pagination
+      visibleCount = ITEMS_PER_PAGE;
+      updateVisibility();
+    });
+  });
+
+  // ── Search handlers ────────────────────────────────────────────
+
+  let searchDebounce: ReturnType<typeof setTimeout>;
+
+  function onSearchInput(): void {
+    const hasValue = searchInput.value.trim().length > 0;
+    clearBtn.classList.toggle("hidden", !hasValue);
+
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => {
+      searchQuery = searchInput.value;
+      visibleCount = ITEMS_PER_PAGE;
+      updateVisibility();
+    }, 200);
+  }
+
+  searchInput.addEventListener("input", onSearchInput);
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      searchInput.value = "";
+      onSearchInput();
+      searchInput.blur();
+    }
+  });
+
+  clearBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    onSearchInput();
+    searchInput.focus();
+  });
+
+  // ── Init ───────────────────────────────────────────────────────
+
+  function init(): void {
+    setupObserver();
+    updateVisibility();
+  }
+
+  init();
+  document.addEventListener("astro:after-swap", init);
 </script>
