@@ -2,6 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Badge from "@/components/Badge.astro";
 import DiscussionCTA from "@/components/DiscussionCTA.astro";
+import Mermaid from "@/components/Mermaid.astro";
 import { getCollection, render } from "astro:content";
 import { formatDate, getReadingTime } from "@/utils/helpers";
 
@@ -129,6 +130,8 @@ const blogPostingLd = {
       <Content />
     </div>
 
+    <Mermaid />
+
     <DiscussionCTA title={post.data.title} url={`https://labitcode.com/blog/${post.id}`} />
 
     <!-- Footer -->
@@ -189,6 +192,9 @@ const blogPostingLd = {
       preBlocks.forEach((pre) => {
         // Skip already enhanced
         if (pre.parentElement?.classList.contains("code-block-wrapper")) return;
+
+        // Skip mermaid blocks — handled by Mermaid.astro
+        if (pre.getAttribute("data-language") === "mermaid") return;
 
         // Detect language from Shiki's data-language attribute
         const codeEl = pre.querySelector("code");
