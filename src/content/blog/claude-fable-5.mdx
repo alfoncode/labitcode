@@ -131,26 +131,28 @@ This architecture represents a new paradigm: **graduated capability release**. I
 
 | Plan | Access | Notes |
 |------|--------|-------|
-| **Pro** ($20/mo) | Included | Through June 22, then usage credits may apply |
-| **Max** ($100/mo) | Included | Higher rate limits |
-| **Team** ($25/user/mo) | Included | Shared rate limits |
-| **Enterprise** | Included | Custom terms |
+| **Pro** ($20/mo) | Included through June 22 | Requires usage credits from June 23 |
+| **Max** ($100/mo) | Included through June 22 | Higher rate limits |
+| **Team** ($25/user/mo) | Included through June 22 | Shared rate limits |
+| **Enterprise** | Included through June 22 | Custom terms |
 | **API** | Pay-per-token | `claude-fable-5` model ID |
 
 ### API Pricing
 
 | Token Type | Price (per 1M tokens) |
 |------------|----------------------|
-| **Input** | $3.00 |
-| **Output** | $15.00 |
-| **Cache write** | $3.75 |
-| **Cache read** | $0.30 |
+| **Input** | $10.00 |
+| **Output** | $50.00 |
+| **Cache write** | $12.50 |
+| **Cache read** | $1.00 |
 
-At $15/M output tokens, Fable 5 is priced at a premium — roughly **2x Opus 4.8** and **5x Sonnet 4.6**. But for tasks where Fable 5's superior reasoning eliminates multiple retry loops, the effective cost per completed task may actually be lower.
+At $50/M output tokens, Fable 5 is priced at a premium — roughly **2x Opus 4.8** ($25/M) and **~3.3x Sonnet 4.6** ($15/M). But for tasks where Fable 5's superior reasoning eliminates multiple retry loops, the effective cost per completed task may actually be lower.
 
 ### The June 22 Deadline
 
-Anthropic is offering Fable 5 with **unlimited usage on Pro/Max/Team/Enterprise plans until June 22, 2026**. After that date, usage credits may be required "until capacity expands." This suggests Anthropic is still scaling its inference infrastructure — the model is computationally expensive to run.
+Fable 5 is **included at no extra cost** on Pro, Max, Team, and seat-based Enterprise plans from June 9 through **June 22, 2026**. On June 23, Anthropic will remove Fable 5 from those plans — after that date, using it requires **usage credits**, though Anthropic plans to restore it as a standard inclusion once inference capacity expands.
+
+For API users, pricing remains at $10/$50 per million tokens regardless of the date.
 
 ---
 
@@ -182,7 +184,7 @@ If you're currently using Opus 4.8, should you switch?
 
 ### Fable 5 vs. Sonnet 4.6
 
-Sonnet 4.6 remains the pragmatic choice for most applications. At roughly 1/5 the output cost, it handles 80% of coding tasks adequately. Reserve Fable 5 for the 20% of tasks where superior reasoning actually changes the outcome.
+Sonnet 4.6 remains the pragmatic choice for most applications. At roughly 1/3 the output cost, it handles 80% of coding tasks adequately. Reserve Fable 5 for the 20% of tasks where superior reasoning actually changes the outcome.
 
 ---
 
@@ -285,10 +287,10 @@ Expect every major AI lab to adopt some version of "powerful model + domain-spec
 
 ## Key Takeaways for Developers
 
-- **Fable 5 is real, it's available now, and it's the most capable public model ever released.** Start experimenting today — especially if you're on a Pro or Max plan where it's included.
+- **Fable 5 is real, it's available now, and it's the most capable public model ever released.** Start experimenting today — especially if you're on a Pro, Max, Team, or Enterprise plan where it's included at no extra cost through June 22.
 - **The 1M context window + adaptive thinking is a game-changer for codebase-level reasoning.** Feed it your entire project and ask architectural questions.
 - **The safety architecture is transparent and fair.** You won't accidentally pay Fable 5 prices for Opus 4.8 responses.
-- **June 22 is an important date.** If you want to explore Fable 5's limits without worrying about usage credits, do it in the next two weeks.
+- **June 22 is an important date.** On June 23, Fable 5 is removed from subscription plans and requires usage credits. If you want to explore it without burning credits, do it in the next two weeks.
 - **This isn't the ceiling.** Mythos Preview remains ahead of Fable 5, and Mythos 5 is invitation-only. The models available 12 months from now will make Fable 5 look ordinary.
 
 ---
