@@ -1,26 +1,24 @@
-import { defineConfig } from 'astro/config';
-import mdx from '@astrojs/mdx';
-import sitemap from '@astrojs/sitemap';
-import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from "astro/config";
+import mdx from "@astrojs/mdx";
+import sitemap from "@astrojs/sitemap";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-    site: 'https://labitcode.com',
-    build: {
-        inlineStylesheets: 'always',
+  site: "https://labitcode.com",
+  trailingSlash: "never",
+  build: {
+    inlineStylesheets: "always",
+  },
+  integrations: [mdx(), sitemap()],
+  vite: {
+    plugins: [tailwindcss()],
+  },
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
     },
-    integrations: [
-        mdx(),
-        sitemap(),
-    ],
-    vite: {
-        plugins: [tailwindcss()],
-    },
-    markdown: {
-        shikiConfig: {
-            themes: {
-                light: 'github-light',
-                dark: 'github-dark',
-            },
-        },
-    },
+  },
 });
