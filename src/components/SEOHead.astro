@@ -8,7 +8,9 @@ interface Props {
   modifiedDate?: string;
   author?: string;
   tags?: string[];
+  section?: string;
   jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
 }
 
 const {
@@ -20,13 +22,16 @@ const {
   modifiedDate,
   author,
   tags,
+  section,
   jsonLd,
+  noindex = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = new URL(image, Astro.site);
 const siteName = "Labitcode";
 const fullTitle = title === "Home" ? `${siteName} — Engineering Lab` : `${title} | ${siteName}`;
+const robotsContent = noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
 
 // Build the Organization JSON-LD (always present)
 const organizationLd = {
@@ -34,7 +39,7 @@ const organizationLd = {
   "@type": "Organization",
   name: "labitcode",
   url: "https://labitcode.com",
-  logo: "https://labitcode.com/logo.svg",
+  logo: "https://labitcode.com/favicon.svg",
   description: "Engineering lab exploring Software, AI, Security, and DevOps.",
   founder: {
     "@type": "Person",
@@ -69,6 +74,7 @@ if (jsonLd) {
 <meta name="description" content={description} />
 <meta name="author" content={author || "Alfonso Garcia"} />
 <meta name="generator" content={Astro.generator} />
+<meta name="robots" content={robotsContent} />
 <link rel="canonical" href={canonicalURL} />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="sitemap" href="/sitemap-index.xml" />
@@ -81,16 +87,22 @@ if (jsonLd) {
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:site_name" content={siteName} />
 <meta property="og:image" content={ogImageURL} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 <meta property="og:type" content={type} />
 <meta property="og:locale" content="en_US" />
 {publishedDate && <meta property="article:published_time" content={publishedDate} />}
 {modifiedDate && <meta property="article:modified_time" content={modifiedDate} />}
+{author && <meta property="article:author" content={author} />}
+{section && <meta property="article:section" content={section} />}
+{tags && tags.map((tag) => <meta property="article:tag" content={tag} />)}
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImageURL} />
+<meta name="twitter:site" content="@alfoncode" />
 
 <!-- Preload fonts (non-blocking) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />

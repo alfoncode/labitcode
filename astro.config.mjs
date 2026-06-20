@@ -9,7 +9,12 @@ export default defineConfig({
   build: {
     inlineStylesheets: "always",
   },
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      lastmod: new Date(),
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

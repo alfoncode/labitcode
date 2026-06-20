@@ -36,23 +36,32 @@ const blogPostingLd = {
     "@type": "Organization",
     name: "labitcode",
     url: "https://labitcode.com",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://labitcode.com/favicon.svg",
+    },
   },
   mainEntityOfPage: {
     "@type": "WebPage",
     "@id": `https://labitcode.com/blog/${post.id}`,
   },
   keywords: post.data.tags.join(", "),
+  ...(post.data.heroImage && {
+    image: `https://labitcode.com${post.data.heroImage}`,
+  }),
 };
 ---
 
 <BaseLayout
   title={post.data.title}
   description={post.data.description}
+  image={post.data.heroImage || "/og-default.png"}
   type="article"
   publishedDate={post.data.pubDate.toISOString()}
   modifiedDate={(post.data.updatedDate || post.data.pubDate).toISOString()}
   author={post.data.author}
   tags={post.data.tags}
+  section="Blog"
   jsonLd={blogPostingLd}
 >
   <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">

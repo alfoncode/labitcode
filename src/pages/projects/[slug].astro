@@ -38,12 +38,19 @@ const softwareAppLd = {
   ...(project.data.repo && {
     codeRepository: project.data.repo,
   }),
+  ...(project.data.heroImage && {
+    image: `https://labitcode.com${project.data.heroImage}`,
+  }),
 };
 ---
 
 <BaseLayout
   title={project.data.title}
   description={project.data.description}
+  image={project.data.heroImage || "/og-default.png"}
+  type="article"
+  author={project.data.creator}
+  section="Projects"
   jsonLd={softwareAppLd}
 >
   <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">

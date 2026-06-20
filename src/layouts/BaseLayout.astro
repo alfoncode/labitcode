@@ -16,7 +16,9 @@ interface Props {
   modifiedDate?: string;
   author?: string;
   tags?: string[];
+  section?: string;
   jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
 }
 
 const props = Astro.props;
