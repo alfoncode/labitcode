@@ -31,7 +31,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = new URL(image, Astro.site);
 const siteName = "Labitcode";
 const fullTitle = title === "Home" ? `${siteName} — Engineering Lab` : `${title} | ${siteName}`;
-const robotsContent = noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+const robotsContent = noindex
+  ? "noindex, nofollow"
+  : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
 
 // Build the Organization JSON-LD (always present)
 const organizationLd = {

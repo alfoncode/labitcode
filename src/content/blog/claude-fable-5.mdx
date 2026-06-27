@@ -20,13 +20,13 @@ In this deep dive, we'll unpack everything developers and AI practitioners need 
 
 To understand Fable 5, you first need to understand the tier system Anthropic has built over the past three years.
 
-| Tier | Models | Description |
-|------|--------|-------------|
-| **Haiku** | Haiku 4.5 | Fast, cost-effective, lightweight |
-| **Sonnet** | Sonnet 4.6 | Balanced price-to-performance |
-| **Opus** | Opus 4.7 / 4.8 | Most capable general tier, agentic coding |
-| **Mythos** | Mythos Preview, Mythos 5 | Frontier intelligence, invitation-only |
-| **Fable** | **Fable 5** | Mythos capability, general availability |
+| Tier       | Models                   | Description                               |
+| ---------- | ------------------------ | ----------------------------------------- |
+| **Haiku**  | Haiku 4.5                | Fast, cost-effective, lightweight         |
+| **Sonnet** | Sonnet 4.6               | Balanced price-to-performance             |
+| **Opus**   | Opus 4.7 / 4.8           | Most capable general tier, agentic coding |
+| **Mythos** | Mythos Preview, Mythos 5 | Frontier intelligence, invitation-only    |
+| **Fable**  | **Fable 5**              | Mythos capability, general availability   |
 
 The Mythos tier emerged in April 2026 when Anthropic revealed that its most advanced internal system — then available only to select research partners — had autonomously discovered **thousands of zero-day vulnerabilities**, including bugs in OpenBSD code that had gone unnoticed for 27 years.
 
@@ -68,14 +68,14 @@ Anthropic recommends `high` as the default for most workloads, reserving `xhigh`
 
 Anthropic published a comprehensive benchmark table comparing Fable 5 against GPT-5.5, and the numbers are striking.
 
-| Benchmark | Claude Fable 5 | GPT-5.5 | Delta |
-|-----------|---------------|---------|-------|
-| **SWE-Bench Pro** (agentic coding) | **80.3%** | 58.6% | +21.7% |
-| **GDPval-AA** (knowledge work) | **1,932** | 1,769 | +163 pts |
-| **Computer Use** | **85.0%** | 78.7% | +6.3% |
-| **Legal reasoning** | **Leader** | — | — |
-| **Tool use** | **Leader** | — | — |
-| **Multidisciplinary reasoning** | **Leader** | — | — |
+| Benchmark                          | Claude Fable 5 | GPT-5.5 | Delta    |
+| ---------------------------------- | -------------- | ------- | -------- |
+| **SWE-Bench Pro** (agentic coding) | **80.3%**      | 58.6%   | +21.7%   |
+| **GDPval-AA** (knowledge work)     | **1,932**      | 1,769   | +163 pts |
+| **Computer Use**                   | **85.0%**      | 78.7%   | +6.3%    |
+| **Legal reasoning**                | **Leader**     | —       | —        |
+| **Tool use**                       | **Leader**     | —       | —        |
+| **Multidisciplinary reasoning**    | **Leader**     | —       | —        |
 
 The SWE-Bench Pro gap is particularly significant: 80.3% means Fable 5 can autonomously resolve complex GitHub issues — writing patches, running tests, and iterating on failures — better than any previously available model. For context, Opus 4.8 scores ~72.5% on SWE-bench Verified, meaning Fable 5 represents roughly a **10-percentage-point leap** in a benchmark where each point is hard-won.
 
@@ -129,22 +129,22 @@ This architecture represents a new paradigm: **graduated capability release**. I
 
 ## Pricing and Availability
 
-| Plan | Access | Notes |
-|------|--------|-------|
-| **Pro** ($20/mo) | Included through June 22 | Requires usage credits from June 23 |
-| **Max** ($100/mo) | Included through June 22 | Higher rate limits |
-| **Team** ($25/user/mo) | Included through June 22 | Shared rate limits |
-| **Enterprise** | Included through June 22 | Custom terms |
-| **API** | Pay-per-token | `claude-fable-5` model ID |
+| Plan                   | Access                   | Notes                               |
+| ---------------------- | ------------------------ | ----------------------------------- |
+| **Pro** ($20/mo)       | Included through June 22 | Requires usage credits from June 23 |
+| **Max** ($100/mo)      | Included through June 22 | Higher rate limits                  |
+| **Team** ($25/user/mo) | Included through June 22 | Shared rate limits                  |
+| **Enterprise**         | Included through June 22 | Custom terms                        |
+| **API**                | Pay-per-token            | `claude-fable-5` model ID           |
 
 ### API Pricing
 
-| Token Type | Price (per 1M tokens) |
-|------------|----------------------|
-| **Input** | $10.00 |
-| **Output** | $50.00 |
-| **Cache write** | $12.50 |
-| **Cache read** | $1.00 |
+| Token Type      | Price (per 1M tokens) |
+| --------------- | --------------------- |
+| **Input**       | $10.00                |
+| **Output**      | $50.00                |
+| **Cache write** | $12.50                |
+| **Cache read**  | $1.00                 |
 
 At $50/M output tokens, Fable 5 is priced at a premium — roughly **2x Opus 4.8** ($25/M) and **~3.3x Sonnet 4.6** ($15/M). But for tasks where Fable 5's superior reasoning eliminates multiple retry loops, the effective cost per completed task may actually be lower.
 
@@ -171,12 +171,14 @@ Fable 5 leads on every benchmark Anthropic published, but the real-world differe
 If you're currently using Opus 4.8, should you switch?
 
 **Switch to Fable 5 when:**
+
 - You're running complex multi-step agent workflows
 - You need maximum coding accuracy on hard problems
 - Your tasks require days-long autonomous execution
 - The task is bottlenecked by reasoning quality, not speed
 
 **Stick with Opus 4.8 when:**
+
 - You need deterministic extended thinking (manual toggle)
 - Your tasks are latency-sensitive
 - You're doing straightforward API calls or RAG pipelines

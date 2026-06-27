@@ -7,14 +7,12 @@
 <script>
   function renderMermaidDiagrams() {
     // Find mermaid code blocks by Shiki's data-language attribute on <pre>
-    const mermaidPres = document.querySelectorAll(
-      '.prose pre[data-language="mermaid"]'
-    );
+    const mermaidPres = document.querySelectorAll('.prose pre[data-language="mermaid"]');
 
     if (mermaidPres.length === 0) return;
 
     // Dynamically import mermaid only when diagrams exist on the page
-    import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs')
+    import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs")
       .then(async (mod) => {
         const mermaid = mod.default;
 
@@ -23,37 +21,36 @@
           await document.fonts.ready;
         }
 
-        const isDark =
-          document.documentElement.getAttribute('data-theme') === 'dark';
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
 
         mermaid.initialize({
           startOnLoad: false,
-          theme: isDark ? 'dark' : 'base',
+          theme: isDark ? "dark" : "base",
           themeVariables: isDark
             ? {
-                primaryColor: '#4f46e5',
-                primaryTextColor: '#e2e8f0',
-                primaryBorderColor: '#6366f1',
-                lineColor: '#94a3b8',
-                secondaryColor: '#1e293b',
-                tertiaryColor: '#0f172a',
-                fontSize: '16px',
+                primaryColor: "#4f46e5",
+                primaryTextColor: "#e2e8f0",
+                primaryBorderColor: "#6366f1",
+                lineColor: "#94a3b8",
+                secondaryColor: "#1e293b",
+                tertiaryColor: "#0f172a",
+                fontSize: "16px",
               }
             : {
-                primaryColor: '#eef2ff',
-                primaryTextColor: '#1e293b',
-                primaryBorderColor: '#4f46e5',
-                lineColor: '#475569',
-                secondaryColor: '#f8fafc',
-                tertiaryColor: '#f1f5f9',
-                fontSize: '16px',
+                primaryColor: "#eef2ff",
+                primaryTextColor: "#1e293b",
+                primaryBorderColor: "#4f46e5",
+                lineColor: "#475569",
+                secondaryColor: "#f8fafc",
+                tertiaryColor: "#f1f5f9",
+                fontSize: "16px",
               },
-          securityLevel: 'loose',
-          fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
+          securityLevel: "loose",
+          fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
           flowchart: {
             useMaxWidth: true,
             htmlLabels: true,
-            curve: 'basis',
+            curve: "basis",
             padding: 20,
             nodeSpacing: 50,
             rankSpacing: 60,
@@ -67,34 +64,34 @@
         // Render each mermaid block
         for (let i = 0; i < mermaidPres.length; i++) {
           const pre = mermaidPres[i];
-          const codeEl = pre.querySelector('code');
-          const source = codeEl ? codeEl.textContent || '' : pre.textContent || '';
+          const codeEl = pre.querySelector("code");
+          const source = codeEl ? codeEl.textContent || "" : pre.textContent || "";
 
-          if (pre.dataset.mermaidRendered === 'true') continue;
-          pre.dataset.mermaidRendered = 'true';
+          if (pre.dataset.mermaidRendered === "true") continue;
+          pre.dataset.mermaidRendered = "true";
 
           // Build a clean source without Shiki line spans
           const cleanSource = source
-            .replace(/\u2010/g, '-') // Fix unicode hyphens introduced by Shiki
+            .replace(/\u2010/g, "-") // Fix unicode hyphens introduced by Shiki
             .trim();
 
-          const id = 'mermaid-' + Date.now() + '-' + i;
+          const id = "mermaid-" + Date.now() + "-" + i;
 
           try {
             const { svg } = await mermaid.render(id, cleanSource);
-            const container = document.createElement('div');
-            container.className = 'mermaid-diagram';
+            const container = document.createElement("div");
+            container.className = "mermaid-diagram";
             container.innerHTML = svg;
             pre.replaceWith(container);
           } catch (err) {
-            console.warn('Mermaid render error for block', i, err);
+            console.warn("Mermaid render error for block", i, err);
             // Leave raw code visible as graceful fallback
-            pre.dataset.mermaidRendered = 'failed';
+            pre.dataset.mermaidRendered = "failed";
           }
         }
       })
       .catch((err) => {
-        console.warn('Failed to load Mermaid:', err);
+        console.warn("Failed to load Mermaid:", err);
       });
   }
 
@@ -102,34 +99,32 @@
   renderMermaidDiagrams();
 
   // Re-render after SPA navigations
-  document.addEventListener('astro:after-swap', renderMermaidDiagrams);
+  document.addEventListener("astro:after-swap", renderMermaidDiagrams);
 
   // Re-render on theme change (in case user toggles dark/light mode)
   const themeObserver = new MutationObserver(() => {
     // Reset rendered state so diagrams re-render with new theme
-    document
-      .querySelectorAll('.mermaid-diagram')
-      .forEach((container) => {
-        // Recover the original pre block's source from a data attribute or text
-        const originalSource = container.dataset.mermaidSource;
-        if (originalSource) {
-          // Remove the SVG container so renderMermaidDiagrams can reprocess
-          // But we need to put the pre back... simplest: reload
-          container.remove();
-        }
-      });
+    document.querySelectorAll(".mermaid-diagram").forEach((container) => {
+      // Recover the original pre block's source from a data attribute or text
+      const originalSource = container.dataset.mermaidSource;
+      if (originalSource) {
+        // Remove the SVG container so renderMermaidDiagrams can reprocess
+        // But we need to put the pre back... simplest: reload
+        container.remove();
+      }
+    });
     // Clear rendered state on all mermaid pre blocks
     document.querySelectorAll('.prose pre[data-language="mermaid"]').forEach((pre) => {
       delete pre.dataset.mermaidRendered;
     });
     // Also remove any leftover rendered diagram containers
-    document.querySelectorAll('.mermaid-diagram').forEach((el) => el.remove());
+    document.querySelectorAll(".mermaid-diagram").forEach((el) => el.remove());
     renderMermaidDiagrams();
   });
 
   themeObserver.observe(document.documentElement, {
     attributes: true,
-    attributeFilter: ['data-theme'],
+    attributeFilter: ["data-theme"],
   });
 </script>
 
@@ -154,13 +149,13 @@
   }
 
   /* Dark mode mermaid tweaks */
-  [data-theme='dark'] .mermaid-diagram svg {
+  [data-theme="dark"] .mermaid-diagram svg {
     filter: none;
   }
 
   /* Light mode mermaid — ensure contrast */
-  [data-theme='light'] .mermaid-diagram svg .edgeLabel,
-  [data-theme='light'] .mermaid-diagram svg .edgeLabel rect {
+  [data-theme="light"] .mermaid-diagram svg .edgeLabel,
+  [data-theme="light"] .mermaid-diagram svg .edgeLabel rect {
     /* Let mermaid handle its own theme colors */
   }
 </style>

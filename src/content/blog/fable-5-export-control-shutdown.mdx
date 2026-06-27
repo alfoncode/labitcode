@@ -20,14 +20,14 @@ But for developers, it's also something more immediate: a wake-up call about **d
 
 Here's exactly what happened, condensed into the key moments:
 
-| Date | Event |
-|------|-------|
-| **Apr 2026** | Anthropic unveils **Claude Mythos Preview** — an invitation-only model that autonomously discovered thousands of zero-day vulnerabilities, including bugs in OpenBSD code untouched for 27 years. |
-| **Jun 1, 2026** | Anthropic confidentially submits its **draft S-1** to the SEC, signaling an imminent IPO. |
-| **Jun 9, 2026** | **Claude Fable 5 launches** to the public — a Mythos-class model with safety classifiers that restrict responses in high-risk domains. Mythos 5 remains limited to vetted Project Glasswing cybersecurity partners. |
-| **Jun 12, 2026, 5:21 PM ET** | Commerce Secretary **Howard Lutnick** sends a letter to Anthropic CEO **Dario Amodei**, issuing an export control directive under national security authorities. |
-| **Jun 12, 2026, ~9:00 PM ET** | Anthropic announces it has **disabled Fable 5 and Mythos 5 for all customers worldwide** to ensure compliance. Other Claude models remain unaffected. |
-| **Jun 13, 2026** | The story breaks globally. Anthropic calls the directive a **"misunderstanding"** and says it's working to restore access. |
+| Date                          | Event                                                                                                                                                                                                               |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Apr 2026**                  | Anthropic unveils **Claude Mythos Preview** — an invitation-only model that autonomously discovered thousands of zero-day vulnerabilities, including bugs in OpenBSD code untouched for 27 years.                   |
+| **Jun 1, 2026**               | Anthropic confidentially submits its **draft S-1** to the SEC, signaling an imminent IPO.                                                                                                                           |
+| **Jun 9, 2026**               | **Claude Fable 5 launches** to the public — a Mythos-class model with safety classifiers that restrict responses in high-risk domains. Mythos 5 remains limited to vetted Project Glasswing cybersecurity partners. |
+| **Jun 12, 2026, 5:21 PM ET**  | Commerce Secretary **Howard Lutnick** sends a letter to Anthropic CEO **Dario Amodei**, issuing an export control directive under national security authorities.                                                    |
+| **Jun 12, 2026, ~9:00 PM ET** | Anthropic announces it has **disabled Fable 5 and Mythos 5 for all customers worldwide** to ensure compliance. Other Claude models remain unaffected.                                                               |
+| **Jun 13, 2026**              | The story breaks globally. Anthropic calls the directive a **"misunderstanding"** and says it's working to restore access.                                                                                          |
 
 The speed is staggering: a model went from public launch to government-mandated global shutdown in **under 80 hours**.
 
@@ -43,7 +43,7 @@ If you missed our [deep dive on Fable 5's launch](/blog/claude-fable-5), here's 
 
 - **Mythos 5** is the unrestricted version, available only to vetted partners through **Project Glasswing**, Anthropic's trusted-access cybersecurity program.
 
-The irony is bitter: Anthropic built Fable 5's entire safety architecture to *prevent* exactly the kind of government intervention that just happened.
+The irony is bitter: Anthropic built Fable 5's entire safety architecture to _prevent_ exactly the kind of government intervention that just happened.
 
 ---
 
@@ -61,9 +61,9 @@ Let that sink in. The order applies to:
 - **Foreign nationals inside the US** — unprecedented for software
 - **Foreign national Anthropic employees** — meaning the company's own engineers can't access the models they built
 
-Given this scope, Anthropic's hand was forced: to comply immediately, it had to disable the models for *everyone*.
+Given this scope, Anthropic's hand was forced: to comply immediately, it had to disable the models for _everyone_.
 
-### What's *Not* in the Directive
+### What's _Not_ in the Directive
 
 Equally important is what the directive did **not** include:
 
@@ -134,7 +134,7 @@ graph LR
     C --> D[Anthropic sues<br/>administration]
     D --> E[Fable 5 launches<br/>June 9]
     E --> F[Commerce Dept issues<br/>export control<br/>June 12]
-    
+
     style A fill:#ff6b6b,color:#fff
     style D fill:#ffd93d,color:#000
     style F fill:#ff6b6b,color:#fff
@@ -167,7 +167,7 @@ The practical takeaway is that any production system depending on a single front
 primary_model: claude-fable-5
 # If Fable 5 is unavailable → service is down
 
-# After June 12: resilient multi-model architecture  
+# After June 12: resilient multi-model architecture
 primary_model: claude-fable-5
 fallback_chain:
   - claude-opus-4-8      # Same provider, less capable but available
@@ -221,7 +221,7 @@ The crypto wars were about encryption algorithms that could be implemented in a 
 - Massive datasets
 - Hundreds of expert researchers
 
-This concentration might make export controls *more* effective than they were in the 90s — or it might just concentrate the damage on a handful of US companies while the rest of the world catches up.
+This concentration might make export controls _more_ effective than they were in the 90s — or it might just concentrate the damage on a handful of US companies while the rest of the world catches up.
 
 ---
 
@@ -327,4 +327,4 @@ This isn't just a policy story — it's an operational one. Here are concrete st
 
 ---
 
-*Built with technical precision and artificial intelligence at labitcode.*
+_Built with technical precision and artificial intelligence at labitcode._
