@@ -11,6 +11,8 @@ interface Props {
   title: string;
   description: string;
   image?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   type?: "website" | "article" | "profile";
   publishedDate?: string;
   modifiedDate?: string;
@@ -19,6 +21,8 @@ interface Props {
   section?: string;
   jsonLd?: Record<string, unknown>;
   noindex?: boolean;
+  includeOrganization?: boolean;
+  breadcrumbs?: { name: string; url: string }[];
 }
 
 const props = Astro.props;

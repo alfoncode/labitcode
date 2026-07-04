@@ -4,6 +4,7 @@ import Badge from "@/components/Badge.astro";
 import DiscussionCTA from "@/components/DiscussionCTA.astro";
 import { getCollection, render } from "astro:content";
 import { formatDate } from "@/utils/helpers";
+import { getImageSize } from "@/utils/images";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -15,6 +16,11 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
+
+const heroImage = project.data.heroImage || "/og-default.png";
+const ogDims = project.data.heroImage
+  ? await getImageSize(project.data.heroImage)
+  : { width: 1200, height: 630 };
 
 const statusColors: Record<string, string> = {
   active: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
@@ -47,11 +53,18 @@ const softwareAppLd = {
 <BaseLayout
   title={project.data.title}
   description={project.data.description}
-  image={project.data.heroImage || "/og-default.png"}
+  image={heroImage}
+  imageWidth={ogDims.width}
+  imageHeight={ogDims.height}
   type="article"
   author={project.data.creator}
   section="Projects"
   jsonLd={softwareAppLd}
+  breadcrumbs={[
+    { name: "Home", url: "https://labitcode.com" },
+    { name: "Projects", url: "https://labitcode.com/projects" },
+    { name: project.data.title, url: `https://labitcode.com/projects/${project.id}` },
+  ]}
 >
   <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
     <!-- Back link -->
@@ -166,6 +179,10 @@ const softwareAppLd = {
             src={project.data.heroImage}
             alt={project.data.title}
             class="w-full h-full object-cover"
+            width="1024"
+            height="576"
+            loading="eager"
+            decoding="async"
           />
         </div>
       )

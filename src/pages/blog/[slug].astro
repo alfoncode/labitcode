@@ -1,10 +1,12 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Badge from "@/components/Badge.astro";
+import BlogCard from "@/components/BlogCard.astro";
 import DiscussionCTA from "@/components/DiscussionCTA.astro";
 import Mermaid from "@/components/Mermaid.astro";
 import { getCollection, render } from "astro:content";
 import { formatDate, getReadingTime } from "@/utils/helpers";
+import { getImageSize } from "@/utils/images";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -19,6 +21,18 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const readingTime = post.body ? getReadingTime(post.body) : "3 min read";
+
+// Related posts (share at least one tag, excluding current)
+const allPosts = (await getCollection("blog")).filter((p) => !p.data.draft);
+const relatedPosts = allPosts
+  .filter((p) => p.id !== post.id && p.data.tags.some((t) => post.data.tags.includes(t)))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const heroImage = post.data.heroImage || "/og-default.png";
+const ogDims = post.data.heroImage
+  ? await getImageSize(post.data.heroImage)
+  : { width: 1200, height: 630 };
 
 // JSON-LD for BlogPosting
 const blogPostingLd = {
@@ -55,7 +69,9 @@ const blogPostingLd = {
 <BaseLayout
   title={post.data.title}
   description={post.data.description}
-  image={post.data.heroImage || "/og-default.png"}
+  image={heroImage}
+  imageWidth={ogDims.width}
+  imageHeight={ogDims.height}
   type="article"
   publishedDate={post.data.pubDate.toISOString()}
   modifiedDate={(post.data.updatedDate || post.data.pubDate).toISOString()}
@@ -63,6 +79,11 @@ const blogPostingLd = {
   tags={post.data.tags}
   section="Blog"
   jsonLd={blogPostingLd}
+  breadcrumbs={[
+    { name: "Home", url: "https://labitcode.com" },
+    { name: "Blog", url: "https://labitcode.com/blog" },
+    { name: post.data.title, url: `https://labitcode.com/blog/${post.id}` },
+  ]}
 >
   <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
     <!-- Back link -->
@@ -142,6 +163,28 @@ const blogPostingLd = {
     <Mermaid />
 
     <DiscussionCTA title={post.data.title} url={`https://labitcode.com/blog/${post.id}`} />
+
+    {
+      relatedPosts.length > 0 && (
+        <section class="mt-16 pt-8 border-t border-border dark:border-navy-light">
+          <h2 class="text-2xl font-bold text-navy dark:text-gray-100 mb-6">Related Posts</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {relatedPosts.map((p) => (
+              <BlogCard
+                title={p.data.title}
+                description={p.data.description}
+                pubDate={p.data.pubDate}
+                tags={p.data.tags}
+                author={p.data.author}
+                slug={p.id}
+                body={p.body}
+                heroImage={p.data.heroImage}
+              />
+            ))}
+          </div>
+        </section>
+      )
+    }
 
     <!-- Footer -->
     <footer class="mt-16 pt-8 border-t border-border dark:border-navy-light">

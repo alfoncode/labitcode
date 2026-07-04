@@ -42,7 +42,17 @@ const readingTime = body ? getReadingTime(body) : "3 min read";
   <div class="p-6 flex flex-col flex-1">
     {/* Tags */}
     <div class="flex flex-wrap gap-2 mb-3">
-      {tags.slice(0, 3).map((tag) => <Badge label={tag} variant="accent" />)}
+      {
+        tags.slice(0, 3).map((tag) => (
+          <a
+            href={`/blog/tag/${encodeURIComponent(tag)}`}
+            class="relative z-20"
+            aria-label={`See more articles tagged ${tag}`}
+          >
+            <Badge label={tag} variant="accent" />
+          </a>
+        ))
+      }
     </div>
 
     {/* Title */}

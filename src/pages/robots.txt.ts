@@ -5,6 +5,7 @@ User-agent: *
 Allow: /
 
 Sitemap: https://labitcode.com/sitemap-index.xml
+Sitemap: https://labitcode.com/image-sitemap.xml
 `.trim();
 
 const robotsTxtDisallow = `

@@ -13,6 +13,8 @@ export default defineConfig({
     mdx(),
     sitemap({
       lastmod: new Date(),
+      changefreq: "weekly",
+      priority: 0.7,
     }),
   ],
   vite: {

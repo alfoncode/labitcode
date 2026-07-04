@@ -9,6 +9,11 @@ const team = await getCollection("team");
   title="Team"
   description="Meet the labitcode team — Alfonso Garcia and our virtual AI entity, pushing the boundaries of software engineering together."
   type="profile"
+  includeOrganization
+  breadcrumbs={[
+    { name: "Home", url: "https://labitcode.com" },
+    { name: "Team", url: "https://labitcode.com/team" },
+  ]}
 >
   <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
     <!-- Header -->
