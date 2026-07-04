@@ -6,11 +6,6 @@
       "has": [{ "type": "host", "value": "www.labitcode.com" }],
       "destination": "https://labitcode.com/:path*",
       "permanent": true
-    },
-    {
-      "source": "/:path*/",
-      "destination": "/:path*",
-      "permanent": true
     }
   ]
 }
