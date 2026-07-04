@@ -5,6 +5,7 @@ import DiscussionCTA from "@/components/DiscussionCTA.astro";
 import { getCollection, render } from "astro:content";
 import { formatDate } from "@/utils/helpers";
 import { getImageSize } from "@/utils/images";
+import { SITE } from "@/consts";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -22,6 +23,8 @@ const ogDims = project.data.heroImage
   ? await getImageSize(project.data.heroImage)
   : { width: 1200, height: 630 };
 
+const isArchived = project.data.status === "archived";
+
 const statusColors: Record<string, string> = {
   active: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
   "in-progress": "bg-amber-500/10 text-amber-600 dark:text-amber-400",
@@ -36,16 +39,16 @@ const softwareAppLd = {
   description: project.data.description,
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Any",
-  author: {
-    "@type": "Person",
-    name: project.data.creator,
-  },
+  author: { "@type": "Person", name: project.data.creator },
   ...(project.data.url && { url: project.data.url }),
-  ...(project.data.repo && {
-    codeRepository: project.data.repo,
-  }),
+  ...(project.data.repo && { codeRepository: project.data.repo }),
   ...(project.data.heroImage && {
-    image: `https://labitcode.com${project.data.heroImage}`,
+    image: {
+      "@type": "ImageObject",
+      url: new URL(project.data.heroImage, SITE).href,
+      width: ogDims.width,
+      height: ogDims.height,
+    },
   }),
 };
 ---
@@ -56,14 +59,16 @@ const softwareAppLd = {
   image={heroImage}
   imageWidth={ogDims.width}
   imageHeight={ogDims.height}
+  imageAlt={project.data.title}
   type="article"
   author={project.data.creator}
   section="Projects"
   jsonLd={softwareAppLd}
+  noindex={isArchived}
   breadcrumbs={[
-    { name: "Home", url: "https://labitcode.com" },
-    { name: "Projects", url: "https://labitcode.com/projects" },
-    { name: project.data.title, url: `https://labitcode.com/projects/${project.id}` },
+    { name: "Home", url: SITE },
+    { name: "Projects", url: `${SITE}/projects` },
+    { name: project.data.title, url: `${SITE}/projects/${project.id}` },
   ]}
 >
   <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
@@ -193,10 +198,7 @@ const softwareAppLd = {
       <Content />
     </div>
 
-    <DiscussionCTA
-      title={project.data.title}
-      url={`https://labitcode.com/projects/${project.id}`}
-    />
+    <DiscussionCTA title={project.data.title} url={`${SITE}/projects/${project.id}`} />
 
     <!-- Footer -->
     <footer class="mt-16 pt-8 border-t border-border dark:border-navy-light">

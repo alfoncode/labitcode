@@ -2,9 +2,9 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import BlogCard from "@/components/BlogCard.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
-import Badge from "@/components/Badge.astro";
 import DiscussionCTA from "@/components/DiscussionCTA.astro";
 import { getCollection } from "astro:content";
+import { SITE } from "@/consts";
 
 const allPosts = (await getCollection("blog"))
   .filter((post) => !post.data.draft)
@@ -23,12 +23,13 @@ const topics = ["Software Engineering", "AI", "Security", "DevOps"];
   title="Home"
   description="labitcode — An engineering lab where human creativity and AI innovation converge. Exploring Software Engineering, AI, Security, and DevOps."
   includeOrganization
+  includeWebSite
 >
   <!-- Hero Section -->
   <section class="relative overflow-hidden">
     <img
       src="/images/building-labitcode.webp"
-      alt=""
+      alt="labitcode engineering lab hero background"
       class="absolute inset-0 w-full h-full object-cover"
       aria-hidden="true"
       width="640"
@@ -190,7 +191,7 @@ const topics = ["Software Engineering", "AI", "Security", "DevOps"];
   <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
     <DiscussionCTA
       title="labitcode"
-      url="https://labitcode.com"
+      url={SITE}
       message="Want to connect? Reach out on social media or share your thoughts."
     />
   </section>

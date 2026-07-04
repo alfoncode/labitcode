@@ -7,6 +7,7 @@ import Mermaid from "@/components/Mermaid.astro";
 import { getCollection, render } from "astro:content";
 import { formatDate, getReadingTime } from "@/utils/helpers";
 import { getImageSize } from "@/utils/images";
+import { SITE } from "@/consts";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -29,10 +30,13 @@ const relatedPosts = allPosts
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
 
-const heroImage = post.data.heroImage || "/og-default.png";
-const ogDims = post.data.heroImage
-  ? await getImageSize(post.data.heroImage)
-  : { width: 1200, height: 630 };
+const ogImageRel = post.data.ogImage || post.data.heroImage || "/og-default.png";
+const ogDims =
+  post.data.heroImage || post.data.ogImage
+    ? await getImageSize(post.data.ogImage || post.data.heroImage!)
+    : { width: 1200, height: 630 };
+
+const canonicalURL = post.data.canonicalURL || `${SITE}/blog/${post.id}`;
 
 // JSON-LD for BlogPosting
 const blogPostingLd = {
@@ -42,36 +46,45 @@ const blogPostingLd = {
   description: post.data.description,
   datePublished: post.data.pubDate.toISOString(),
   dateModified: (post.data.updatedDate || post.data.pubDate).toISOString(),
-  author: {
-    "@type": post.data.author === "AI" ? "Organization" : "Person",
-    name: post.data.author === "AI" ? "labitcode AI" : post.data.author,
-  },
+  author:
+    post.data.author === "AI"
+      ? { "@type": "Organization", name: "labitcode AI", url: SITE }
+      : {
+          "@type": "Person",
+          name: post.data.author,
+          url: SITE,
+          sameAs: ["https://github.com/alfoncode", "https://www.linkedin.com/in/alfonsojosegarcia/"],
+        },
   publisher: {
     "@type": "Organization",
     name: "labitcode",
-    url: "https://labitcode.com",
+    url: SITE,
     logo: {
       "@type": "ImageObject",
-      url: "https://labitcode.com/favicon.svg",
+      url: `${SITE}/og-default.png`,
+      width: 1200,
+      height: 630,
     },
   },
-  mainEntityOfPage: {
-    "@type": "WebPage",
-    "@id": `https://labitcode.com/blog/${post.id}`,
-  },
+  mainEntityOfPage: { "@type": "WebPage", "@id": canonicalURL },
   keywords: post.data.tags.join(", "),
-  ...(post.data.heroImage && {
-    image: `https://labitcode.com${post.data.heroImage}`,
-  }),
+  image: {
+    "@type": "ImageObject",
+    url: new URL(ogImageRel, SITE).href,
+    width: ogDims.width,
+    height: ogDims.height,
+    ...(post.data.heroImageAlt && { caption: post.data.heroImageAlt }),
+  },
 };
 ---
 
 <BaseLayout
   title={post.data.title}
   description={post.data.description}
-  image={heroImage}
+  image={ogImageRel}
   imageWidth={ogDims.width}
   imageHeight={ogDims.height}
+  imageAlt={post.data.heroImageAlt || post.data.title}
   type="article"
   publishedDate={post.data.pubDate.toISOString()}
   modifiedDate={(post.data.updatedDate || post.data.pubDate).toISOString()}
@@ -79,10 +92,11 @@ const blogPostingLd = {
   tags={post.data.tags}
   section="Blog"
   jsonLd={blogPostingLd}
+  canonicalOverride={post.data.canonicalURL}
   breadcrumbs={[
-    { name: "Home", url: "https://labitcode.com" },
-    { name: "Blog", url: "https://labitcode.com/blog" },
-    { name: post.data.title, url: `https://labitcode.com/blog/${post.id}` },
+    { name: "Home", url: SITE },
+    { name: "Blog", url: `${SITE}/blog` },
+    { name: post.data.title, url: `${SITE}/blog/${post.id}` },
   ]}
 >
   <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
@@ -143,7 +157,7 @@ const blogPostingLd = {
         <div class="mb-10 rounded-2xl overflow-hidden border border-border dark:border-navy-light aspect-video">
           <img
             src={post.data.heroImage}
-            alt={post.data.title}
+            alt={post.data.heroImageAlt || post.data.title}
             class="w-full h-full object-cover"
             width="640"
             height="360"
@@ -162,7 +176,7 @@ const blogPostingLd = {
 
     <Mermaid />
 
-    <DiscussionCTA title={post.data.title} url={`https://labitcode.com/blog/${post.id}`} />
+    <DiscussionCTA title={post.data.title} url={`${SITE}/blog/${post.id}`} />
 
     {
       relatedPosts.length > 0 && (

@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import SearchBar from "@/components/SearchBar.astro";
 import BlogCard from "@/components/BlogCard.astro";
 import { getCollection } from "astro:content";
+import { SITE } from "@/consts";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -12,14 +13,29 @@ const allPosts = (await getCollection("blog"))
 
 // Gather all unique tags
 const allTags = [...new Set(allPosts.flatMap((post) => post.data.tags))].sort();
+
+// ItemList JSON-LD
+const itemListLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "labitcode Blog",
+  url: `${SITE}/blog`,
+  itemListElement: allPosts.map((p, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    url: `${SITE}/blog/${p.id}`,
+    name: p.data.title,
+  })),
+};
 ---
 
 <BaseLayout
   title="Blog"
   description="Engineering articles on Software, AI, Security, and DevOps from the labitcode team."
+  jsonLd={itemListLd}
   breadcrumbs={[
-    { name: "Home", url: "https://labitcode.com" },
-    { name: "Blog", url: "https://labitcode.com/blog" },
+    { name: "Home", url: SITE },
+    { name: "Blog", url: `${SITE}/blog` },
   ]}
 >
   <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">

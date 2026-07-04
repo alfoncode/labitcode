@@ -1,11 +1,13 @@
 import type { APIRoute } from "astro";
+import { SITE } from "@/consts";
 
 const robotsTxt = `
 User-agent: *
 Allow: /
+Disallow: /search-index.json
 
-Sitemap: https://labitcode.com/sitemap-index.xml
-Sitemap: https://labitcode.com/image-sitemap.xml
+Sitemap: ${SITE}/sitemap-index.xml
+Sitemap: ${SITE}/image-sitemap.xml
 `.trim();
 
 const robotsTxtDisallow = `

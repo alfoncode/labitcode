@@ -3,20 +3,36 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import SearchBar from "@/components/SearchBar.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
 import { getCollection } from "astro:content";
+import { SITE } from "@/consts";
 
 const ITEMS_PER_PAGE = 6;
 
 const allProjects = (await getCollection("projects")).sort(
   (a, b) => b.data.lastUpdated.valueOf() - a.data.lastUpdated.valueOf()
 );
+
+// ItemList JSON-LD
+const itemListLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "labitcode Projects",
+  url: `${SITE}/projects`,
+  itemListElement: allProjects.map((p, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    url: `${SITE}/projects/${p.id}`,
+    name: p.data.title,
+  })),
+};
 ---
 
 <BaseLayout
   title="Projects"
   description="The Lab — Side projects and experiments from labitcode, exploring new technologies and engineering patterns."
+  jsonLd={itemListLd}
   breadcrumbs={[
-    { name: "Home", url: "https://labitcode.com" },
-    { name: "Projects", url: "https://labitcode.com/projects" },
+    { name: "Home", url: SITE },
+    { name: "Projects", url: `${SITE}/projects` },
   ]}
 >
   <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">

@@ -13,6 +13,7 @@ interface Props {
   image?: string;
   imageWidth?: number;
   imageHeight?: number;
+  imageAlt?: string;
   type?: "website" | "article" | "profile";
   publishedDate?: string;
   modifiedDate?: string;
@@ -22,14 +23,17 @@ interface Props {
   jsonLd?: Record<string, unknown>;
   noindex?: boolean;
   includeOrganization?: boolean;
+  includeWebSite?: boolean;
   breadcrumbs?: { name: string; url: string }[];
+  canonicalOverride?: string;
+  lang?: string;
 }
 
 const props = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={props.lang ?? "en"}>
   <head>
     <!-- Anti-FOUC: set theme before paint -->
     <script is:inline>
