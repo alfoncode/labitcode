@@ -105,12 +105,12 @@ hermes model
 
 Good defaults for an autonomous team:
 
-| Provider | Why | Setup |
-|---|---|---|
-| **Nous Portal** | Subscription, zero-config, 300+ models + Tool Gateway | `hermes setup --portal` |
-| **Anthropic** | Claude models, best-in-class long-context & tool use | `hermes model` → OAuth or API key |
-| **OpenRouter** | Multi-provider routing & fallback across models | API key |
-| **Custom endpoint** | vLLM / SGLang / Ollama — self-hosted, private | base URL + key |
+| Provider            | Why                                                   | Setup                             |
+| ------------------- | ----------------------------------------------------- | --------------------------------- |
+| **Nous Portal**     | Subscription, zero-config, 300+ models + Tool Gateway | `hermes setup --portal`           |
+| **Anthropic**       | Claude models, best-in-class long-context & tool use  | `hermes model` → OAuth or API key |
+| **OpenRouter**      | Multi-provider routing & fallback across models       | API key                           |
+| **Custom endpoint** | vLLM / SGLang / Ollama — self-hosted, private         | base URL + key                    |
 
 Secrets go to `~/.hermes/.env`, non-secret settings to `~/.hermes/config.yaml`. The CLI writes the right value to the right file:
 
@@ -159,6 +159,7 @@ Define a global personality so every conversation in this profile speaks the sam
 # ~/.hermes/SOUL.md
 
 You are the Engineering Agent for an early-stage startup.
+
 - You write clean, tested code and open PRs — never push to main.
 - You prefer small, reversible changes and ship behind feature flags.
 - When unsure about scope, you stop and ask the orchestrator.
@@ -198,9 +199,11 @@ metadata:
 # Release Notes Drafter
 
 ## When to Use
+
 Use when preparing a release. Trigger: "draft release notes for vX.Y.Z".
 
 ## Procedure
+
 1. Run `git describe --tags --abbrev=0` to find the previous tag.
 2. Run `git log <prev>..HEAD --merges --pretty=format:'%h %s'` to list merged PRs.
 3. Group PRs by conventional-commit prefix: `feat:`, `fix:`, `perf:`, `docs:`, `chore:`.
@@ -208,10 +211,12 @@ Use when preparing a release. Trigger: "draft release notes for vX.Y.Z".
 5. Open the file in the origin chat and ask the orchestrator to approve.
 
 ## Pitfalls
+
 - If there is no previous tag, fall back to scanning from the initial commit.
 - Skip PRs whose title starts with `chore: deps` unless they touch `package.json` runtime deps.
 
 ## Verification
+
 - The draft references at least one real commit hash.
 - Every `feat:` PR appears under "Added".
 ```
@@ -225,9 +230,10 @@ Drop that file at `~/.hermes/skills/engineering/release-notes/SKILL.md` and run 
 ### 5.1 Personality
 
 ```markdown
-# ~/.hermes/SOUL.md  (security profile)
+# ~/.hermes/SOUL.md (security profile)
 
 You are the Security Agent. You assume breaches are inevitable.
+
 - You fail closed: when in doubt, block and alert a human.
 - You never disable a control to "unblock" a deploy — you escalate.
 - You log every scan, every finding, every false-positive, to learn the noise floor.
@@ -360,6 +366,7 @@ metadata:
 # Deploy to Staging
 
 ## Procedure
+
 1. Confirm we are on `main` and the working tree is clean.
 2. Run `npm run build` and fail the job if it exits non-zero.
 3. Run `npm test -- --coverage` and fail if coverage drops below the value in `.hermes/state/coverage-floor.json`.
@@ -367,10 +374,12 @@ metadata:
 5. Post the deploy URL and a one-line diff summary to `#devops`.
 
 ## Pitfalls
+
 - Never deploy on Fridays after 14:00 local — escalate instead.
 - If the build is green but tests are flaky, re-run once; on a second flake, stop and alert.
 
 ## Verification
+
 - `curl -I` the deploy URL returns 200.
 - The version endpoint reports the new commit SHA.
 ```
@@ -469,9 +478,11 @@ metadata:
 # Lead Triage
 
 ## When to Use
+
 Triggered when a new row appears in the leads inbox.
 
 ## Procedure
+
 1. Read ~/.hermes/data/inbox/leads.jsonl (one JSON object per line).
 2. For each new lead, score 1–5 on: company size, stated budget, fit with our ICP.
 3. Score >= 4 → draft a personalized first reply and save to ~/.hermes/data/replies/<id>.md.
@@ -480,6 +491,7 @@ Triggered when a new row appears in the leads inbox.
 6. Post a summary table to the sales DM channel.
 
 ## Pitfalls
+
 - Never invent a person's name. If the lead only gave an email, address them by the local part before the @.
 - Always quote the exact phrase from their message that triggered the reply.
 ```
@@ -509,7 +521,7 @@ Map departments to channels:
 ```yaml
 # ~/.hermes/config.yaml (excerpt)
 telegram:
-  home_channel: "-1001234567890"      # orchestrator
+  home_channel: "-1001234567890" # orchestrator
   # route specialist DMs to their profiles via a small router bot
 
 discord:
@@ -576,9 +588,9 @@ Dangerous terminal commands can require approval before they run. Configure per-
 # ~/.hermes/config.yaml
 terminal:
   command_approval:
-    cli: false          # you're at a terminal, you see what happens
-    telegram: true       # ask before running on your phone
-    cron: false          # scheduled jobs are pre-approved at creation time
+    cli: false # you're at a terminal, you see what happens
+    telegram: true # ask before running on your phone
+    cron: false # scheduled jobs are pre-approved at creation time
 ```
 
 ### 11.2 Skill write-approval
@@ -587,7 +599,7 @@ The self-improvement loop is the whole point — but on small models, you may wa
 
 ```yaml
 skills:
-  write_approval: true   # stage every skill_manage write for review
+  write_approval: true # stage every skill_manage write for review
 ```
 
 ```bash

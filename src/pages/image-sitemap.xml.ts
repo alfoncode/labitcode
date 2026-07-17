@@ -22,9 +22,9 @@ export const GET: APIRoute = async ({ site }) => {
   const posts = (await getCollection("blog")).filter(
     (p) => !p.data.draft && p.data.heroImage && p.data.heroImage.startsWith("/")
   );
-  const projects = (
-    await getCollection("projects")
-  ).filter((p) => p.data.status !== "archived" && p.data.heroImage && p.data.heroImage.startsWith("/"));
+  const projects = (await getCollection("projects")).filter(
+    (p) => p.data.status !== "archived" && p.data.heroImage && p.data.heroImage.startsWith("/")
+  );
 
   const entries = [
     ...posts.map((p) => ({
