@@ -383,13 +383,53 @@ body {
 
 /* ── Tables ───────────────────────────────────────── */
 
+.prose .table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 2em 0;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  background: var(--color-surface, #ffffff);
+}
+
+/* Scrollbar styling for table wrapper */
+.prose .table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.prose .table-wrapper::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 0 0 0.75rem 0.75rem;
+}
+
+.prose .table-wrapper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.prose .table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
 .prose table {
   width: 100%;
+  min-width: 550px;
   border-collapse: separate;
   border-spacing: 0;
-  margin: 2em 0;
+  margin: 0;
   font-size: 0.9rem;
-  overflow: hidden;
+}
+
+/* Direct table fallback if table is not inside .table-wrapper */
+.prose > table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 2em 0;
   border-radius: 0.75rem;
   border: 1px solid var(--color-border);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
@@ -408,6 +448,7 @@ body {
   color: var(--color-navy);
   text-align: left;
   border-bottom: 2px solid var(--color-accent);
+  white-space: nowrap;
 }
 
 .prose tbody tr {
@@ -426,6 +467,7 @@ body {
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--color-border);
   color: var(--color-navy-light);
+  min-width: 120px;
 }
 
 .prose tbody tr:last-child td {
@@ -433,9 +475,23 @@ body {
 }
 
 /* Dark mode tables */
-[data-theme="dark"] .prose table {
+[data-theme="dark"] .prose .table-wrapper,
+[data-theme="dark"] .prose > table {
   border-color: #334155;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  background: #0f172a;
+}
+
+[data-theme="dark"] .prose .table-wrapper::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+[data-theme="dark"] .prose .table-wrapper::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+[data-theme="dark"] .prose .table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }
 
 [data-theme="dark"] .prose thead {

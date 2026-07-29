@@ -328,6 +328,24 @@ const blogPostingLd = {
     });
   }
 
+  function enhanceTables(): void {
+    const proseEls = document.querySelectorAll(".prose");
+    proseEls.forEach((prose) => {
+      const tables = prose.querySelectorAll<HTMLTableElement>(":scope > table, :scope table");
+      tables.forEach((table) => {
+        if (table.parentElement?.classList.contains("table-wrapper")) return;
+        const wrapper = document.createElement("div");
+        wrapper.className = "table-wrapper";
+        table.parentNode!.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+      });
+    });
+  }
+
   enhanceCodeBlocks();
-  document.addEventListener("astro:after-swap", enhanceCodeBlocks);
+  enhanceTables();
+  document.addEventListener("astro:after-swap", () => {
+    enhanceCodeBlocks();
+    enhanceTables();
+  });
 </script>
