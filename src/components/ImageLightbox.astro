@@ -4,13 +4,16 @@
 
 <dialog
   id="image-lightbox-dialog"
-  class="fixed inset-0 m-auto p-0 border-0 bg-transparent max-w-[92vw] max-h-[92vh] outline-none backdrop:bg-navy/85 backdrop:backdrop-blur-md rounded-2xl shadow-2xl transition-all duration-300 open:animate-fade-in text-slate-100"
+  class="fixed inset-0 m-auto p-0 border-0 bg-transparent max-w-[92vw] max-h-[92vh] overflow-hidden outline-none backdrop:bg-navy/85 backdrop:backdrop-blur-md rounded-2xl shadow-2xl transition-all duration-300 open:animate-fade-in text-slate-100"
 >
-  <form method="dialog" class="relative flex flex-col items-center justify-center p-2 sm:p-4">
+  <form
+    method="dialog"
+    class="relative flex flex-col items-center justify-center p-2 sm:p-4 overflow-hidden"
+  >
     <!-- Close button -->
     <button
       type="submit"
-      class="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-10 h-10 rounded-full bg-navy/90 border border-slate-700 text-white flex items-center justify-center hover:bg-accent hover:border-accent transition-colors shadow-lg z-10 focus:outline-none focus:ring-2 focus:ring-accent"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 w-9 h-9 rounded-full bg-navy/90 border border-slate-700 text-white flex items-center justify-center hover:bg-accent hover:border-accent transition-colors shadow-lg z-20 focus:outline-none focus:ring-2 focus:ring-accent"
       aria-label="Close image popup"
     >
       <svg
@@ -49,6 +52,16 @@
 </dialog>
 
 <style>
+  dialog#image-lightbox-dialog {
+    overflow: hidden !important;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  dialog#image-lightbox-dialog::-webkit-scrollbar {
+    display: none;
+  }
+
   dialog#image-lightbox-dialog::backdrop {
     background-color: rgba(2, 6, 23, 0.85);
     backdrop-filter: blur(8px);
@@ -78,11 +91,15 @@
 
     if (!dialog || !lightboxImg || !lightboxCaption) return;
 
+    // Handle scroll locking on dialog close
+    dialog.addEventListener("close", () => {
+      document.body.style.overflow = "";
+    });
+
     // Attach click handlers to all article and component images inside prose or aspect-video containers
     const images = document.querySelectorAll<HTMLImageElement>(".prose img, .aspect-video img");
 
     images.forEach((img) => {
-      // Avoid duplicate bindings
       if (img.dataset.lightboxBound) return;
       img.dataset.lightboxBound = "true";
 
@@ -97,7 +114,8 @@
         lightboxImg.alt = alt;
         lightboxCaption.textContent = alt;
 
-        // Open modal in Top Layer
+        document.body.style.overflow = "hidden";
+
         if (typeof dialog.showModal === "function") {
           dialog.showModal();
         } else {
