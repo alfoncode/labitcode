@@ -16,6 +16,7 @@
 - [Playwright & TypeScript Architecture](https://labitcode.com/blog/playwright-typescript-architecture-best-practices): Enterprise E2E testing frameworks and best practices.
 - [VPS Security Hardening Guide](https://labitcode.com/blog/secure-vps-setup-guide): Complete guide to hardening Debian/Ubuntu servers.
 - [PageSpeed Optimization Guide](https://labitcode.com/blog/pagespeed-optimization-guide): Achieving 100/100 Core Web Vitals on Astro & Vercel.
+- [Terreno Rústico Observability Architecture](https://labitcode.com/blog/terreno-rustico-monitoring-architecture): Deploying Prometheus, Loki, Promtail, Node Exporter, cAdvisor & Grafana.
 
 ## Featured Projects
 - [labitcode Platform](https://labitcode.com/projects/labitcode-platform): Ultra-fast Astro & Tailwind static site engine.

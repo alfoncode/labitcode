@@ -69,6 +69,9 @@ To deliver lightning-fast spatial rendering and sub-second query speeds, Terreno
 - **Backend API**: A modular **NestJS** microservice architecture built on Fastify, adhering to strict Domain-Driven Design (DDD) principles.
 - **Database & GIS Engine**: **PostgreSQL** paired with **PostGIS** for optimized spatial indexing (`GIST`), polygon intersections (`ST_Intersects`), and proximity sorting.
 - **Data Layer**: **Drizzle ORM** for fully typed, high-performance database interactions.
+- **Production Observability**: A self-hosted telemetry stack running **Prometheus**, **Loki**, **Promtail**, **Node Exporter**, **cAdvisor**, and **Grafana** secured behind **Traefik TLS** at `monitoring.terrenorustico.com`.
+
+> 📊 **Deep Dive into Infrastructure**: Read our full engineering guide: **[Building a Production-Grade Observability Stack: Prometheus, Loki, Promtail & Grafana](/blog/terreno-rustico-monitoring-architecture)**.
 
 ---
 
