@@ -2,6 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Badge from "@/components/Badge.astro";
 import DiscussionCTA from "@/components/DiscussionCTA.astro";
+import SocialShare from "@/components/SocialShare.astro";
 import { getCollection, render } from "astro:content";
 import { formatDate } from "@/utils/helpers";
 import { getImageSize } from "@/utils/images";
@@ -39,6 +40,7 @@ const softwareAppLd = {
   description: project.data.description,
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Any",
+  inLanguage: "en-US",
   author: { "@type": "Person", name: project.data.creator },
   ...(project.data.url && { url: project.data.url }),
   ...(project.data.repo && { codeRepository: project.data.repo }),
@@ -175,6 +177,12 @@ const softwareAppLd = {
           )
         }
       </div>
+
+      <SocialShare
+        title={project.data.title}
+        url={`${SITE}/projects/${project.id}`}
+        description={project.data.description}
+      />
     </header>
 
     {/* Hero Image */}

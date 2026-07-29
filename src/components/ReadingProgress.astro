@@ -1,0 +1,32 @@
+---
+
+---
+
+<div
+  id="reading-progress-bar"
+  class="fixed top-0 left-0 h-1 bg-gradient-to-r from-accent via-accent-light to-accent z-50 transition-all duration-75 pointer-events-none w-0"
+  aria-hidden="true"
+>
+</div>
+
+<script>
+  function updateProgress(): void {
+    const bar = document.getElementById("reading-progress-bar");
+    if (!bar) return;
+
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight =
+      document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+    if (scrollHeight > 0) {
+      const progress = Math.min(100, Math.max(0, (scrollTop / scrollHeight) * 100));
+      bar.style.width = `${progress}%`;
+    } else {
+      bar.style.width = "0%";
+    }
+  }
+
+  window.addEventListener("scroll", updateProgress, { passive: true });
+  document.addEventListener("astro:after-swap", updateProgress);
+  updateProgress();
+</script>

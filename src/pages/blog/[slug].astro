@@ -3,6 +3,8 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import Badge from "@/components/Badge.astro";
 import BlogCard from "@/components/BlogCard.astro";
 import DiscussionCTA from "@/components/DiscussionCTA.astro";
+import SocialShare from "@/components/SocialShare.astro";
+import ReadingProgress from "@/components/ReadingProgress.astro";
 import Mermaid from "@/components/Mermaid.astro";
 import { getCollection, render } from "astro:content";
 import { formatDate, getReadingTime } from "@/utils/helpers";
@@ -22,6 +24,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const readingTime = post.body ? getReadingTime(post.body) : "3 min read";
+const wordCount = post.body ? post.body.trim().split(/\s+/).length : 0;
 
 // Related posts (share at least one tag, excluding current)
 const allPosts = (await getCollection("blog")).filter((p) => !p.data.draft);
@@ -38,12 +41,14 @@ const ogDims =
 
 const canonicalURL = post.data.canonicalURL || `${SITE}/blog/${post.id}`;
 
-// JSON-LD for BlogPosting
+// JSON-LD for BlogPosting & TechArticle
 const blogPostingLd = {
   "@context": "https://schema.org",
-  "@type": "BlogPosting",
+  "@type": "TechArticle",
   headline: post.data.title,
   description: post.data.description,
+  inLanguage: "en-US",
+  wordCount,
   datePublished: post.data.pubDate.toISOString(),
   dateModified: (post.data.updatedDate || post.data.pubDate).toISOString(),
   author:
@@ -70,6 +75,7 @@ const blogPostingLd = {
     },
   },
   mainEntityOfPage: { "@type": "WebPage", "@id": canonicalURL },
+  isPartOf: { "@type": "WebPage", "@id": `${SITE}/blog` },
   keywords: post.data.tags.join(", "),
   image: {
     "@type": "ImageObject",
@@ -102,6 +108,7 @@ const blogPostingLd = {
     { name: post.data.title, url: `${SITE}/blog/${post.id}` },
   ]}
 >
+  <ReadingProgress />
   <article class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
     <!-- Back link -->
     <a
@@ -152,6 +159,12 @@ const blogPostingLd = {
         <span class="text-border dark:text-navy-light">·</span>
         <span>{readingTime}</span>
       </div>
+
+      <SocialShare
+        title={post.data.title}
+        url={`${SITE}/blog/${post.id}`}
+        description={post.data.description}
+      />
     </header>
 
     {/* Hero Image */}

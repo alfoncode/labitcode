@@ -1,0 +1,26 @@
+# labitcode — Engineering and Innovation Laboratory
+
+> labitcode is an engineering lab exploring the convergence of human creativity and AI innovation across Software Engineering, AI & Autonomous Agents, Security, and DevOps.
+
+## Core Topics
+- **Software Engineering**: Architectural patterns, TypeScript, Playwright E2E testing, Shape Up, performance optimization.
+- **AI & Autonomous Agents**: Prompt engineering, Claude, GPT models, Hermes agentic workflows, LLM benchmark comparisons.
+- **Security & Infrastructure**: Linux VPS hardening, SSH keys, UFW firewall, fail2ban, container security.
+- **DevOps & Web Performance**: Core Web Vitals, PageSpeed optimization, CI/CD pipelines, Astro static site generation.
+
+## Key Articles
+- [AI-Driven Development: The Future of Software Creation](https://labitcode.com/blog/ai-driven-development): Exploration of human-AI collaboration in modern software engineering.
+- [Anthropic Prompt Engineering Guide](https://labitcode.com/blog/anthropic-prompt-engineering-guide): Master prompt design patterns for Claude and LLMs.
+- [Building labitcode Platform](https://labitcode.com/blog/building-labitcode): Deep dive into the architecture, stack, and design of labitcode.com.
+- [Claude Fable 5 & AI Frontier Models](https://labitcode.com/blog/claude-fable-5): Insights on next-generation agentic reasoning models.
+- [Playwright & TypeScript Architecture](https://labitcode.com/blog/playwright-typescript-architecture-best-practices): Enterprise E2E testing frameworks and best practices.
+- [VPS Security Hardening Guide](https://labitcode.com/blog/secure-vps-setup-guide): Complete guide to hardening Debian/Ubuntu servers.
+- [PageSpeed Optimization Guide](https://labitcode.com/blog/pagespeed-optimization-guide): Achieving 100/100 Core Web Vitals on Astro & Vercel.
+
+## Featured Projects
+- [labitcode Platform](https://labitcode.com/projects/labitcode-platform): Ultra-fast Astro & Tailwind static site engine.
+- [Terreno Rustico](https://labitcode.com/projects/terreno-rustico): Geospatial terrain analysis and property management platform.
+
+## Feeds & Resources
+- RSS Feed: https://labitcode.com/rss.xml
+- Sitemap: https://labitcode.com/sitemap-index.xml

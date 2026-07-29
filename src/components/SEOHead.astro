@@ -148,6 +148,7 @@ const ogImageType = image.endsWith(".png")
 <link rel="manifest" href="/manifest.webmanifest" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/rss.xml" />
+<link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context" />
 
 {tags && <meta name="keywords" content={tags.join(", ")} />}
 
@@ -176,6 +177,7 @@ const ogImageType = image.endsWith(".png")
 <meta name="twitter:image" content={ogImageURL} />
 {imageAlt && <meta name="twitter:image:alt" content={imageAlt} />}
 <meta name="twitter:site" content="@alfoncode" />
+<meta name="twitter:creator" content="@alfoncode" />
 
 <!-- Preload fonts (non-blocking) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
