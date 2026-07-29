@@ -15,17 +15,14 @@ User-agent: *
 Disallow: /
 `.trim();
 
-export const GET: APIRoute = ({ site }) => {
-  // To enable indexing in production:
-  // 1. created a new Environment Variable in Vercel (Settings > Environment Variables)
-  //    called PUBLIC_INDEXING_ENABLED with value "true" for the Production environment.
-  // 2. OR simply change the logic below when you are ready to launch.
+export const GET: APIRoute = () => {
+  const isProductionEnv =
+    process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production";
+  const indexingDisabled = process.env.PUBLIC_INDEXING_ENABLED === "false";
+  const indexingExplicitlyEnabled = process.env.PUBLIC_INDEXING_ENABLED === "true";
 
-  const isProductionEnv = process.env.VERCEL_ENV === "production";
-  const indexingEnabled = process.env.PUBLIC_INDEXING_ENABLED === "true";
-
-  // Currently disabled for ALL environments until the site is ready
-  const shouldIndex = isProductionEnv && indexingEnabled;
+  // Production indexes by default unless PUBLIC_INDEXING_ENABLED=false; other envs index if PUBLIC_INDEXING_ENABLED=true
+  const shouldIndex = (isProductionEnv && !indexingDisabled) || indexingExplicitlyEnabled;
 
   if (shouldIndex) {
     return new Response(robotsTxt, {

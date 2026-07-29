@@ -43,9 +43,24 @@ const {
   canonicalOverride,
 } = Astro.props;
 
-const canonicalURL = canonicalOverride
-  ? new URL(canonicalOverride)
-  : new URL(Astro.url.pathname, Astro.site);
+const rawPathname = Astro.url.pathname;
+const cleanPathname =
+  rawPathname.length > 1 && rawPathname.endsWith("/") ? rawPathname.slice(0, -1) : rawPathname;
+
+const siteOrigin = Astro.site?.href.replace(/\/$/, "") || "https://labitcode.com";
+let targetCanonical = canonicalOverride || `${siteOrigin}${cleanPathname}`;
+
+try {
+  const urlObj = new URL(targetCanonical, siteOrigin);
+  if (urlObj.pathname.length > 1 && urlObj.pathname.endsWith("/")) {
+    urlObj.pathname = urlObj.pathname.slice(0, -1);
+  }
+  targetCanonical = urlObj.href;
+} catch {
+  /* fallback */
+}
+
+const canonicalURL = new URL(targetCanonical);
 const ogImageURL = new URL(image, Astro.site);
 const ogImageWidth = imageWidth ?? 1200;
 const ogImageHeight = imageHeight ?? 630;

@@ -64,6 +64,7 @@ const softwareAppLd = {
   author={project.data.creator}
   section="Projects"
   jsonLd={softwareAppLd}
+  canonicalOverride={`${SITE}/projects/${project.id}`}
   noindex={isArchived}
   breadcrumbs={[
     { name: "Home", url: SITE },

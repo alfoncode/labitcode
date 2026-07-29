@@ -25,12 +25,11 @@ const decodedTag = decodeURIComponent(tag as string);
 <BaseLayout
   title={`${decodedTag} Articles`}
   description={`Engineering articles tagged "${decodedTag}" on labitcode — Software Engineering, AI, Security, and DevOps.`}
-  noindex={true}
-  canonicalOverride={`${SITE}/blog`}
+  canonicalOverride={`${SITE}/blog/tag/${encodeURIComponent(tag)}`}
   breadcrumbs={[
     { name: "Home", url: SITE },
     { name: "Blog", url: `${SITE}/blog` },
-    { name: decodedTag, url: `${SITE}/blog/tag/${tag}` },
+    { name: decodedTag, url: `${SITE}/blog/tag/${encodeURIComponent(tag)}` },
   ]}
 >
   <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">

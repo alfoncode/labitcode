@@ -42,9 +42,6 @@ export default defineConfig({
     mdx(),
     sitemap({
       filter: (page) => {
-        // Exclude tag pages
-        if (page.includes("/blog/tag/")) return false;
-
         // Exclude archived projects
         const archivedSlugs = getArchivedProjects();
         if (archivedSlugs.some((slug) => page.includes(`/projects/${slug}`))) {
