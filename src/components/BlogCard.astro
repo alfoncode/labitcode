@@ -41,12 +41,12 @@ const readingTime = body ? getReadingTime(body) : "3 min read";
 
   <div class="p-6 flex flex-col flex-1">
     {/* Tags */}
-    <div class="flex flex-wrap gap-2 mb-3">
+    <div class="flex items-center gap-2 mb-3 overflow-hidden whitespace-nowrap">
       {
         tags.slice(0, 3).map((tag) => (
           <a
             href={`/blog/tag/${encodeURIComponent(tag)}`}
-            class="relative z-20"
+            class="relative z-20 shrink-0"
             aria-label={`See more articles tagged ${tag}`}
           >
             <Badge label={tag} variant="accent" />
