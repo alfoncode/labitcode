@@ -1,6 +1,6 @@
 ---
 title: "Spec-Driven Development in the Age of AI: OpenSpec vs. GitHub Spec Kit"
-published: false
+published: true
 description: "Why 'vibe coding' fails at scale and how Spec-Driven Development (SDD) turns AI agents into reliable engineering partners. A deep comparison of OpenSpec and GitHub Spec Kit."
 tags: "ai, softwareengineering, opensource, productivity"
 canonical_url: "https://labitcode.com/blog/spec-driven-development-openspec-vs-spec-kit/"
