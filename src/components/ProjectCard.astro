@@ -1,6 +1,6 @@
 ---
 import Badge from "@/components/Badge.astro";
-import { formatDate } from "@/utils/helpers";
+import { formatCardDate } from "@/utils/helpers";
 
 interface Props {
   title: string;
@@ -122,7 +122,7 @@ const displayStatus = statusLabels[status]?.[lang] || status;
     <div
       class="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-border dark:border-navy-light"
     >
-      <span>{lang === "es" ? "Actualizado" : "Updated"} {formatDate(lastUpdated, lang)}</span>
+      <span>{lang === "es" ? "Actualizado" : "Updated"} {formatCardDate(lastUpdated, lang)}</span>
       <span class="font-medium">{creator}</span>
     </div>
 

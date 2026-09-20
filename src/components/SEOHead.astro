@@ -151,8 +151,10 @@ const ogImageType = image.endsWith(".png")
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/manifest.webmanifest" />
 <link rel="sitemap" href="/sitemap-index.xml" />
-<link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/rss.xml" />
+<link rel="alternate" type="application/rss+xml" title={`${SITE_TITLE} (EN)`} href="/rss.xml" />
+<link rel="alternate" type="application/rss+xml" title={`${SITE_TITLE} (ES)`} href="/es/rss.xml" />
 <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context" />
+<link rel="alternate" type="text/plain" href="/llms-full.txt" title="Full LLM Context" />
 {alternateUrls?.en && <link rel="alternate" hreflang="en" href={alternateUrls.en} />}
 {alternateUrls?.es && <link rel="alternate" hreflang="es" href={alternateUrls.es} />}
 {

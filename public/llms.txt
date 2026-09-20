@@ -1,27 +1,46 @@
-# labitcode — Engineering and Innovation Laboratory
+# labitcode — Engineering & Innovation Laboratory
 
-> labitcode is an engineering lab exploring the convergence of human creativity and AI innovation across Software Engineering, AI & Autonomous Agents, Security, and DevOps.
+> labitcode is an engineering laboratory exploring software architecture, frontier AI systems, autonomous agents, and cybersecurity. Founded by Alfonso Garcia, an experienced software engineer and tech innovator.
 
-## Core Topics
-- **Software Engineering**: Architectural patterns, TypeScript, Playwright E2E testing, Shape Up, performance optimization.
-- **AI & Autonomous Agents**: Prompt engineering, Claude, GPT models, Hermes agentic workflows, LLM benchmark comparisons.
-- **Security & Infrastructure**: Linux VPS hardening, SSH keys, UFW firewall, fail2ban, container security.
-- **DevOps & Web Performance**: Core Web Vitals, PageSpeed optimization, CI/CD pipelines, Astro static site generation.
+- Website: https://labitcode.com
+- Spanish Edition: https://labitcode.com/es
+- Full LLM Context (All Summaries): https://labitcode.com/llms-full.txt
+- Author: Alfonso Garcia (https://github.com/alfoncode, https://twitter.com/alfoncode, https://linkedin.com/in/alfonsojosegarcia)
+- Sitemaps: https://labitcode.com/sitemap-index.xml | https://labitcode.com/image-sitemap.xml
+- Feeds: https://labitcode.com/rss.xml (EN) | https://labitcode.com/es/rss.xml (ES)
 
-## Key Articles
-- [AI-Driven Development: The Future of Software Creation](https://labitcode.com/blog/ai-driven-development): Exploration of human-AI collaboration in modern software engineering.
-- [Anthropic Prompt Engineering Guide](https://labitcode.com/blog/anthropic-prompt-engineering-guide): Master prompt design patterns for Claude and LLMs.
-- [Building labitcode Platform](https://labitcode.com/blog/building-labitcode): Deep dive into the architecture, stack, and design of labitcode.com.
-- [Claude Fable 5 & AI Frontier Models](https://labitcode.com/blog/claude-fable-5): Insights on next-generation agentic reasoning models.
-- [Playwright & TypeScript Architecture](https://labitcode.com/blog/playwright-typescript-architecture-best-practices): Enterprise E2E testing frameworks and best practices.
-- [VPS Security Hardening Guide](https://labitcode.com/blog/secure-vps-setup-guide): Complete guide to hardening Debian/Ubuntu servers.
-- [PageSpeed Optimization Guide](https://labitcode.com/blog/pagespeed-optimization-guide): Achieving 100/100 Core Web Vitals on Astro & Vercel.
+---
 
-## Featured Projects
-- [labitcode Platform](https://labitcode.com/projects/labitcode-platform): Ultra-fast Astro & Tailwind static site engine.
-- [Terreno Rustico](https://labitcode.com/projects/terreno-rustico): Geospatial terrain analysis and property management platform.
-- [Terreno Rústico Observability Platform](https://labitcode.com/projects/terreno-rustico-monitoring): Production-grade Prometheus, Loki, Promtail, Node Exporter, cAdvisor & Grafana telemetry stack.
+## Core Thematic Pillars
 
-## Feeds & Resources
-- RSS Feed: https://labitcode.com/rss.xml
-- Sitemap: https://labitcode.com/sitemap-index.xml
+### 1. Frontier AI & Autonomous Agents
+- [The AI Velocity Paradox](https://labitcode.com/blog/the-ai-velocity-paradox) | [ES](https://labitcode.com/es/blog/la-paradoja-de-la-velocidad-de-la-ia): Why Altman, Amodei, and Musk called for breathers as AI self-improvement accelerates.
+- [Claude Fable 5: Frontier Intelligence](https://labitcode.com/blog/claude-fable-5) | [ES](https://labitcode.com/es/blog/claude-fable-5-es): 1M context window, adaptive thinking, and Anthropic's Mythos tier.
+- [Kimi K3 vs. GPT-5.6 Sol & Claude Fable 5](https://labitcode.com/blog/kimi-k3-performance-pricing-comparison) | [ES](https://labitcode.com/es/blog/comparativa-rendimiento-precio-kimi-k3): 2.8T parameter MoE architecture and cost-performance benchmark revolution.
+- [GPT-5.6 Sol: The Next Frontier](https://labitcode.com/blog/gpt-5-6-sol) | [ES](https://labitcode.com/es/blog/gpt-5-6-sol-es): Analysis of OpenAI's next-generation multimodal model.
+- [Hermes: The Autonomous Agent Team](https://labitcode.com/blog/hermes-autonomous-team) | [ES](https://labitcode.com/es/blog/hermes-equipo-autonomo-agentes): Multi-agent architectures where AI specialized agents self-coordinate engineering.
+- [AI-Driven Development: Beyond the Hype](https://labitcode.com/blog/ai-driven-development) | [ES](https://labitcode.com/es/blog/desarrollo-guiado-por-ia): Practical engineering guide to AI pair programming in real production pipelines.
+- [Designing with Claude: Prompt to Production](https://labitcode.com/blog/anthropic-prompt-engineering-guide) | [ES](https://labitcode.com/es/blog/disenando-con-claude-del-prompt-a-produccion): Advanced system prompt engineering and structured generation patterns.
+- [Fable 5 Export Control Shutdown](https://labitcode.com/blog/fable-5-export-control-shutdown) | [ES](https://labitcode.com/es/blog/fable-5-controles-exportacion-cierre): Geopolitical AI regulation, US export controls, and sovereign AI implications.
+
+### 2. Software Engineering & Architecture
+- [Spec-Driven Development: OpenSpec vs. Spec Kit](https://labitcode.com/blog/spec-driven-development-openspec-vs-spec-kit) | [ES](https://labitcode.com/es/blog/desarrollo-guiado-por-especificaciones-openspec-vs-spec-kit): Why vibe coding fails at scale and how SDD transforms ambiguity into deterministic software.
+- [Playwright with TypeScript: Architecture & Best Practices](https://labitcode.com/blog/playwright-typescript-architecture-best-practices) | [ES](https://labitcode.com/es/blog/arquitectura-playwright-typescript-mejores-practicas): Enterprise E2E testing framework design, Page Object Model, and scalable CI/CD pipelines.
+- [The Death of Sprints: Moving Beyond Agile Theatre](https://labitcode.com/blog/the-death-of-sprints) | [ES](https://labitcode.com/es/blog/la-muerte-de-los-sprints): Continuous delivery, Shape Up, and asynchronous engineering vs. bi-weekly sprint dogma.
+- [Building labitcode: A Modern Engineering Lab](https://labitcode.com/blog/building-labitcode) | [ES](https://labitcode.com/es/blog/construyendo-labitcode): Astro 5, Tailwind CSS v4, zero-JS by default, and high-performance SSG architecture.
+
+### 3. DevSecOps, Cloud & Infrastructure
+- [GitHub Actions Secrets Audit & CI/CD Security](https://labitcode.com/blog/github-actions-secrets-audit-devsecops) | [ES](https://labitcode.com/es/blog/auditoria-secretos-github-actions-devsecops): Deep technical breakdown of toJSON(secrets) risks, OIDC token poisoning, and defense-in-depth pipeline hardening.
+- [The Definitive Guide to VPS Hardening](https://labitcode.com/blog/secure-vps-setup-guide) | [ES](https://labitcode.com/es/blog/guia-configuracion-vps-seguro): Zero-trust production Linux server hardening: SSH Ed25519, UFW firewall, fail2ban, and kernel sysctl tuning.
+
+### 4. Web Performance & Next-Gen Systems
+- [Cloudflare Kitesurf: Stateless V8-Isolate Browser](https://labitcode.com/blog/cloudflare-kitesurf-agentic-browser) | [ES](https://labitcode.com/es/blog/cloudflare-kitesurf-navegador-agentico): Why headless Chromium is a bottleneck for AI agents, and how Rust/Wasm in V8 isolates cuts CPU/RAM by 7x.
+- [PageSpeed Optimization Guide: 100/100 Core Web Vitals](https://labitcode.com/blog/pagespeed-optimization-guide) | [ES](https://labitcode.com/es/blog/guia-optimizacion-pagespeed): Comprehensive guide to mastering LCP, INP, and CLS on static architectures.
+
+---
+
+## Featured Engineering Projects
+
+- [Labitcode Platform](https://labitcode.com/projects/labitcode-platform) | [ES](https://labitcode.com/es/projects/plataforma-labitcode): Astro 5 SSG portfolio and technical publication platform built with zero JS runtime overhead.
+- [Terreno Rústico Observability Platform](https://labitcode.com/projects/terreno-rustico-monitoring) | [ES](https://labitcode.com/es/projects/monitorizacion-terreno-rustico): Production-grade telemetry stack with Prometheus, Loki, Promtail, Node Exporter, cAdvisor, and Grafana behind Traefik TLS.
+- [Terreno Rústico](https://labitcode.com/projects/terreno-rustico) | [ES](https://labitcode.com/es/projects/terreno-rustico-es): SaaS and GIS platform for agricultural land management and real estate analytics.

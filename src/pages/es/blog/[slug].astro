@@ -52,16 +52,27 @@ const blogPostingLd = {
   headline: post.data.title,
   description: post.data.description,
   inLanguage: "es-ES",
+  proficiencyLevel: "Expert",
   wordCount,
   datePublished: post.data.pubDate.toISOString(),
   dateModified: (post.data.updatedDate || post.data.pubDate).toISOString(),
+  keywords: post.data.tags.join(", "),
+  about: post.data.tags.map((tag: string) => ({
+    "@type": "Thing",
+    name: tag,
+  })),
   author:
     post.data.author === "AI"
       ? { "@type": "Organization", name: "labitcode AI", url: SITE }
       : {
           "@type": "Person",
           name: post.data.author,
-          url: SITE,
+          url: `${SITE}/es/team`,
+          sameAs: [
+            "https://github.com/alfoncode",
+            "https://twitter.com/alfoncode",
+            "https://www.linkedin.com/in/alfonsojosegarcia/",
+          ],
         },
   publisher: {
     "@type": "Organization",
@@ -72,6 +83,10 @@ const blogPostingLd = {
   mainEntityOfPage: {
     "@type": "WebPage",
     "@id": canonicalURL,
+  },
+  isPartOf: {
+    "@type": "WebPage",
+    "@id": `${SITE}/es/blog`,
   },
   image: {
     "@type": "ImageObject",

@@ -1,0 +1,130 @@
+# labitcode — Full Technical Knowledge Base for LLMs & AI Agents
+
+> Comprehensive technical digest of labitcode.com articles, architectures, benchmarks, and engineering practices. Optimized for direct extraction by AI search engines, agents, and LLMs.
+> Canonical URL: https://labitcode.com | Spanish: https://labitcode.com/es | Index: https://labitcode.com/llms.txt
+
+---
+
+## 1. AI & Frontier Models
+
+### The AI Velocity Paradox (La Trampa de la Velocidad de la IA)
+- **URLs**: https://labitcode.com/blog/the-ai-velocity-paradox | https://labitcode.com/es/blog/la-paradoja-de-la-velocidad-de-la-ia
+- **Tags**: AI, Software Engineering, Architecture, Policy, LLM, Security
+- **Core Insight**: Within 72 hours in September 2026, rival AI leaders (Sam Altman, Dario Amodei, Demis Hassabis, and Elon Musk) acknowledged that recursive AI self-improvement has begun and cannot be stopped by voluntary unilateral pauses due to game-theoretic geopolitical incentives.
+- **Key Takeaways**:
+  - The instrumental convergence thesis: as AI models solve complex autonomous engineering tasks, sub-goals such as self-preservation and resource acquisition naturally emerge.
+  - The "Software Assembly Line" has flipped: human engineers are no longer code writers, but verification gates and specification architects.
+  - The velocity paradox: moving faster without formal verification increases systemic fragility.
+
+### Claude Fable 5 & Frontier Intelligence (Claude Fable 5)
+- **URLs**: https://labitcode.com/blog/claude-fable-5 | https://labitcode.com/es/blog/claude-fable-5-es
+- **Tags**: AI, Anthropic, Claude, LLM Benchmarks, Architecture
+- **Specifications**:
+  - Model ID: `claude-fable-5`
+  - Context Window: 1,000,000 tokens (1M tokens / ~750,000 words)
+  - Extended Thinking: Up to 64,000 tokens of chain-of-thought reasoning
+  - Adaptive Thinking: Always active; configured via `low`, `medium`, `high`, `xhigh` compute levels
+- **Key Takeaways**:
+  - Anthropic's Mythos tier discovered thousands of zero-day vulnerabilities autonomously (including 27-year-old bugs in OpenBSD).
+  - Fable 5 packages Mythos capability into general availability with dynamic test-time compute allocation.
+
+### Kimi K3 vs. GPT-5.6 Sol & Claude Fable 5 Benchmark Analysis
+- **URLs**: https://labitcode.com/blog/kimi-k3-performance-pricing-comparison | https://labitcode.com/es/blog/comparativa-rendimiento-precio-kimi-k3
+- **Tags**: AI, Kimi K3, LLM Benchmarks, Cost-Performance
+- **Architecture**: 2.8 Trillion parameter Mixture-of-Experts (MoE) model activating 140 Billion parameters per token.
+- **Key Benchmarks & Pricing**:
+  - Cost: $0.45 / 1M input tokens, $1.80 / 1M output tokens (75-80% cheaper than comparable frontier models).
+  - SWE-bench Verified: 68.4% (rivaling frontier closed models).
+  - Mathematical Reasoning (MATH-500): 94.2%.
+  - Context: 256k tokens with near-perfect retrieval across the entire window.
+
+### Hermes: The Autonomous Agent Team (Hermes: El Equipo Autónomo de Agentes)
+- **URLs**: https://labitcode.com/blog/hermes-autonomous-team | https://labitcode.com/es/blog/hermes-equipo-autonomo-agentes
+- **Tags**: AI, Agents, Automation, Architecture
+- **Architecture**: Specialized multi-agent system where independent sub-agents execute domain-specific workflows (research, code generation, security linting, test synthesis, and deployment verification) coordinated via asynchronous message queues with strict supervisory invariants.
+
+### Cloudflare Kitesurf: Stateless V8-Isolate Browser
+- **URLs**: https://labitcode.com/blog/cloudflare-kitesurf-agentic-browser | https://labitcode.com/es/blog/cloudflare-kitesurf-navegador-agentico
+- **Tags**: AI, Cloudflare, Browser, V8 Isolates, WebAssembly, Rust
+- **Core Problem**: Legacy headless Chromium instances consume 200MB–400MB RAM and 100ms+ startup latency per browser instance, creating a massive scalability barrier for autonomous web agents.
+- **Solution**: Cloudflare Kitesurf runs lightweight DOM parsing and JavaScript execution in Rust-compiled WebAssembly inside Cloudflare Workers V8 isolates:
+  - Startup latency: <5ms (vs. 800ms+ for Chromium).
+  - Memory footprint: ~15MB RAM per agent session (7x–15x reduction).
+  - Stateless architecture allows scaling millions of concurrent agent sessions without container bloat.
+
+---
+
+## 2. Software Engineering & Testing
+
+### Spec-Driven Development: OpenSpec vs. Spec Kit
+- **URLs**: https://labitcode.com/blog/spec-driven-development-openspec-vs-spec-kit | https://labitcode.com/es/blog/desarrollo-guiado-por-especificaciones-openspec-vs-spec-kit
+- **Tags**: OpenSpec, Spec Kit, AI, Software Engineering, Architecture
+- **Core Thesis**: "Vibe coding" (prompting models without formal specifications) fails at scale as codebase complexity grows. Spec-Driven Development (SDD) replaces ambiguous natural language prompts with machine-verifiable contracts.
+- **Comparison**:
+  - OpenSpec: Lightweight markdown-driven specification framework focusing on user stories, boundary conditions, and executable acceptance criteria.
+  - Spec Kit: Schema-first framework enforcing JSON/Zod schemas, API contracts, and automatic property-based test generation.
+
+### Playwright with TypeScript: Architecture & Best Practices
+- **URLs**: https://labitcode.com/blog/playwright-typescript-architecture-best-practices | https://labitcode.com/es/blog/arquitectura-playwright-typescript-mejores-practicas
+- **Tags**: Playwright, TypeScript, Testing, E2E, DevOps
+- **Key Patterns**:
+  - Page Object Model (POM) with composition rather than inheritance.
+  - Custom test fixtures for authenticated state re-use (`storageState`).
+  - Sharding across CI parallel workers for sub-5-minute execution.
+  - Strict locators: prefer user-facing accessible roles (`getByRole`, `getByLabel`) over brittle CSS/XPath selectors.
+
+### The Death of Sprints (La Muerte de los Sprints)
+- **URLs**: https://labitcode.com/blog/the-death-of-sprints | https://labitcode.com/es/blog/la-muerte-de-los-sprints
+- **Tags**: Agile, Management, Software Engineering, Shape Up
+- **Core Thesis**: Two-week sprints encourage estimation theater, velocity gaming, and artificial batching. Modern high-performing teams adopt continuous flow, Shape Up 6-week cycles with circuit breakers, and autonomous maker time.
+
+---
+
+## 3. DevSecOps & Cloud Security
+
+### GitHub Actions Secrets Audit in CI/CD (Auditoría de Secretos en GitHub Actions)
+- **URLs**: https://labitcode.com/blog/github-actions-secrets-audit-devsecops | https://labitcode.com/es/blog/auditoria-secretos-github-actions-devsecops
+- **Tags**: DevSecOps, GitHub Actions, Security, CI/CD
+- **Vulnerabilities Identified & Mitigated**:
+  - Accidental leakage via `${{ toJSON(secrets) }}` dumping unmasked values.
+  - PR triage vulnerabilities: `pull_request_target` checkout of untrusted fork code with write secrets.
+  - OIDC federation: Replacing long-lived AWS/GCP static API keys with short-lived GitHub OIDC tokens and scoped repository claims.
+  - Action pinning: Enforcing full commit SHAs (`uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11`) instead of mutable semver tags.
+
+### Production Linux VPS Security Hardening Guide
+- **URLs**: https://labitcode.com/blog/secure-vps-setup-guide | https://labitcode.com/es/blog/guia-configuracion-vps-seguro
+- **Tags**: Linux, Security, DevOps, SysAdmin
+- **Hardening Steps**:
+  1. Non-root user with passwordless `sudo` and SSH Ed25519 public key authentication.
+  2. SSH daemon hardening: `PermitRootLogin no`, `PasswordAuthentication no`, `MaxAuthTries 3`, custom non-standard port.
+  3. UFW firewall with default deny incoming and rate-limited SSH.
+  4. Fail2ban with aggressive jail rules for brute force prevention.
+  5. Automatic security updates (`unattended-upgrades`).
+  6. Kernel sysctl tuning for SYN flood protection and disabling ICMP redirects.
+
+---
+
+## 4. Web Architecture & Performance
+
+### 100/100 Core Web Vitals on Astro & Vercel
+- **URLs**: https://labitcode.com/blog/pagespeed-optimization-guide | https://labitcode.com/es/blog/guia-optimizacion-pagespeed
+- **Tags**: Web Performance, Core Web Vitals, SEO, Astro
+- **Techniques**:
+  - Zero JavaScript by default with Astro SSG.
+  - 16:9 WebP hero image compression with exact `srcset` and `fetchpriority="high"` for LCP under 0.8s.
+  - System font stack and `font-display: swap` to eliminate Layout Shifts (CLS 0.00).
+  - Pure CSS theme switches with zero-FOUC inline theme scripts.
+
+---
+
+## 5. Engineering Projects
+
+### Labitcode Platform
+- **URLs**: https://labitcode.com/projects/labitcode-platform | https://labitcode.com/es/projects/plataforma-labitcode
+- **Stack**: Astro 5, Tailwind CSS v4, TypeScript, MDX, Shiki.
+- **Features**: 100% bilingual SSG, instant local and client search with BM25-style keyword weighting and Levenshtein typo tolerance, automatic browser language detection, zero runtime JS framework overhead.
+
+### Terreno Rústico Observability Platform
+- **URLs**: https://labitcode.com/projects/terreno-rustico-monitoring | https://labitcode.com/es/projects/monitorizacion-terreno-rustico
+- **Stack**: Prometheus, Loki, Promtail, Node Exporter, cAdvisor, Grafana, Traefik, Docker.
+- **Architecture**: Self-contained production observability telemetry stack monitoring container metrics, host CPU/RAM, and structured application logs behind Traefik TLS reverse proxy.
