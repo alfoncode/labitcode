@@ -20,6 +20,8 @@ interface Props {
   includeWebSite?: boolean;
   breadcrumbs?: { name: string; url: string }[];
   canonicalOverride?: string;
+  lang?: "en" | "es";
+  alternateUrls?: { en?: string; es?: string };
 }
 
 const {
@@ -41,6 +43,8 @@ const {
   includeWebSite = false,
   breadcrumbs,
   canonicalOverride,
+  lang = "en",
+  alternateUrls,
 } = Astro.props;
 
 const rawPathname = Astro.url.pathname;
@@ -149,6 +153,13 @@ const ogImageType = image.endsWith(".png")
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/rss.xml" />
 <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context" />
+{alternateUrls?.en && <link rel="alternate" hreflang="en" href={alternateUrls.en} />}
+{alternateUrls?.es && <link rel="alternate" hreflang="es" href={alternateUrls.es} />}
+{
+  (alternateUrls?.en || alternateUrls?.es) && (
+    <link rel="alternate" hreflang="x-default" href={alternateUrls.en || canonicalURL.href} />
+  )
+}
 
 {tags && <meta name="keywords" content={tags.join(", ")} />}
 
@@ -163,7 +174,9 @@ const ogImageType = image.endsWith(".png")
 <meta property="og:image:type" content={ogImageType} />
 {imageAlt && <meta property="og:image:alt" content={imageAlt} />}
 <meta property="og:type" content={type} />
-<meta property="og:locale" content="en_US" />
+<meta property="og:locale" content={lang === "es" ? "es_ES" : "en_US"} />
+{lang === "es" && alternateUrls?.en && <meta property="og:locale:alternate" content="en_US" />}
+{lang === "en" && alternateUrls?.es && <meta property="og:locale:alternate" content="es_ES" />}
 {publishedDate && <meta property="article:published_time" content={publishedDate} />}
 {modifiedDate && <meta property="article:modified_time" content={modifiedDate} />}
 {author && <meta property="article:author" content={author} />}

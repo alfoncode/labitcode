@@ -8,7 +8,7 @@ import { SITE } from "@/consts";
 const ITEMS_PER_PAGE = 6;
 
 const allPosts = (await getCollection("blog"))
-  .filter((post) => !post.data.draft)
+  .filter((post) => !post.data.draft && post.data.lang !== "es")
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 // Gather all unique tags
@@ -32,6 +32,8 @@ const itemListLd = {
 <BaseLayout
   title="Blog"
   description="Engineering articles on Software, AI, Security, and DevOps from the labitcode team."
+  lang="en"
+  alternateUrls={{ en: `${SITE}/blog`, es: `${SITE}/es/blog` }}
   jsonLd={itemListLd}
   breadcrumbs={[
     { name: "Home", url: SITE },

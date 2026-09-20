@@ -11,16 +11,35 @@ interface Props {
   slug: string;
   body?: string;
   heroImage?: string;
+  lang?: "en" | "es";
+  href?: string;
 }
 
-const { title, description, pubDate, tags, author, slug, body, heroImage } = Astro.props;
-const readingTime = body ? getReadingTime(body) : "3 min read";
+const {
+  title,
+  description,
+  pubDate,
+  tags,
+  author,
+  slug,
+  body,
+  heroImage,
+  lang = "en",
+  href,
+} = Astro.props;
+
+const postUrl = href || (lang === "es" ? `/es/blog/${slug}` : `/blog/${slug}`);
+const readingTime = body
+  ? getReadingTime(body, lang)
+  : lang === "es"
+    ? "3 min de lectura"
+    : "3 min read";
 ---
 
 <article
   class="group relative rounded-2xl border border-border dark:border-navy-light bg-surface dark:bg-navy-light/50 transition-all duration-300 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5 overflow-hidden flex flex-col h-full"
 >
-  <a href={`/blog/${slug}`} class="absolute inset-0 z-10" aria-label={`Read "${title}"`}></a>
+  <a href={postUrl} class="absolute inset-0 z-10" aria-label={`Read "${title}"`}></a>
 
   {/* Hero Image */}
   {
@@ -45,9 +64,17 @@ const readingTime = body ? getReadingTime(body) : "3 min read";
       {
         tags.slice(0, 3).map((tag) => (
           <a
-            href={`/blog/tag/${encodeURIComponent(tag)}`}
+            href={
+              lang === "es"
+                ? `/es/blog/tag/${encodeURIComponent(tag)}`
+                : `/blog/tag/${encodeURIComponent(tag)}`
+            }
             class="relative z-20 shrink-0"
-            aria-label={`See more articles tagged ${tag}`}
+            aria-label={
+              lang === "es"
+                ? `Ver más artículos con la etiqueta ${tag}`
+                : `See more articles tagged ${tag}`
+            }
           >
             <Badge label={tag} variant="accent" />
           </a>
@@ -89,7 +116,7 @@ const readingTime = body ? getReadingTime(body) : "3 min read";
               x2="21"
               y2="10"></line>
           </svg>
-          <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+          <time datetime={pubDate.toISOString()}>{formatDate(pubDate, lang)}</time>
         </span>
         <span class="flex items-center gap-1">
           <svg

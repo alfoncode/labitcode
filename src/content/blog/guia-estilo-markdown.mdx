@@ -1,0 +1,275 @@
+---
+title: "Guía de Estilo Markdown: Muestra de Todos los Elementos"
+description: "Una referencia exhaustiva que muestra todos los elementos Markdown y MDX con los estilos del sistema de diseño de labitcode: encabezados, bloques de código, tablas y listas."
+pubDate: 2025-02-10
+heroImage: "/images/markdown-style-guide.webp"
+tags: ["markdown", "documentation", "design-system"]
+author: "Alfonso Garcia"
+draft: true
+lang: "es"
+translationSlug: "markdown-style-guide"
+---
+
+Este artículo sirve como una **guía de estilo interactiva** para todos los elementos Markdown y MDX soportados por labitcode. Utilízalo como referencia para comprobar cómo se visualizará tu contenido una vez publicado.
+
+---
+
+## Encabezados
+
+Los encabezados definen la jerarquía estructural de tu contenido. Admitimos niveles 2–4 dentro de los artículos (h1 se reserva exclusivamente para el título principal).
+
+### Encabezado de Tercer Nivel
+
+Utiliza h3 para subsecciones dentro de una temática principal.
+
+#### Encabezado de Cuarto Nivel
+
+Emplea h4 con moderación, para desgloses muy específicos.
+
+---
+
+## Estilos de Texto en Línea
+
+El texto de párrafo estándar se presenta en un tamaño de lectura cómodo con un interlineado generoso que favorece la legibilidad:
+
+- **Texto en negrita** utiliza `**doble asterisco**`
+- _Texto en cursiva_ utiliza `*un solo asterisco*`
+- **_Negrita y cursiva_** utiliza `***tres asteriscos***`
+- ~~Tachado~~ utiliza `~~doble virgulilla~~`
+- `código` en línea utiliza comillas invertidas y se renderiza en tipografía monoespaciada con fondo sutil
+
+Este es un párrafo con un [enlace a nuestra página principal](https://labitcode.com/es) para comprobar el estilo de los enlaces. Cuentan con un color de acento y subrayado desfasado para optimizar la lectura.
+
+---
+
+## Bloques de Código
+
+Los bloques de código son uno de los componentes esenciales en un blog de ingeniería. Así lucen en diferentes lenguajes:
+
+### TypeScript
+
+```typescript
+interface BlogPost {
+  title: string;
+  description: string;
+  pubDate: Date;
+  tags: string[];
+  author: "Alfonso Garcia" | "AI";
+  draft?: boolean;
+}
+
+async function getPublishedPosts(): Promise<BlogPost[]> {
+  const allPosts = await getCollection("blog");
+  return allPosts
+    .filter((post) => !post.data.draft)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+}
+```
+
+### Python
+
+```python
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Optional
+
+@dataclass
+class Project:
+    """Representa un proyecto en el laboratorio."""
+    name: str
+    stack: list[str]
+    status: str = "active"
+    created_at: datetime = datetime.now()
+    repo_url: Optional[str] = None
+
+    def is_active(self) -> bool:
+        return self.status == "active"
+
+    def __repr__(self) -> str:
+        return f"<Project: {self.name} [{self.status}]>"
+
+# Uso
+scanner = Project(
+    name="SecureFlow",
+    stack=["Python", "Docker", "Redis"],
+    repo_url="https://github.com/alfoncode/labitcode/secureflow"
+)
+print(scanner)  # <Project: SecureFlow [active]>
+```
+
+### Bash / Shell
+
+```bash
+#!/bin/bash
+
+# Script de despliegue para labitcode
+echo "🚀 Compilando paquete de producción..."
+npm run build
+
+# Verificar salida
+if [ -d "dist" ]; then
+  echo "✅ Compilación exitosa — $(find dist -name '*.html' | wc -l) páginas generadas"
+  npx wrangler pages deploy dist --project-name=labitcode
+else
+  echo "❌ Fallo en la compilación. Revisa los logs anteriores."
+  exit 1
+fi
+```
+
+### CSS
+
+```css
+@theme {
+  --color-accent: #e0115f;
+  --color-navy: #0f172a;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+.glass {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+```
+
+### JSON
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "labitcode",
+  "url": "https://labitcode.com/es",
+  "founder": {
+    "@type": "Person",
+    "name": "Alfonso Garcia"
+  },
+  "description": "Laboratorio de ingeniería donde el código humano converge con la innovación en IA"
+}
+```
+
+---
+
+## Citas en Bloque (Blockquotes)
+
+Las citas se presentan con un borde lateral destacado en color de acento:
+
+> "Cualquier tonto puede escribir código que un ordenador entienda. Los buenos programadores escriben código que los humanos pueden entender."
+> — Martin Fowler
+
+Las citas anidadas también son compatibles:
+
+> Las arquitecturas sobresalientes nacen de la simplicidad.
+>
+> > Ante la duda, entrega menos líneas de código. Tus usuarios te lo agradecerán.
+
+---
+
+## Listas
+
+### Listas Desordenadas
+
+- Astro 5.x como framework estático de alto rendimiento
+- Tailwind CSS v4 con configuración CSS nativa
+- Shiki para resaltado de sintaxis con soporte de tema dual
+- Colecciones de contenido con validación estricta en Zod
+  - Artículos con etiquetas, autor y tiempo estimado de lectura
+  - Proyectos con stacks técnicos, estado y repositorios
+- Política Zero-React: JavaScript puro y sin sobrecarga
+
+### Listas Ordenadas
+
+1. Planificar la arquitectura y seleccionar el stack técnico
+2. Configurar el sistema de diseño y la tipografía
+3. Crear la capa de contenidos con esquemas tipados
+4. Desarrollar las páginas y los componentes Astro
+5. Incorporar interactividad ligera en el cliente (búsqueda, selector de tema)
+6. Validar rendimiento y accesibilidad con auditorías Lighthouse
+
+### Listas de Tareas
+
+- [x] Andamiaje inicial del proyecto con Astro 5
+- [x] Sistema de diseño y tematización clara/oscura
+- [x] Componentes SEO (JSON-LD, Open Graph, sitemap)
+- [x] Colecciones de contenido para blog y proyectos
+- [x] Búsqueda en el cliente con coincidencia difusa
+- [ ] Endpoint para sindicación RSS
+- [ ] Integración de analítica respetuosa con la privacidad
+
+---
+
+## Tablas
+
+Las tablas se visualizan con bordes nítidos y filas alternadas con contraste suave:
+
+| Tecnología   | Propósito                     | Versión |
+| :----------- | :---------------------------- | ------: |
+| Astro        | Framework estático para web   |    5.17 |
+| Tailwind CSS | Utilidades CSS de alto nivel  |     4.0 |
+| Shiki        | Resaltado de sintaxis         |  Latest |
+| Sharp        | Optimización de imágenes      |  Latest |
+| MDX          | Contenido interactivo y texto |     4.x |
+
+### Tabla Comparativa
+
+| Característica           | SPA en React | SSG en Astro |
+| :----------------------- | :----------: | :----------: |
+| Tamaño Bundle JS         |   ~150KB+    |     ~0KB     |
+| Time to Interactive      |    ~2.5s     |    ~0.3s     |
+| Amigable con SEO         |      ⚠️      |      ✅      |
+| Puntuación en Lighthouse |    70–85     |     100      |
+| Complejidad Build        |     Alta     |     Baja     |
+
+---
+
+## Separadores Horizontales
+
+Utiliza tres guiones (`---`) para crear divisiones temáticas entre secciones, tal como se muestra en esta guía.
+
+---
+
+## Imágenes
+
+Las imágenes se representan con esquinas redondeadas y centradas de manera automática en el flujo de lectura.
+
+---
+
+## Flujo Mixto de Contenido
+
+Así interactúan de forma natural los distintos componentes dentro de un artículo real:
+
+La premisa clave tras nuestra arquitectura radica en que **las webs de contenido no necesitan un entorno de ejecución de JavaScript**. Al examinar qué hace un blog, el proceso es simple:
+
+1. Renderizar Markdown a HTML
+2. Aplicar estilos visuales coherentes
+3. Generar etiquetas meta y Open Graph para SEO
+
+Eso es todo. El resto —gestión de estado global, hidratación, conciliación del DOM virtual— constituye _sobrecarga_ innecesaria en este escenario. Así lo plasmamos en código:
+
+```typescript
+// Esto es todo lo necesario. Sin artificios.
+const posts = await getCollection("blog");
+const sorted = posts
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+```
+
+> El código más rápido es el que jamás se envía al navegador del usuario.
+
+¿El desenlace? **Puntuaciones de 100/100 en Lighthouse** en todas las categorías, con un `Time to Interactive` medido en milisegundos, no en segundos.
+
+---
+
+## Resumen
+
+Esta guía de estilo engloba los componentes Markdown esenciales para labitcode:
+
+- **Estilos en línea**: negrita, cursiva, tachado, código y enlaces
+- **Elementos de bloque**: encabezados, párrafos, citas y separadores
+- **Bloques de código**: resaltado multilingüe con Shiki
+- **Listas**: ordenadas, desordenadas, anidadas y tareas interactivas
+- **Tablas**: alineación y contraste cuidado
+- **Imágenes**: bordes redondeados y centrado uniforme
+
+Cada elemento está calibrado para garantizar la máxima legibilidad tanto en modo **claro** como **oscuro**.

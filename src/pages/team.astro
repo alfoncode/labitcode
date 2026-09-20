@@ -3,7 +3,13 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { SITE } from "@/consts";
 
-const team = await getCollection("team");
+const allTeam = await getCollection("team");
+const team = allTeam.filter((m) => m.data.lang !== "es");
+
+const alternateUrls = {
+  en: `${SITE}/team`,
+  es: `${SITE}/es/team`,
+};
 
 const personLd = {
   "@context": "https://schema.org",
@@ -34,6 +40,8 @@ const personLd = {
   type="profile"
   includeOrganization
   jsonLd={personLd}
+  lang="en"
+  alternateUrls={alternateUrls}
   breadcrumbs={[
     { name: "Home", url: SITE },
     { name: "Team", url: `${SITE}/team` },

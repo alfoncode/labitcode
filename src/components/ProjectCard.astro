@@ -13,23 +13,45 @@ interface Props {
   url?: string;
   repo?: string;
   heroImage?: string;
+  lang?: "en" | "es";
+  href?: string;
 }
 
-const { title, description, stack, status, lastUpdated, creator, slug, url, repo, heroImage } =
-  Astro.props;
+const {
+  title,
+  description,
+  stack,
+  status,
+  lastUpdated,
+  creator,
+  slug,
+  url,
+  repo,
+  heroImage,
+  lang = "en",
+  href,
+} = Astro.props;
+
+const projectUrl = href || (lang === "es" ? `/es/projects/${slug}` : `/projects/${slug}`);
 
 const statusColors: Record<string, string> = {
   active: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
   "in-progress": "bg-amber-500/10 text-amber-600 dark:text-amber-400",
   archived: "bg-gray-500/10 text-gray-500",
 };
+
+const statusLabels: Record<string, { en: string; es: string }> = {
+  active: { en: "active", es: "activo" },
+  "in-progress": { en: "in-progress", es: "en desarrollo" },
+  archived: { en: "archived", es: "archivado" },
+};
+const displayStatus = statusLabels[status]?.[lang] || status;
 ---
 
 <article
   class="group relative rounded-2xl border border-border dark:border-navy-light bg-surface dark:bg-navy-light/50 transition-all duration-300 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5 flex flex-col overflow-hidden h-full"
 >
-  <a href={`/projects/${slug}`} class="absolute inset-0 z-10" aria-label={`View "${title}" project`}
-  ></a>
+  <a href={projectUrl} class="absolute inset-0 z-10" aria-label={`View "${title}" project`}></a>
 
   {/* Hero Image */}
   {
@@ -74,7 +96,7 @@ const statusColors: Record<string, string> = {
             statusColors[status] || statusColors.active,
           ]}
         >
-          {status}
+          {displayStatus}
         </span>
       </div>
     </div>
@@ -100,7 +122,7 @@ const statusColors: Record<string, string> = {
     <div
       class="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-border dark:border-navy-light"
     >
-      <span>Updated {formatDate(lastUpdated)}</span>
+      <span>{lang === "es" ? "Actualizado" : "Updated"} {formatDate(lastUpdated, lang)}</span>
       <span class="font-medium">{creator}</span>
     </div>
 
@@ -124,7 +146,7 @@ const statusColors: Record<string, string> = {
             >
               <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
             </svg>
-            Live
+            {lang === "es" ? "Demo" : "Live"}
           </a>
         )
       }
@@ -143,7 +165,7 @@ const statusColors: Record<string, string> = {
                 clip-rule="evenodd"
               />
             </svg>
-            Source
+            {lang === "es" ? "Código" : "Source"}
           </a>
         )
       }

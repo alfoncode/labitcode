@@ -7,9 +7,9 @@ import { SITE } from "@/consts";
 
 const ITEMS_PER_PAGE = 6;
 
-const allProjects = (await getCollection("projects")).sort(
-  (a, b) => b.data.lastUpdated.valueOf() - a.data.lastUpdated.valueOf()
-);
+const allProjects = (await getCollection("projects"))
+  .filter((p) => p.data.lang !== "es")
+  .sort((a, b) => b.data.lastUpdated.valueOf() - a.data.lastUpdated.valueOf());
 
 // ItemList JSON-LD
 const itemListLd = {
@@ -29,6 +29,8 @@ const itemListLd = {
 <BaseLayout
   title="Projects"
   description="The Lab — Side projects and experiments from labitcode, exploring new technologies and engineering patterns."
+  lang="en"
+  alternateUrls={{ en: `${SITE}/projects`, es: `${SITE}/es/projects` }}
   jsonLd={itemListLd}
   breadcrumbs={[
     { name: "Home", url: SITE },

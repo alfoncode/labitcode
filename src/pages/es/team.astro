@@ -1,0 +1,129 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { SITE } from "@/consts";
+
+const allTeam = await getCollection("team");
+const team = allTeam.filter((m) => m.data.lang === "es");
+
+const alternateUrls = {
+  en: `${SITE}/team`,
+  es: `${SITE}/es/team`,
+};
+
+const personLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  itemListElement: team.map((m, i) => {
+    const sameAs = [m.data.github, m.data.twitter, m.data.linkedin].filter(Boolean) as string[];
+    const node: Record<string, unknown> = {
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Person",
+        name: m.data.name,
+        jobTitle: m.data.role,
+        description: m.data.bio,
+        worksFor: { "@type": "Organization", name: "labitcode", url: `${SITE}/es` },
+        ...(m.data.github && { url: m.data.github }),
+        ...(sameAs.length && { sameAs }),
+      },
+    };
+    return node;
+  }),
+};
+---
+
+<BaseLayout
+  title="Equipo"
+  description="Conoce al equipo de labitcode — Alfonso Garcia y nuestra entidad virtual de IA, desafiando juntos las fronteras de la ingeniería de software."
+  type="profile"
+  includeOrganization
+  jsonLd={personLd}
+  lang="es"
+  alternateUrls={alternateUrls}
+  breadcrumbs={[
+    { name: "Inicio", url: `${SITE}/es` },
+    { name: "Equipo", url: `${SITE}/es/team` },
+  ]}
+>
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
+    <!-- Header -->
+    <div class="mb-12">
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-navy dark:text-gray-100 tracking-tight">
+        Nuestro Equipo
+      </h1>
+      <p class="mt-2 text-gray-500 max-w-2xl">
+        labitcode se fundamenta en la sinergia entre la experiencia humana y la potencia de la IA:
+        un equipo donde ambos aportan fortalezas únicas a la ingeniería.
+      </p>
+    </div>
+
+    <!-- Team Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {
+        team.map((member) => (
+          <article class="rounded-2xl border border-border dark:border-navy-light bg-surface dark:bg-navy-light/50 p-8 transition-all duration-300 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5">
+            <div class="flex items-start gap-4 mb-6">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center text-white text-xl font-bold shrink-0">
+                {member.data.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </div>
+              <div>
+                <h2 class="text-xl font-bold text-navy dark:text-gray-100">{member.data.name}</h2>
+                <p class="text-accent font-medium text-sm">{member.data.role}</p>
+              </div>
+            </div>
+            <p class="text-gray-700 dark:text-gray-500 leading-relaxed mb-6">{member.data.bio}</p>
+            <div class="flex flex-wrap gap-2">
+              {member.data.github && (
+                <a
+                  href={member.data.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm font-medium text-accent hover:text-accent-light transition-colors"
+                >
+                  GitHub ↗
+                </a>
+              )}
+              {member.data.twitter && (
+                <a
+                  href={member.data.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm font-medium text-accent hover:text-accent-light transition-colors"
+                >
+                  Twitter ↗
+                </a>
+              )}
+              {member.data.linkedin && (
+                <a
+                  href={member.data.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm font-medium text-accent hover:text-accent-light transition-colors"
+                >
+                  LinkedIn ↗
+                </a>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <!-- Mission -->
+    <div
+      class="mt-16 rounded-2xl bg-gradient-to-br from-navy via-navy-light to-navy p-8 sm:p-12 text-center"
+    >
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-4">Nuestra Misión</h2>
+      <p class="text-slate-300 max-w-2xl mx-auto leading-relaxed text-lg">
+        Explorar la convergencia entre el talento de ingeniería humano y la capacidad de la IA:
+        construyendo herramientas, compartiendo conocimiento e impulsando las posibilidades del
+        desarrollo de software moderno.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

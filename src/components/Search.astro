@@ -59,13 +59,7 @@
 </div>
 
 <script>
-  type SearchEntry = {
-    title: string;
-    description: string;
-    tags: string[];
-    slug: string;
-    type: "blog" | "project";
-  };
+  import { search, type SearchEntry } from "@/utils/search";
 
   let searchIndex: SearchEntry[] = [];
   let loaded = false;
@@ -81,41 +75,16 @@
     }
   }
 
-  function fuzzyMatch(text: string, query: string): boolean {
-    const lowerText = text.toLowerCase();
-    const lowerQuery = query.toLowerCase();
-    // Check if all query characters appear in order
-    let ti = 0;
-    for (let qi = 0; qi < lowerQuery.length; qi++) {
-      const char = lowerQuery[qi];
-      const found = lowerText.indexOf(char, ti);
-      if (found === -1) return false;
-      ti = found + 1;
-    }
-    return true;
-  }
-
-  function search(query: string): SearchEntry[] {
-    if (!query.trim()) return [];
-    const q = query.toLowerCase();
-    return searchIndex
-      .filter(
-        (entry) =>
-          fuzzyMatch(entry.title, q) ||
-          fuzzyMatch(entry.description, q) ||
-          entry.tags.some((tag) => fuzzyMatch(tag, q))
-      )
-      .slice(0, 10);
-  }
-
   function renderResults(results: SearchEntry[], query: string): void {
     const listEl = document.getElementById("search-list")!;
     const emptyEl = document.getElementById("search-empty")!;
     const noResultsEl = document.getElementById("search-no-results")!;
+    const isEs = document.documentElement.lang === "es";
 
     if (!query.trim()) {
       listEl.classList.add("hidden");
       noResultsEl.classList.add("hidden");
+      emptyEl.textContent = isEs ? "Escribe para buscar…" : "Start typing to search…";
       emptyEl.classList.remove("hidden");
       return;
     }
@@ -123,6 +92,7 @@
     if (results.length === 0) {
       listEl.classList.add("hidden");
       emptyEl.classList.add("hidden");
+      noResultsEl.textContent = isEs ? "No se encontraron resultados." : "No results found.";
       noResultsEl.classList.remove("hidden");
       return;
     }
@@ -133,13 +103,26 @@
 
     listEl.innerHTML = results
       .map((entry) => {
-        const href = entry.type === "blog" ? `/blog/${entry.slug}` : `/projects/${entry.slug}`;
-        const typeLabel = entry.type === "blog" ? "Blog" : "Project";
+        const prefix = entry.lang === "es" ? "/es" : "";
+        const href =
+          entry.type === "blog"
+            ? `${prefix}/blog/${entry.slug}`
+            : `${prefix}/projects/${entry.slug}`;
+        const typeLabel =
+          entry.type === "blog"
+            ? entry.lang === "es"
+              ? "Blog"
+              : "Blog"
+            : entry.lang === "es"
+              ? "Proyecto"
+              : "Project";
         const typeColor = entry.type === "blog" ? "text-accent" : "text-emerald-500";
+        const langBadge = entry.lang === "es" ? "ES" : "EN";
         return `
           <li>
             <a href="${href}" class="flex items-start gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-navy transition-colors duration-150 group">
               <span class="mt-0.5 text-xs font-semibold ${typeColor} uppercase tracking-wider shrink-0">${typeLabel}</span>
+              <span class="mt-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-200 dark:bg-navy-light text-gray-600 dark:text-gray-300 shrink-0">${langBadge}</span>
               <div class="min-w-0">
                 <p class="text-sm font-semibold text-navy dark:text-gray-100 group-hover:text-accent transition-colors truncate">${entry.title}</p>
                 <p class="text-xs text-gray-500 mt-0.5 truncate">${entry.description}</p>
@@ -154,6 +137,12 @@
   function openSearch(): void {
     const modal = document.getElementById("search-modal")!;
     const input = document.getElementById("search-input") as HTMLInputElement;
+    const isEs = document.documentElement.lang === "es";
+    if (input) {
+      input.placeholder = isEs
+        ? "Buscar artículos, proyectos, etiquetas…"
+        : "Search posts, projects, tags…";
+    }
     modal.classList.remove("hidden");
     document.body.style.overflow = "hidden";
     loadIndex();
@@ -174,6 +163,14 @@
     const backdrop = document.getElementById("search-backdrop");
     const input = document.getElementById("search-input") as HTMLInputElement;
 
+    const resultsContainer = document.getElementById("search-results");
+    resultsContainer?.addEventListener("click", (e) => {
+      const link = (e.target as HTMLElement)?.closest("a");
+      if (link) {
+        closeSearch();
+      }
+    });
+
     trigger?.addEventListener("click", openSearch);
     backdrop?.addEventListener("click", closeSearch);
 
@@ -188,11 +185,16 @@
 
     input?.addEventListener("input", () => {
       const q = input.value;
-      const results = search(q);
+      const currentLang = document.documentElement.lang === "es" ? "es" : "en";
+      const results = search(searchIndex, q, currentLang);
       renderResults(results, q);
     });
   }
 
   initSearch();
-  document.addEventListener("astro:after-swap", initSearch);
+  document.addEventListener("astro:before-swap", closeSearch);
+  document.addEventListener("astro:after-swap", () => {
+    document.body.style.overflow = "";
+    initSearch();
+  });
 </script>

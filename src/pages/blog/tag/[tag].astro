@@ -5,7 +5,9 @@ import { getCollection } from "astro:content";
 import { SITE } from "@/consts";
 
 export async function getStaticPaths() {
-  const posts = (await getCollection("blog")).filter((post) => !post.data.draft);
+  const posts = (await getCollection("blog")).filter(
+    (post) => !post.data.draft && post.data.lang !== "es"
+  );
   const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
   return tags.map((tag) => ({
     params: { tag: encodeURIComponent(tag) },
@@ -20,12 +22,18 @@ export async function getStaticPaths() {
 
 const { tag, posts } = Astro.props;
 const decodedTag = decodeURIComponent(tag as string);
+const alternateUrls = {
+  en: `${SITE}/blog/tag/${encodeURIComponent(tag)}`,
+  es: `${SITE}/es/blog/tag/${encodeURIComponent(tag)}`,
+};
 ---
 
 <BaseLayout
   title={`${decodedTag} Articles`}
   description={`Engineering articles tagged "${decodedTag}" on labitcode — Software Engineering, AI, Security, and DevOps.`}
   canonicalOverride={`${SITE}/blog/tag/${encodeURIComponent(tag)}`}
+  lang="en"
+  alternateUrls={alternateUrls}
   breadcrumbs={[
     { name: "Home", url: SITE },
     { name: "Blog", url: `${SITE}/blog` },

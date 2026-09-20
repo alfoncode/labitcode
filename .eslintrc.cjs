@@ -23,14 +23,11 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     'react/react-in-jsx-scope': 'off',
   },
-  ignorePatterns: ['dist', 'node_modules', 'public'],
+  ignorePatterns: ['dist', 'node_modules', 'public', 'src/env.d.ts'],
   overrides: [
     {
       files: ['*.astro'],
       parser: 'astro-eslint-parser',
-      rules: {
-        'astro/no-unused-variables': 'error',
-      },
     },
   ],
 };

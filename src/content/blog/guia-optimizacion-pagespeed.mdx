@@ -1,0 +1,287 @@
+---
+title: "PageSpeed Insights: Guía Práctica para Alcanzar el 100/100"
+description: "Guía paso a paso para optimizar el rendimiento, accesibilidad y SEO de tu sitio web usando PageSpeed Insights. Descubre cómo reducimos las imágenes un 95%, eliminamos recursos que bloquean el renderizado y optimizamos los Core Web Vitals con ejemplos reales."
+pubDate: 2026-06-03
+heroImage: "/images/pagespeed-optimization-guide.webp"
+tags: ["Web Performance", "SEO", "Core Web Vitals", "Astro", "Accessibility"]
+author: "Alfonso Garcia"
+draft: false
+lang: "es"
+translationSlug: "pagespeed-optimization-guide"
+---
+
+Si alguna vez has analizado tu sitio web en [PageSpeed Insights](https://pagespeed.web.dev/) y has obtenido una puntuación decepcionante, no estás solo. La buena noticia: la mayoría de los problemas de rendimiento siguen patrones previsibles y las soluciones son sencillas una vez sabes qué buscar.
+
+Esta guía detalla las **optimizaciones exactas** que aplicamos en labitcode.com —reduciendo el peso de nuestra imagen más pesada un 95%, eliminando fuentes que bloqueaban el renderizado y mejorando la accesibilidad— con código que puedes aplicar directamente en tus proyectos.
+
+---
+
+## Comprendiendo los Core Web Vitals
+
+Antes de aplicar correcciones, conviene entender qué mide realmente PageSpeed. Google evalúa tu web mediante tres métricas clave conocidas como **Core Web Vitals**:
+
+| Métrica                             | Qué Mide                                | Bueno   | Mejorable | Deficiente |
+| ----------------------------------- | --------------------------------------- | ------- | --------- | ---------- |
+| **LCP** (Largest Contentful Paint)  | Tiempo de carga del contenido principal | ≤ 2.5s  | ≤ 4.0s    | > 4.0s     |
+| **INP** (Interaction to Next Paint) | Nivel de respuesta a la interacción     | ≤ 200ms | ≤ 500ms   | > 500ms    |
+| **CLS** (Cumulative Layout Shift)   | Estabilidad visual durante la carga     | ≤ 0.10  | ≤ 0.25    | > 0.25     |
+
+Estas métricas impactan de forma directa en tu **posicionamiento en buscadores**. Google utiliza los Core Web Vitals como factor de posicionamiento, de modo que las mejoras de rendimiento repercuten directamente en tu SEO orgánico.
+
+---
+
+## 1. Optimización de Imágenes: La Mayor Ganancia
+
+Las imágenes representan casi siempre la **mayor oportunidad** para mejorar los tiempos de carga: suelen ser los recursos más pesados de una página e inciden directamente en el LCP.
+
+### Convertir PNG/JPEG a WebP
+
+WebP ofrece archivos **entre un 25% y un 35% más ligeros** que PNG con una calidad visual idéntica, y está respaldado por [todos los navegadores modernos](https://caniuse.com/webp). En nuestro sitio web, los resultados fueron inmediatos:
+
+| Imagen                | Tamaño PNG   | Tamaño WebP | Reducción |
+| --------------------- | ------------ | ----------- | --------- |
+| terreno-rustico       | **2.057 KB** | **64 KB**   | **-97%**  |
+| markdown-style-guide  | 62 KB        | 46 KB       | -26%      |
+| ai-driven-development | 48 KB        | 35 KB       | -27%      |
+| building-labitcode    | 31 KB        | 17 KB       | -44%      |
+| labitcode-platform    | 22 KB        | 8 KB        | -64%      |
+
+Redujimos **de 2,2 MB a apenas 170 KB** el peso total de las imágenes principales: un ahorro del 92%.
+
+### Cómo Convertir Imágenes con Sharp
+
+En entornos Node.js (con cualquier framework: Astro, Next.js, Remix, etc.), [Sharp](https://sharp.pixelplumbing.com/) es la librería de referencia:
+
+```bash
+npm install sharp --save-dev
+```
+
+```javascript
+// convert-images.mjs
+import sharp from "sharp";
+import { readdirSync } from "fs";
+import { join } from "path";
+
+const dir = "./public/images";
+const files = readdirSync(dir).filter((f) => f.endsWith(".png"));
+
+for (const file of files) {
+  const input = join(dir, file);
+  const output = join(dir, file.replace(".png", ".webp"));
+
+  const info = await sharp(input).webp({ quality: 80 }).toFile(output);
+
+  console.log(`${file} → ${info.size} bytes`);
+}
+```
+
+Ejecuta el script con `node convert-images.mjs` y actualiza las rutas de tus imágenes de `.png` a `.webp`.
+
+> **Consejo pro:** Para la compresión más agresiva, valora el formato AVIF. Proporciona archivos aproximadamente un 50% menores que WebP, aunque la codificación es más costosa computacionalmente. Puedes usar la etiqueta `<picture>` con AVIF como fuente preferente y WebP como fallback.
+
+### Añadir `fetchpriority="high"` a la Imagen del LCP
+
+El elemento del **Largest Contentful Paint** suele ser la imagen destacada o hero. De forma predeterminada, los navegadores detectan las imágenes en fases tardías del análisis del HTML. El atributo `fetchpriority` instruye al navegador para priorizar de inmediato su descarga:
+
+```html
+<!-- ❌ Antes: el navegador la descubre tarde -->
+<img src="/images/hero.webp" alt="Imagen principal" />
+
+<!-- ✅ Después: el navegador prioriza su descarga -->
+<img
+  src="/images/hero.webp"
+  alt="Imagen principal"
+  width="1280"
+  height="720"
+  fetchpriority="high"
+  loading="eager"
+  decoding="async"
+/>
+```
+
+Detalle de los atributos empleados:
+
+- **`fetchpriority="high"`** — Indica que es una descarga prioritaria. Aplícalo solo al elemento LCP (habitualmente uno por página).
+- **`loading="eager"`** — Evita la carga diferida (lazy load), la cual retrasaría la visualización del LCP. El resto de imágenes debajo del pliegue (below the fold) deben llevar `loading="lazy"`.
+- **`decoding="async"`** — Permite descodificar la imagen fuera del hilo principal del navegador.
+- **`width` y `height`** — Permite al navegador reservar las dimensiones exactas antes de la carga, previniendo desplazamientos de diseño (CLS).
+
+### Prevenir Desplazamientos Inesperados (CLS) con Dimensiones Explícitas
+
+Uno de los causantes habituales del **CLS (Cumulative Layout Shift)** es la inserción de imágenes sin espacio reservado. El navegador desconoce la altura hasta descargar el archivo, provocando saltos bruscos en el contenido al terminar de cargarse.
+
+La solución es estricta: incluye siempre `width` y `height`:
+
+```html
+<!-- ❌ Provoca CLS: el navegador no conoce el tamaño previo -->
+<img src="/photo.webp" alt="Foto" loading="lazy" />
+
+<!-- ✅ Sin CLS: el navegador reserva el espacio 16:9 de inmediato -->
+<img src="/photo.webp" alt="Foto" loading="lazy" decoding="async" width="640" height="360" />
+```
+
+Aunque controles el tamaño visual con CSS (ej. `width: 100%`), los atributos `width` y `height` son imprescindibles para que el navegador calcule la **relación de aspecto** (aspect-ratio) de manera nativa.
+
+### Adaptar la Resolución al Tamaño Real en Pantalla
+
+Convertir a WebP es un gran paso, pero si tu imagen original es de `2560x1440` y la muestras en una tarjeta a `640x360`, sigues derrochando ancho de banda en píxeles invisibles para el usuario. Lighthouse advertirá de esto en la auditoría "Usa un tamaño adecuado para las imágenes".
+
+Por ejemplo, redimensionar nuestro archivo `terreno-rustico.webp` desde su resolución inicial de `2560x1440` a una resolución de `1280x720` (que proporciona una densidad de píxeles 2x perfecta para su contenedor de `640x360`) redujo su peso de **109 KB** a solo **64 KB**, manteniendo una nitidez impecable en pantallas Retina y de alta densidad.
+
+---
+
+## 2. Estrategia de Carga de Fuentes: Evitar CSS que Bloquea el Renderizado
+
+Las fuentes de Google Fonts se cargan habitualmente mediante una etiqueta `<link rel="stylesheet">`, lo que **bloquea el renderizado** por defecto. El navegador suspende el pintado de la página hasta descargar e interpretar dicho CSS.
+
+### El Problema
+
+```html
+<!-- ❌ Bloquea el renderizado: el navegador espera a recibir este CSS -->
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet"
+/>
+```
+
+### La Solución: Preload con Reemplazo Dinámico
+
+```html
+<!-- ✅ No bloquea: descarga anticipada y conversión a hoja de estilo al terminar -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+  onload="this.onload=null;this.rel='stylesheet'"
+/>
+<noscript>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+</noscript>
+```
+
+Funcionamiento técnico:
+
+1. **`rel="preload"`** ordena iniciar la descarga sin detener el renderizado.
+2. **`as="style"`** asegura la prioridad adecuada en la cola del navegador.
+3. **`onload="this.onload=null;this.rel='stylesheet'"`** convierte el recurso en hoja de estilo activa tan pronto como finaliza la descarga. La asignación a `null` previene bucles.
+4. **`<noscript>`** mantiene compatibilidad para navegadores con JavaScript inactivo.
+
+### Autoalojar las Fuentes (Self-Hosting)
+
+Para el rendimiento óptimo, considera alojar las fuentes en tu propio dominio:
+
+```bash
+npx @nicolo-ribaudo/google-webfonts-helper \
+  --font Inter --weights 400,500,600,700,800 --formats woff2 \
+  --output public/fonts
+```
+
+Y decláralas en tu CSS local con `@font-face` y `font-display: swap`. Esto ahorra dos consultas DNS a Google y elimina dependencias de terceros.
+
+### Incrustar Estilos Críticos en Línea (Inline CSS)
+
+Si tus hojas de estilo son ligeras (menos de 15-20 KB), incrustar el CSS directamente en el `<head>` mediante bloques `<style>` suprime peticiones HTTP y evita bloqueos de renderizado.
+
+En Astro se activa configurando `inlineStylesheets` en `astro.config.mjs`:
+
+```javascript
+// astro.config.mjs
+export default defineConfig({
+  build: {
+    inlineStylesheets: "always", // Inserta los estilos directamente en el HTML
+  },
+});
+```
+
+Al incrustar nuestra hoja de 8,7 KB eliminamos una petición de ida y vuelta a la red y ahorramos ~160 ms en el primer pintado.
+
+---
+
+## 3. Mejoras de Accesibilidad
+
+PageSpeed Insights audita la accesibilidad de forma minuciosa. Tres ajustes esenciales:
+
+### Vincular Controles con `aria-controls`
+
+Cuando un botón despliega un menú o panel, asócialos explícitamente:
+
+```html
+<!-- ❌ Los lectores de pantalla desconocen qué controla este botón -->
+<button aria-label="Abrir menú" aria-expanded="false">☰</button>
+<div id="mobile-menu">...</div>
+
+<!-- ✅ El lector de pantalla permite navegar directamente al panel -->
+<button aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">☰</button>
+<div id="mobile-menu">...</div>
+```
+
+### Ocultar SVGs Decorativos a Lectores de Pantalla
+
+Los iconos que no aporten significado textual deben llevar `aria-hidden="true"`:
+
+```html
+<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+  <path d="M12 21.35l-1.45-1.32..." />
+</svg>
+```
+
+### Respetar las Preferencias de Movimiento
+
+Los usuarios con trastornos vestibulares pueden configurar en su sistema operativo la reducción de movimiento. Adapta tus estilos con `prefers-reduced-motion`:
+
+```css
+@media (prefers-reduced-motion: no-preference) {
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in {
+    animation: none;
+  }
+}
+```
+
+### Garantizar Ratios de Contraste Adecuados
+
+El texto estándar debe mantener un contraste mínimo de **4.5:1** frente a su fondo (**3:1** para tipografías grandes). En nuestra primera iteración, un enlace rojo `#DC2626` sobre fondo tenue `#FDF4F4` arrojaba un contraste de **4.46:1** (apenas 0.04 por debajo de la norma), provocando el fallo en Lighthouse. Al oscurecerlo a `#B91C1C`, elevamos el ratio a **5.64:1**, superando el test holgadamente.
+
+### Asegurar Tamaños de Toque Suficientes en Móviles
+
+Los elementos interactivos (enlaces y botones) deben contar con un área de pulsación de al menos **48×48px** o una separación suficiente para evitar pulsaciones erróneas. Asegurar paddings cómodos (`px-3 py-1.5`) y un espaciado adecuado entre enlaces soluciona este requisito.
+
+---
+
+## 4. Etiquetas Meta para SEO Imprescindibles
+
+- **`theme-color`**: Define la barra de estado en navegadores móviles para temas claro y oscuro:
+  ```html
+  <meta name="theme-color" content="#0A1628" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+  ```
+- **`apple-touch-icon`**: Icono de 180×180px al anclar la web a la pantalla de inicio en iOS:
+  ```html
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  ```
+- **Imagen Open Graph por Defecto**: Previsualización de 1200×630px para compartir en redes sociales cuando una página carezca de imagen propia.
+
+---
+
+## 5. Resultados Obtenidos en labitcode.com
+
+Tras aplicar estas intervenciones técnicas:
+
+- **100/100 en auditorías locales de Lighthouse** en Rendimiento y Accesibilidad.
+- **93/100 en Rendimiento Móvil** y **100/100 en Accesibilidad, SEO y Mejores Prácticas** en producción con PageSpeed Insights.
+- **Reducción del 92%** en el peso total de imágenes (de 2,2 MB a 170 KB).
+- **Carga de fuentes no bloqueante** y hojas de estilo incrustadas.
+- **Cero desplazamientos de diseño (CLS = 0)** con dimensiones explícitas.
+- **Accesibilidad integral** con alto contraste y objetivos táctiles optimizados.
+
+_El rendimiento es una característica esencial de producto. Cada milisegundo ahorrado es un usuario que permanece en tu sitio._

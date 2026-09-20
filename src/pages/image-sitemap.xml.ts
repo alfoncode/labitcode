@@ -28,12 +28,12 @@ export const GET: APIRoute = async ({ site }) => {
 
   const entries = [
     ...posts.map((p) => ({
-      loc: `${baseURL}/blog/${p.id}`,
+      loc: p.data.lang === "es" ? `${baseURL}/es/blog/${p.id}` : `${baseURL}/blog/${p.id}`,
       image: absImage(baseURL, p.data.heroImage!),
       title: p.data.title,
     })),
     ...projects.map((p) => ({
-      loc: `${baseURL}/projects/${p.id}`,
+      loc: p.data.lang === "es" ? `${baseURL}/es/projects/${p.id}` : `${baseURL}/projects/${p.id}`,
       image: absImage(baseURL, p.data.heroImage!),
       title: p.data.title,
     })),

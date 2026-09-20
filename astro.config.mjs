@@ -74,6 +74,13 @@ export default defineConfig({
     prefetchAll: true,
     defaultStrategy: "hover",
   },
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "es"],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
   integrations: [
     mdx(),
     sitemap({

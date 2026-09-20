@@ -15,6 +15,8 @@ const blog = defineCollection({
     tags: z.array(z.string()),
     author: z.enum(["Alfonso Garcia", "AI"]),
     draft: z.boolean().default(false),
+    lang: z.enum(["en", "es"]).default("en"),
+    translationSlug: z.string().optional(),
   }),
 });
 
@@ -30,6 +32,8 @@ const projects = defineCollection({
     lastUpdated: z.coerce.date(),
     creator: z.string(),
     status: z.enum(["active", "archived", "in-progress"]),
+    lang: z.enum(["en", "es"]).default("en"),
+    translationSlug: z.string().optional(),
   }),
 });
 
@@ -43,6 +47,7 @@ const team = defineCollection({
     github: z.string().optional(),
     twitter: z.string().optional(),
     linkedin: z.string().optional(),
+    lang: z.enum(["en", "es"]).default("en"),
   }),
 });
 

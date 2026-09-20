@@ -12,7 +12,9 @@ function escapeXml(s: string): string {
 }
 
 export async function GET(context) {
-  const blog = (await getCollection("blog")).filter((post) => !post.data.draft);
+  const blog = (await getCollection("blog")).filter(
+    (post) => !post.data.draft && post.data.lang !== "es"
+  );
   const site = context.site ?? new URL(SITE);
   return rss({
     title: SITE_TITLE,

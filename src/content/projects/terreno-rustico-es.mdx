@@ -1,0 +1,73 @@
+---
+title: "Terreno Rústico"
+description: "El marketplace SaaS y plataforma GIS de referencia para compraventa, arrendamiento y gestión agronómica de suelo rústico y fincas agrícolas en España. Catastro, recintos SIGPAC y analítica territorial consolidada al instante."
+stack: ["Next.js", "NestJS", "TypeScript", "PostgreSQL", "PostGIS", "Tailwind CSS", "MapLibre GL"]
+heroImage: "/images/terreno-rustico.webp"
+lastUpdated: 2026-06-03
+creator: "Alfonso Garcia"
+status: "in-progress"
+lang: "es"
+translationSlug: "terreno-rustico"
+---
+
+> **🌱 El Futuro del Sector Inmobiliario Rural está por Llegar**  
+> **Terreno Rústico** encara su última fase de despliegue y optimización. Estamos calibrando nuestros motores de procesamiento geoespacial en tiempo real y validando capas cartográficas para ofrecer el marketplace agrícola más avanzado de España.
+
+---
+
+## La Visión: Digitalizar el Mercado de Fincas y Suelo Rústico
+
+El mercado de terrenos rústicos, parcelas de cultivo y fincas agropecuarias en España ha sido históricamente opaco, fragmentado y lento. Compradores, agricultores, intermediarios e inversores debían navegar por sedes electrónicas obsoletas, cruzar datos dispersos y esperar días para obtener un análisis básico de viabilidad agronómica.
+
+**Terreno Rústico** es la pasarela digital definitiva hacia el campo español. Concebido como un SaaS geoespacial de alto rendimiento y mercado digital integrado, consolida en un solo clic la cartografía catastral, las propiedades edáficas y el historial SIGPAC en un informe técnico integral. Al simplificar la analítica espacial avanzada, habilitamos transacciones ágiles, seguras y fundamentadas en datos objetivos.
+
+---
+
+## Impulsando el Ecosistema Agrícola
+
+Terreno Rústico aporta valor tangible en toda la cadena de inversión y explotación de la tierra:
+
+- **Para Propietarios**: Maximiza el valor de venta o arrendamiento mostrando datos espaciales verificados (usos del suelo, pendientes, coeficientes de admisibilidad), acelerando las negociaciones.
+- **Para Profesionales Inmobiliarios**: Profesionaliza la intermediación rural mediante mapas vectoriales interactivos con lindes exactos, dotaciones de regadío y clasificación urbanística.
+- **Para Agricultores y Agrónomos**: Localiza parcelas en alquiler o asegura contratos de cosecha vinculados directamente a geometrías verificadas.
+- **Para Fondos e Inversores**: Due diligence territorial instantánea evaluando productividad potencial, índices de pendiente, cotas de altitud y factores de mecanización mediante PostGIS.
+
+---
+
+## Características Principales: Inteligencia Espacial Avanzada
+
+Terreno Rústico va mucho más allá de un directorio de anuncios clasificados: es un Sistema de Información Geográfica (GIS) completo integrado con una plataforma transaccional moderna.
+
+### 1. Cartografía Catastral Instantánea y Reproyección al Vuelo
+
+Mediante las APIs REST y WFS del Catastro, la plataforma obtiene las geometrías de las parcelas en tiempo real. Dado que el Catastro suministra coordenadas proyectadas UTM (EPSG:25830), nuestro backend en NestJS utiliza **PostGIS** para reproyectar instantáneamente a WGS84 (EPSG:4326), renderizando los lindes con precisión milimétrica.
+
+### 2. Datos Exhaustivos de Recintos SIGPAC
+
+Cada parcela realiza comprobaciones de intersección espacial contra el **servicio WFS de SIGPAC** para superponer parámetros agronómicos cruciales:
+
+- **Clasificación de usos del suelo** (viñedos, olivares, pastos, labor regadío).
+- **Perfiles de altitud y pendiente media** para planificación de drenajes y mecanización.
+- **Coeficiente de Admisibilidad de Pastos (CAP)** y derechos de ayudas PAC.
+
+### 3. Marketplace de Cosechas Vinculadas a Parcelas
+
+Funcionalidad pionera que permite negociar y adquirir cosechas futuras (uva, aceituna, cereal) asociadas de forma inequívoca a la parcela física donde maduran, garantizando trazabilidad total desde el origen.
+
+### 4. Directorio Agrícola Hiperlocal
+
+Índice de servicios geolocalizados mediante PostGIS que conecta a propietarios con tractoristas, pilotos de drones agrícolas, laboratorios de suelo y topógrafos cercanos, ordenados por proximidad geográfica real.
+
+---
+
+## Arquitectura Tecnológica de la Plataforma
+
+Para ofrecer renderizado cartográfico a 60 FPS y consultas espaciales en milisegundos, Terreno Rústico se sustenta en un stack moderno y nativo en la nube:
+
+- **Frontend**: **Next.js (App Router)** y **React** con TanStack Query y **MapLibre GL JS** para renderizado vectorial acelerado por GPU.
+- **API Backend**: Arquitectura modular de microservicios con **NestJS** sobre Fastify, bajo principios estrictos de Domain-Driven Design (DDD).
+- **Motor GIS y Base de Datos**: **PostgreSQL** potenciado con **PostGIS** para indexación espacial R-Tree (`GIST`), intersecciones poligonales (`ST_Intersects`) y ordenación por distancia.
+- **Capa de Persistencia**: **Drizzle ORM** para consultas de base de datos con tipado estricto y alto rendimiento.
+- **Observabilidad en Producción**: Stack de telemetría autoalojado con **Prometheus**, **Loki**, **Promtail**, **Node Exporter**, **cAdvisor** y **Grafana** tras **Traefik TLS**.
+
+> 📊 **Inmersión en la Infraestructura**: Consulta el proyecto técnico dedicado: **[Plataforma de Observabilidad de Terreno Rústico](/es/projects/monitorizacion-terreno-rustico)**.

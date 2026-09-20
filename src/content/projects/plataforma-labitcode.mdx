@@ -1,0 +1,47 @@
+---
+title: "Plataforma Labitcode"
+description: "El laboratorio de ingeniería que impulsa labitcode.com — construido con Astro 5, Tailwind CSS v4 y una filosofía de cero JavaScript por defecto para un rendimiento extremo."
+stack: ["Astro", "Tailwind CSS", "MDX", "TypeScript", "Shiki"]
+url: "https://labitcode.com/es"
+repo: "https://github.com/alfoncode/labitcode"
+heroImage: "/images/labitcode-platform.webp"
+lastUpdated: 2026-02-10
+creator: "Alfonso Garcia"
+status: "active"
+lang: "es"
+translationSlug: "labitcode-platform"
+---
+
+## Visión General
+
+La plataforma labitcode constituye los cimientos de nuestro laboratorio de ingeniería. Está concebida para ser:
+
+- **Rápida** — Puntuaciones de 100/100 en Lighthouse en todas las categorías.
+- **Accesible** — HTML semántico, atributos ARIA y navegación fluida por teclado.
+- **Optimizada para SEO** — Metadatos dinámicos, microdatos JSON-LD y soporte bilingüe con etiquetas `hreflang`.
+- **Mantenible** — Colecciones de contenido con tipado estricto mediante esquemas de Zod.
+
+## Arquitectura
+
+La plataforma sigue una arquitectura estática en el edge (_Static-First_). Los contenidos se redactan en MDX, se validan mediante esquemas rigurosos y se compilan a HTML estático ultraoptimizado en tiempo de compilación.
+
+```
+src/
+├── content/        # Contenido MDX con frontmatter validado con Zod
+├── components/     # Componentes modulares en Astro
+├── layouts/        # Layout base con cabecera SEO
+├── pages/          # Enrutamiento basado en archivos (incluye /es/)
+├── styles/         # Configuración CSS moderna con Tailwind v4
+└── utils/          # Funciones auxiliares (tiempo de lectura, fechas)
+```
+
+## Características Principales
+
+- **Resaltado de sintaxis de doble tema** con Shiki (github-dark / github-light).
+- **Buscador difuso (fuzzy search)** en el cliente con cero dependencias externas.
+- **View Transitions** para una navegación fluida sin recargas bruscas.
+- **Sistema de temas anti-FOUC** que respeta las preferencias del sistema desde la primera pintura.
+
+## Despliegue
+
+Desplegado en el edge global mediante Vercel, con compilaciones y validaciones automáticas ante cada subida a la rama `main`.

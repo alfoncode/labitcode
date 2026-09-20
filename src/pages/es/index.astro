@@ -1,0 +1,206 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import BlogCard from "@/components/BlogCard.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import DiscussionCTA from "@/components/DiscussionCTA.astro";
+import { getCollection } from "astro:content";
+import { SITE } from "@/consts";
+
+const allSpanishPosts = (await getCollection("blog"))
+  .filter((post) => !post.data.draft && post.data.lang === "es")
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const displayPosts = allSpanishPosts.slice(0, 3);
+
+const allProjects = (await getCollection("projects"))
+  .filter((project) => project.data.lang === "es")
+  .sort((a, b) => b.data.lastUpdated.valueOf() - a.data.lastUpdated.valueOf());
+
+const featuredProjects = allProjects.slice(0, 3);
+const topics = ["Ingeniería de Software", "Inteligencia Artificial", "Seguridad", "DevOps"];
+---
+
+<BaseLayout
+  title="Inicio"
+  description="labitcode — Laboratorio de ingeniería donde convergen la creatividad humana y la innovación con IA. Explorando Software, Inteligencia Artificial, Ciberseguridad y DevOps."
+  lang="es"
+  alternateUrls={{ en: `${SITE}/`, es: `${SITE}/es` }}
+  includeOrganization
+  includeWebSite
+>
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden">
+    <img
+      src="/images/building-labitcode.webp"
+      alt="labitcode fondo de laboratorio de ingeniería"
+      class="absolute inset-0 w-full h-full object-cover"
+      aria-hidden="true"
+      width="640"
+      height="640"
+      fetchpriority="high"
+      loading="eager"
+      decoding="async"
+    />
+    <div class="absolute inset-0 bg-navy/70 dark:bg-[#020617]/70"></div>
+    <div class="absolute inset-0">
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-accent/8 rounded-full blur-3xl"></div>
+    </div>
+    <div class="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
+      <div class="max-w-3xl">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium mb-6 animate-fade-in"
+        >
+          <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+          Laboratorio de Ingeniería
+        </div>
+        <h1
+          class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 animate-fade-in"
+        >
+          Laboratorio de <span class="text-accent">Ingeniería</span> e <span class="text-accent"
+            >Innovación</span
+          >
+        </h1>
+        <p
+          class="text-lg sm:text-xl text-slate-300 max-w-2xl leading-relaxed mb-8 animate-fade-in-delay"
+        >
+          Donde los problemas y necesidades se transforman en soluciones de software de vanguardia.
+        </p>
+        <div class="flex flex-wrap gap-3 animate-fade-in-delay">
+          <a
+            href="/es/blog"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent hover:bg-accent-light text-white font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-accent/25"
+          >
+            Leer el Blog
+            <svg
+              class="w-4 h-4"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg
+            >
+          </a>
+          <a
+            href="/projects"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-600 text-slate-200 hover:border-accent hover:text-accent font-semibold transition-all duration-200"
+          >
+            Explorar Proyectos
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Topics -->
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
+    <div class="flex flex-wrap items-center justify-center gap-3">
+      {
+        topics.map((topic) => (
+          <span class="px-4 py-2 rounded-full border border-border dark:border-navy-light text-sm font-medium text-gray-700 dark:text-gray-500 hover:border-accent hover:text-accent transition-all duration-200 cursor-default">
+            {topic}
+          </span>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Recent Posts -->
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-16">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-2xl font-bold text-navy dark:text-gray-100">Últimos artículos del Blog</h2>
+        <p class="text-sm text-gray-500 mt-1">
+          Análisis técnicos, arquitectura y reflexiones sobre IA.
+        </p>
+      </div>
+      <a
+        href="/es/blog"
+        class="text-sm font-medium text-accent hover:text-accent-light transition-colors flex items-center gap-1"
+      >
+        Ver todos
+        <svg
+          class="w-4 h-4"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg
+        >
+      </a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        displayPosts.map((post) => (
+          <BlogCard
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            tags={post.data.tags}
+            author={post.data.author}
+            slug={post.id}
+            body={post.body}
+            heroImage={post.data.heroImage}
+            lang={post.data.lang}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Featured Projects -->
+  <section class="bg-gray-100 dark:bg-navy-light/30 py-16">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl font-bold text-navy dark:text-gray-100">El Laboratorio</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Proyectos personales, herramientas y experimentos.
+          </p>
+        </div>
+        <a
+          href="/projects"
+          class="text-sm font-medium text-accent-dark dark:text-accent hover:text-accent dark:hover:text-accent-light transition-colors flex items-center gap-1"
+        >
+          Ver todos
+          <svg
+            class="w-4 h-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg
+          >
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {
+          featuredProjects.map((project) => (
+            <ProjectCard
+              title={project.data.title}
+              description={project.data.description}
+              stack={project.data.stack}
+              status={project.data.status}
+              lastUpdated={project.data.lastUpdated}
+              creator={project.data.creator}
+              slug={project.id}
+              url={project.data.url}
+              repo={project.data.repo}
+              heroImage={project.data.heroImage}
+              lang="es"
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Connect -->
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
+    <DiscussionCTA
+      title="labitcode"
+      url={`${SITE}/es`}
+      lang="es"
+      message="¿Quieres conectar? Hablemos en redes sociales o comparte tus reflexiones."
+    />
+  </section>
+</BaseLayout>

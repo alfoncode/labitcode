@@ -7,12 +7,12 @@ import { getCollection } from "astro:content";
 import { SITE } from "@/consts";
 
 const allPosts = (await getCollection("blog"))
-  .filter((post) => !post.data.draft)
+  .filter((post) => !post.data.draft && post.data.lang !== "es")
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const allProjects = (await getCollection("projects")).sort(
-  (a, b) => b.data.lastUpdated.valueOf() - a.data.lastUpdated.valueOf()
-);
+const allProjects = (await getCollection("projects"))
+  .filter((project) => project.data.lang !== "es")
+  .sort((a, b) => b.data.lastUpdated.valueOf() - a.data.lastUpdated.valueOf());
 
 const recentPosts = allPosts.slice(0, 3);
 const featuredProjects = allProjects.slice(0, 3);
@@ -22,6 +22,8 @@ const topics = ["Software Engineering", "AI", "Security", "DevOps"];
 <BaseLayout
   title="Home"
   description="labitcode — An engineering lab where human creativity and AI innovation converge. Exploring Software Engineering, AI, Security, and DevOps."
+  lang="en"
+  alternateUrls={{ en: `${SITE}/`, es: `${SITE}/es` }}
   includeOrganization
   includeWebSite
 >

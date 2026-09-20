@@ -12,6 +12,7 @@ export async function GET() {
         tags: post.data.tags,
         slug: post.id,
         type: "blog" as const,
+        lang: post.data.lang || "en",
       })),
     ...projects.map((project) => ({
       title: project.data.title,
@@ -19,6 +20,7 @@ export async function GET() {
       tags: project.data.stack,
       slug: project.id,
       type: "project" as const,
+      lang: project.data.lang || "en",
     })),
   ];
 

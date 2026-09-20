@@ -3,12 +3,16 @@ interface Props {
   title: string;
   url: string;
   message?: string;
+  lang?: "en" | "es";
 }
 
 const {
   title,
   url,
-  message = "Have thoughts on this post? Share them on social media or reach out directly.",
+  lang = "en",
+  message = lang === "es"
+    ? "¿Tienes alguna opinión sobre este contenido? Compártela en redes sociales o contáctanos directamente."
+    : "Have thoughts on this post? Share them on social media or reach out directly.",
 } = Astro.props;
 
 const encodedTitle = encodeURIComponent(title);
@@ -65,7 +69,9 @@ const socials = [
     </div>
 
     <div class="max-w-md">
-      <h2 class="text-xl font-bold text-navy dark:text-gray-100 mb-2">Join the conversation</h2>
+      <h2 class="text-xl font-bold text-navy dark:text-gray-100 mb-2">
+        {lang === "es" ? "Únete a la conversación" : "Join the conversation"}
+      </h2>
       <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
         {message}
       </p>

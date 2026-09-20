@@ -2,16 +2,44 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="500: Server Error" description="Internal server error" noindex>
-  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 text-center">
-    <h1 class="text-4xl sm:text-5xl font-extrabold text-navy dark:text-gray-100 mb-4">500</h1>
-    <p class="text-xl text-gray-500 mb-8">
-      Internal server error. Something went wrong on our end.
-    </p>
-    <a
-      href="/"
-      class="px-6 py-3 bg-accent text-white rounded-lg font-medium hover:bg-accent-dark transition-colors"
-      >Go Home</a
+<BaseLayout
+  title="500: Server Error / Error del Servidor"
+  description="Internal server error / Error interno del servidor"
+  noindex
+>
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-20 text-center">
+    <div
+      class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-accent/10 text-accent mb-6 font-mono text-3xl font-extrabold"
     >
+      500
+    </div>
+    <h1
+      class="text-3xl sm:text-4xl font-extrabold text-navy dark:text-gray-100 mb-4 tracking-tight"
+    >
+      Server Error / Error del Servidor
+    </h1>
+    <p class="text-base sm:text-lg text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">
+      Something went wrong on our end. Please try again later.
+      <br />
+      <span class="text-sm text-gray-400"
+        >Algo salió mal por nuestra parte. Por favor, inténtalo más tarde.</span
+      >
+    </p>
+    <div class="flex items-center justify-center gap-4 flex-wrap">
+      <a
+        href="/"
+        class="lang-switch-btn px-6 py-3 bg-accent text-white rounded-lg font-medium hover:bg-accent-dark transition-colors inline-flex items-center gap-2"
+        data-target-lang="en"
+      >
+        <span>Home (EN)</span>
+      </a>
+      <a
+        href="/es"
+        class="lang-switch-btn px-6 py-3 border border-border dark:border-navy-light text-navy dark:text-gray-100 rounded-lg font-medium hover:text-accent hover:border-accent transition-colors inline-flex items-center gap-2"
+        data-target-lang="es"
+      >
+        <span>Inicio (ES)</span>
+      </a>
+    </div>
   </section>
 </BaseLayout>
