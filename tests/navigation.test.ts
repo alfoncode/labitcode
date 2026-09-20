@@ -1,8 +1,22 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
 
 const BASE_URL = "http://localhost:4321";
+const DIST_DIR = path.resolve(process.cwd(), "dist");
 
-describe("Local Navigation & HTTP 200 Verification", () => {
+describe("Navigation & Route Integrity (HTTP or Built SSG)", () => {
+  let isServerRunning = false;
+
+  beforeAll(async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/`, { signal: AbortSignal.timeout(1000) });
+      isServerRunning = res.status === 200;
+    } catch {
+      isServerRunning = false;
+    }
+  });
+
   const routesToTest = [
     // English main pages
     "/",
@@ -73,50 +87,110 @@ describe("Local Navigation & HTTP 200 Verification", () => {
     "/500",
   ];
 
-  for (const route of routesToTest) {
-    it(`should serve ${route} with expected status and valid content`, async () => {
-      const res = await fetch(`${BASE_URL}${route}`);
-      const expectedStatus = route === "/404" ? 404 : route === "/500" ? 500 : 200;
-      expect(res.status, `Unexpected status for ${route}`).toBe(expectedStatus);
+  function getDistPath(route: string): string {
+    const cleanRoute = route.replace(/^\//, "");
+    if (route.endsWith(".json") || route.endsWith(".xml") || route.endsWith(".txt")) {
+      return path.join(DIST_DIR, cleanRoute);
+    }
+    if (route === "/404") return path.join(DIST_DIR, "404.html");
+    if (route === "/500") return path.join(DIST_DIR, "500.html");
+    return path.join(DIST_DIR, cleanRoute, "index.html");
+  }
 
-      const contentType = res.headers.get("content-type") || "";
-      if (route.endsWith(".json")) {
-        expect(contentType).toContain("application/json");
-        const json = await res.json();
-        expect(Array.isArray(json)).toBe(true);
-      } else if (route.endsWith(".xml")) {
-        expect(contentType).toContain("xml");
-        const text = await res.text();
-        expect(text).toContain("<?xml");
-      } else if (route.endsWith(".txt")) {
-        expect(contentType).toContain("text/plain");
+  for (const route of routesToTest) {
+    it(`should serve or generate ${route} with valid content`, async () => {
+      if (isServerRunning) {
+        const res = await fetch(`${BASE_URL}${route}`);
+        const expectedStatus = route === "/404" ? 404 : route === "/500" ? 500 : 200;
+        expect(res.status, `Unexpected status for ${route}`).toBe(expectedStatus);
+
+        const contentType = res.headers.get("content-type") || "";
+        if (route.endsWith(".json")) {
+          expect(contentType).toContain("application/json");
+          const json = await res.json();
+          expect(Array.isArray(json)).toBe(true);
+        } else if (route.endsWith(".xml")) {
+          expect(contentType).toContain("xml");
+          const text = await res.text();
+          expect(text).toContain("<?xml");
+        } else if (route.endsWith(".txt")) {
+          expect(contentType).toContain("text/plain");
+        } else {
+          expect(contentType).toContain("text/html");
+          const html = await res.text();
+          expect(html.toLowerCase()).toContain("<!doctype html>");
+          expect(html).toContain("<title>");
+        }
       } else {
-        expect(contentType).toContain("text/html");
-        const html = await res.text();
-        expect(html.toLowerCase()).toContain("<!doctype html>");
-        expect(html).toContain("<title>");
+        // Fallback to testing built SSG files in dist/
+        const filePath = getDistPath(route);
+        expect(fs.existsSync(filePath), `Missing built artifact for ${route}: ${filePath}`).toBe(
+          true
+        );
+        const content = fs.readFileSync(filePath, "utf-8");
+
+        if (route.endsWith(".json")) {
+          const json = JSON.parse(content);
+          expect(Array.isArray(json)).toBe(true);
+        } else if (route.endsWith(".xml")) {
+          expect(content).toContain("<?xml");
+        } else if (route.endsWith(".txt")) {
+          expect(content.length).toBeGreaterThan(0);
+        } else {
+          expect(content.toLowerCase()).toContain("<!doctype html>");
+          expect(content).toContain("<title>");
+        }
       }
     });
   }
 
   it("should return 404 for draft blog posts", async () => {
-    const draftResEn = await fetch(`${BASE_URL}/blog/markdown-style-guide`);
-    expect(draftResEn.status).toBe(404);
-    const draftResEs = await fetch(`${BASE_URL}/es/blog/guia-estilo-markdown`);
-    expect(draftResEs.status).toBe(404);
+    if (isServerRunning) {
+      const draftResEn = await fetch(`${BASE_URL}/blog/markdown-style-guide`);
+      expect(draftResEn.status).toBe(404);
+      const draftResEs = await fetch(`${BASE_URL}/es/blog/guia-estilo-markdown`);
+      expect(draftResEs.status).toBe(404);
+    } else {
+      expect(
+        fs.existsSync(path.join(DIST_DIR, "blog/markdown-style-guide/index.html")),
+        "Draft English post should not be emitted"
+      ).toBe(false);
+      expect(
+        fs.existsSync(path.join(DIST_DIR, "es/blog/guia-estilo-markdown/index.html")),
+        "Draft Spanish post should not be emitted"
+      ).toBe(false);
+    }
   });
 
   it("should have relative targetLangUrl in language toggle for all tested HTML routes", async () => {
-    const htmlRoutes = ["/", "/es", "/blog", "/es/blog", "/projects", "/es/projects", "/team", "/es/team"];
+    const htmlRoutes = [
+      "/",
+      "/es",
+      "/blog",
+      "/es/blog",
+      "/projects",
+      "/es/projects",
+      "/team",
+      "/es/team",
+    ];
     for (const route of htmlRoutes) {
-      const res = await fetch(`${BASE_URL}${route}`);
-      const html = await res.text();
-      // Match all lang-switch-btn hrefs
+      let html = "";
+      if (isServerRunning) {
+        const res = await fetch(`${BASE_URL}${route}`);
+        html = await res.text();
+      } else {
+        const filePath = getDistPath(route);
+        html = fs.readFileSync(filePath, "utf-8");
+      }
+
       const matches = [...html.matchAll(/href="([^"]*)"\s+class="lang-switch-btn/g)];
       expect(matches.length, `No lang-switch-btn found in ${route}`).toBeGreaterThan(0);
       for (const match of matches) {
         const href = match[1];
-        expect(href.startsWith("http://") || href.startsWith("https://"), `Absolute URL in local nav: ${href} on ${route}`).toBe(false);
+        expect(
+          href.startsWith("http://") || href.startsWith("https://"),
+          `Absolute URL in local nav: ${href} on ${route}`
+        ).toBe(false);
         expect(href.startsWith("/"), `Invalid relative URL: ${href} on ${route}`).toBe(true);
       }
     }
