@@ -13,6 +13,13 @@ const allPosts = (await getCollection("blog"))
 
 // Gather all unique tags for Spanish posts
 const allTags = [...new Set(allPosts.flatMap((post) => post.data.tags))].sort();
+const tagCounts = new Map(
+  allTags.map((tag) => [tag, allPosts.filter((post) => post.data.tags.includes(tag)).length])
+);
+const popularTags = [...allTags]
+  .sort((a, b) => (tagCounts.get(b) ?? 0) - (tagCounts.get(a) ?? 0) || a.localeCompare(b))
+  .slice(0, 8);
+const moreTags = allTags.filter((tag) => !popularTags.includes(tag));
 
 // ItemList JSON-LD
 const itemListLd = {
@@ -46,7 +53,7 @@ const itemListLd = {
       <h1 class="text-3xl sm:text-4xl font-extrabold text-navy dark:text-gray-100 tracking-tight">
         Centro de Ingeniería
       </h1>
-      <p class="mt-2 text-gray-500 max-w-2xl">
+      <p class="mt-2 max-w-2xl text-gray-600 dark:text-gray-300">
         Análisis profundos sobre Desarrollo, Inteligencia Artificial, Ciberseguridad y DevOps —
         creados por humanos e IA colaborando juntos.
       </p>
@@ -59,28 +66,67 @@ const itemListLd = {
     />
 
     <!-- Tag Filters -->
-    <div class="flex flex-wrap gap-2 mb-10" id="tag-filters">
+    <div
+      class="flex flex-wrap gap-2 mb-10"
+      id="tag-filters"
+      role="group"
+      aria-label="Filtrar artículos por tema"
+    >
       <button
         data-tag="all"
+        aria-pressed="true"
         class="tag-btn px-3 py-1.5 rounded-full text-sm font-medium border border-accent bg-accent/10 text-accent transition-all duration-200"
       >
         Todos los artículos
       </button>
       {
-        allTags.map((tag) => (
+        popularTags.map((tag) => (
           <button
             data-tag={tag}
-            class="tag-btn px-3 py-1.5 rounded-full text-sm font-medium border border-border dark:border-navy-light text-gray-700 dark:text-gray-500 hover:border-accent hover:text-accent transition-all duration-200"
+            aria-pressed="false"
+            class="tag-btn px-3 py-1.5 rounded-full text-sm font-medium border border-border dark:border-navy-light text-gray-700 dark:text-gray-300 hover:border-accent hover:text-accent transition-all duration-200"
           >
             {tag}
           </button>
         ))
       }
+      {
+        moreTags.length > 0 && (
+          <details class="basis-full mt-1">
+            <summary class="w-fit cursor-pointer rounded-lg px-1 py-1 text-sm font-medium text-gray-600 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:text-gray-300">
+              Más temas ({moreTags.length})
+            </summary>
+            <div
+              class="mt-3 flex max-h-40 flex-wrap gap-2 overflow-y-auto pr-1"
+              role="region"
+              aria-label="Más temas"
+              tabindex="0"
+            >
+              {moreTags.map((tag) => (
+                <button
+                  data-tag={tag}
+                  aria-pressed="false"
+                  class="tag-btn px-3 py-1.5 rounded-full text-sm font-medium border border-border dark:border-navy-light text-gray-700 dark:text-gray-300 hover:border-accent hover:text-accent transition-all duration-200"
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </details>
+        )
+      }
     </div>
 
     <!-- Results count -->
-    <p id="results-count" class="text-sm text-gray-500 mb-4">
-      Mostrando {Math.min(ITEMS_PER_PAGE, allPosts.length)} de {allPosts.length} artículos
+    <p
+      id="results-count"
+      class="mb-4 text-sm text-gray-600 dark:text-gray-300"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      Mostrando {Math.min(ITEMS_PER_PAGE, allPosts.length)} de {allPosts.length}
+      {allPosts.length === 1 ? "artículo" : "artículos"}
     </p>
 
     <!-- Posts Grid -->
@@ -131,170 +177,36 @@ const itemListLd = {
           d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
         ></path>
       </svg>
-      <p class="text-lg font-medium text-navy dark:text-gray-200">No se encontraron artículos</p>
-      <p class="text-sm mt-1">Prueba a buscar con otros términos o cambia el filtro de etiqueta.</p>
+      <p class="text-lg font-medium text-navy dark:text-gray-100">No se encontraron artículos</p>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">
+        Prueba a buscar con otros términos o cambia el filtro de etiqueta.
+      </p>
     </div>
 
-    <!-- Infinite Scroll Sentinel -->
-    <div id="scroll-sentinel" class="py-8 flex flex-col items-center justify-center">
-      <div id="scroll-spinner" class="hidden flex items-center gap-2 text-sm text-gray-500">
-        <svg
-          class="animate-spin w-5 h-5 text-accent"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-          ></circle>
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-        <span>Cargando más artículos…</span>
-      </div>
-      <p id="scroll-end" class="text-sm text-gray-500 hidden">Has llegado al final</p>
+    <!-- Infinite scroll sentinel with a keyboard-accessible fallback -->
+    <div id="scroll-sentinel" class="flex flex-col items-center justify-center gap-3 py-8">
+      <button
+        id="load-more-posts"
+        type="button"
+        aria-controls="posts-grid"
+        class="hidden rounded-xl border border-accent/40 bg-accent/5 px-5 py-2.5 text-sm font-semibold text-accent transition hover:bg-accent/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      >
+        Cargar más artículos
+      </button>
+      <p
+        id="scroll-end"
+        class="hidden text-sm text-gray-600 dark:text-gray-300"
+        role="status"
+        aria-live="polite"
+      >
+        Has llegado al final
+      </p>
     </div>
   </section>
 </BaseLayout>
 
 <script>
-  const ITEMS_PER_PAGE = 6;
+  import { initBlogListing } from "@/scripts/blog-listing";
 
-  let activeTag = "all";
-  let searchQuery = "";
-  let visibleCount = ITEMS_PER_PAGE;
-
-  const grid = document.getElementById("posts-grid")!;
-  const cards = Array.from(grid?.querySelectorAll<HTMLElement>(".post-card") || []);
-  const searchInput = document.getElementById("blog-search") as HTMLInputElement;
-  const clearBtn = document.getElementById("blog-search-clear");
-  const noPostsEl = document.getElementById("no-posts");
-  const sentinel = document.getElementById("scroll-sentinel");
-  const spinner = document.getElementById("scroll-spinner");
-  const endMsg = document.getElementById("scroll-end");
-  const resultsCount = document.getElementById("results-count");
-  const tagButtons = document.querySelectorAll<HTMLButtonElement>(".tag-btn");
-
-  function cardMatchesTag(card: HTMLElement): boolean {
-    if (activeTag === "all") return true;
-    const tags: string[] = JSON.parse(card.dataset.tags || "[]");
-    return tags.includes(activeTag);
-  }
-
-  function cardMatchesSearch(card: HTMLElement): boolean {
-    if (!searchQuery.trim()) return true;
-    const text = card.dataset.searchText || "";
-    return text.includes(searchQuery.toLowerCase().trim());
-  }
-
-  function updateVisibility(): void {
-    let matchCount = 0;
-    let shownCount = 0;
-
-    cards.forEach((card) => {
-      const tagOk = cardMatchesTag(card);
-      const searchOk = cardMatchesSearch(card);
-      const matches = tagOk && searchOk;
-
-      if (matches) {
-        matchCount++;
-        if (shownCount < visibleCount) {
-          card.classList.remove("hidden");
-          shownCount++;
-        } else {
-          card.classList.add("hidden");
-        }
-      } else {
-        card.classList.add("hidden");
-      }
-    });
-
-    if (resultsCount) {
-      resultsCount.textContent = `Mostrando ${shownCount} de ${matchCount} artículos`;
-    }
-
-    noPostsEl?.classList.toggle("hidden", matchCount > 0);
-
-    const hasMore = shownCount < matchCount;
-    spinner?.classList.toggle("hidden", !hasMore);
-    endMsg?.classList.toggle("hidden", hasMore || matchCount === 0);
-    sentinel?.classList.toggle("hidden", matchCount === 0);
-  }
-
-  function loadMore(): void {
-    visibleCount += ITEMS_PER_PAGE;
-    updateVisibility();
-  }
-
-  let observer: IntersectionObserver | null = null;
-
-  function setupObserver(): void {
-    if (observer) observer.disconnect();
-    if (!sentinel) return;
-
-    observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          loadMore();
-        }
-      },
-      { rootMargin: "200px" }
-    );
-    observer.observe(sentinel);
-  }
-
-  function setupSearch(): void {
-    if (!searchInput) return;
-
-    searchInput.addEventListener("input", () => {
-      searchQuery = searchInput.value;
-      visibleCount = ITEMS_PER_PAGE;
-      clearBtn?.classList.toggle("hidden", !searchQuery);
-      updateVisibility();
-    });
-
-    clearBtn?.addEventListener("click", () => {
-      searchInput.value = "";
-      searchQuery = "";
-      visibleCount = ITEMS_PER_PAGE;
-      clearBtn.classList.add("hidden");
-      searchInput.focus();
-      updateVisibility();
-    });
-  }
-
-  function setupTagFilters(): void {
-    tagButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const tag = btn.dataset.tag!;
-        activeTag = tag;
-        visibleCount = ITEMS_PER_PAGE;
-
-        tagButtons.forEach((b) => {
-          b.classList.remove("border-accent", "bg-accent/10", "text-accent");
-          b.classList.add(
-            "border-border",
-            "dark:border-navy-light",
-            "text-gray-700",
-            "dark:text-gray-500"
-          );
-        });
-        btn.classList.add("border-accent", "bg-accent/10", "text-accent");
-        btn.classList.remove(
-          "border-border",
-          "dark:border-navy-light",
-          "text-gray-700",
-          "dark:text-gray-500"
-        );
-
-        updateVisibility();
-      });
-    });
-  }
-
-  setupSearch();
-  setupTagFilters();
-  setupObserver();
+  initBlogListing();
 </script>

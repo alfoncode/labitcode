@@ -29,8 +29,9 @@ const { placeholder = "Search...", inputId = "inline-search" } = Astro.props;
     <input
       id={inputId}
       type="text"
-      class="search-input w-full pl-10 pr-10 py-3 rounded-xl border border-border dark:border-navy-light bg-surface dark:bg-navy-light text-navy dark:text-gray-100 placeholder:text-gray-500 text-sm outline-none transition-all duration-200 focus:border-accent focus:ring-2 focus:ring-accent/10"
+      class="search-input w-full pl-10 pr-10 py-3 rounded-xl border border-border dark:border-navy-light bg-surface dark:bg-navy-light text-navy dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 text-sm outline-none transition-all duration-200 focus:border-accent focus:ring-2 focus:ring-accent/10"
       placeholder={placeholder}
+      aria-label={placeholder}
       autocomplete="off"
     />
 

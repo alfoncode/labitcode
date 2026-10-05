@@ -21,7 +21,10 @@ function parseFrontmatter(fileContent: string): ParsedFrontmatter {
     const colonIdx = trimmed.indexOf(":");
     if (colonIdx !== -1) {
       const key = trimmed.slice(0, colonIdx).trim();
-      const rawVal = trimmed.slice(colonIdx + 1).trim().replace(/^["']|["']$/g, "");
+      const rawVal = trimmed
+        .slice(colonIdx + 1)
+        .trim()
+        .replace(/^["']|["']$/g, "");
       if (rawVal === "true") result[key] = true;
       else if (rawVal === "false") result[key] = false;
       else result[key] = rawVal;
@@ -68,15 +71,15 @@ describe("i18n Bilingual Content Integrity", () => {
       ).toBe(true);
 
       const esData = postMap.get(esSlug!)!;
-      expect(esData.translationSlug, `Spanish post ${esSlug} reciprocal slug mismatch`).toBe(enSlug);
+      expect(esData.translationSlug, `Spanish post ${esSlug} reciprocal slug mismatch`).toBe(
+        enSlug
+      );
       expect(esData.lang, `Spanish post ${esSlug} must have lang: "es"`).toBe("es");
     });
   });
 
   it("should have both English and Spanish versions for all projects with reciprocal translationSlugs", () => {
-    const files = fs
-      .readdirSync(projectDir)
-      .filter((f) => f.endsWith(".mdx") || f.endsWith(".md"));
+    const files = fs.readdirSync(projectDir).filter((f) => f.endsWith(".mdx") || f.endsWith(".md"));
     const projectMap = new Map<string, ParsedFrontmatter>();
 
     files.forEach((file) => {
@@ -135,7 +138,6 @@ describe("Browser Language Detection & Auto-Redirect Logic", () => {
     currentPath,
     effectiveLang,
     esUrl,
-    enUrl,
     preferredLang,
     languages,
     userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
@@ -143,14 +145,11 @@ describe("Browser Language Detection & Auto-Redirect Logic", () => {
     currentPath: string;
     effectiveLang: "en" | "es";
     esUrl: string;
-    enUrl: string;
     preferredLang: string | null;
     languages: string[];
     userAgent?: string;
   }): string | null {
-    if (
-      /bot|googlebot|bingbot|crawler|spider|slurp|duckduckbot/i.test(userAgent)
-    ) {
+    if (/bot|googlebot|bingbot|crawler|spider|slurp|duckduckbot/i.test(userAgent)) {
       return null;
     }
 
@@ -167,17 +166,14 @@ describe("Browser Language Detection & Auto-Redirect Logic", () => {
       }
     }
 
-    // Case 1: Visitor prefers Spanish (explicitly or via browser default with no preference)
-    if ((preferredLang === "es" || (!preferredLang && isBrowserEs)) && effectiveLang === "en") {
+    // Explicit language paths are stable; only the unqualified homepage is localized.
+    if (
+      currentPath === "/" &&
+      (preferredLang === "es" || (!preferredLang && isBrowserEs)) &&
+      effectiveLang === "en"
+    ) {
       if (esUrl && esUrl !== currentPath) {
         return esUrl;
-      }
-    }
-
-    // Case 2: Visitor explicitly prefers English (clicked EN) but landed on a Spanish page
-    if (preferredLang === "en" && effectiveLang === "es") {
-      if (enUrl && enUrl !== currentPath) {
-        return enUrl;
       }
     }
 
@@ -189,7 +185,6 @@ describe("Browser Language Detection & Auto-Redirect Logic", () => {
       currentPath: "/",
       effectiveLang: "en",
       esUrl: "/es",
-      enUrl: "/",
       preferredLang: null,
       languages: ["es-ES", "es", "en"],
     });
@@ -201,7 +196,6 @@ describe("Browser Language Detection & Auto-Redirect Logic", () => {
       currentPath: "/",
       effectiveLang: "en",
       esUrl: "/es",
-      enUrl: "/",
       preferredLang: null,
       languages: ["en-US", "en"],
     });
@@ -213,23 +207,32 @@ describe("Browser Language Detection & Auto-Redirect Logic", () => {
       currentPath: "/",
       effectiveLang: "en",
       esUrl: "/es",
-      enUrl: "/",
       preferredLang: null,
       languages: ["fr-FR", "fr", "en"],
     });
     expect(result).toBeNull();
   });
 
-  it("should redirect Spanish browser from an English post to its Spanish translation", () => {
+  it("should preserve a direct English blog route for a Spanish browser", () => {
     const result = computeRedirect({
       currentPath: "/blog/building-labitcode",
       effectiveLang: "en",
       esUrl: "/es/blog/construyendo-labitcode",
-      enUrl: "/blog/building-labitcode",
       preferredLang: null,
       languages: ["es-419", "es"],
     });
-    expect(result).toBe("/es/blog/construyendo-labitcode");
+    expect(result).toBeNull();
+  });
+
+  it("should preserve a direct Spanish blog route for an English preference", () => {
+    const result = computeRedirect({
+      currentPath: "/es/blog",
+      effectiveLang: "es",
+      esUrl: "/es/blog",
+      preferredLang: "en",
+      languages: ["en-US", "en"],
+    });
+    expect(result).toBeNull();
   });
 
   it("should respect explicit preferredLang: 'en' and NOT redirect Spanish browser to '/es'", () => {
@@ -237,7 +240,6 @@ describe("Browser Language Detection & Auto-Redirect Logic", () => {
       currentPath: "/",
       effectiveLang: "en",
       esUrl: "/es",
-      enUrl: "/",
       preferredLang: "en",
       languages: ["es-ES", "es"],
     });
@@ -249,23 +251,21 @@ describe("Browser Language Detection & Auto-Redirect Logic", () => {
       currentPath: "/",
       effectiveLang: "en",
       esUrl: "/es",
-      enUrl: "/",
       preferredLang: "es",
       languages: ["en-US", "en"],
     });
     expect(result).toBe("/es");
   });
 
-  it("should redirect explicit preferredLang: 'en' from '/es' to '/'", () => {
+  it("should preserve the explicit '/es' route for an English preference", () => {
     const result = computeRedirect({
       currentPath: "/es",
       effectiveLang: "es",
       esUrl: "/es",
-      enUrl: "/",
       preferredLang: "en",
       languages: ["es-ES", "es"],
     });
-    expect(result).toBe("/");
+    expect(result).toBeNull();
   });
 
   it("should never redirect search engine bots", () => {
@@ -273,7 +273,6 @@ describe("Browser Language Detection & Auto-Redirect Logic", () => {
       currentPath: "/",
       effectiveLang: "en",
       esUrl: "/es",
-      enUrl: "/",
       preferredLang: null,
       languages: ["es-ES"],
       userAgent: "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
